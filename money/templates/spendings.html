@@ -1,0 +1,41 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if spendings %}
+    <table>
+    {% for spending in spendings %}
+    <tr>
+    <td><a href="{% url 'spending' spending.id %}">{{ spending.name }}</a> </td><td>{{ spending.amount }} грн.</td> 
+    <td>{{ spending.source.name }}</td>
+    <td>      <a href="{% url 'spending_update' spending.id %}">Edit</a> 
+            <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any spendings. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'spending_create'%}?next={{request.path}}">New spending</a></p>
+
+  {% if sources %}
+  <table>
+  {% for source in sources %}
+  <tr>
+  <td>{{ source.name }} </td><td>{{ source.amount }} грн.</td> 
+  
+     
+        </tr>
+{% endfor %}
+</table>
+{% else %}
+  <p>You don't have any spendings. </p>
+  
+{% endif %}  
+  
+    
+{% endblock %}

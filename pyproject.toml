@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "accounting"
+version = "0.1.0"
+description = ""
+authors = ["Goshurenko Pavel"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "^3.0.6"
+
+[tool.poetry.dev-dependencies]
+gunicorn = "^20.0.4"
+flake8 = "^3.8.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

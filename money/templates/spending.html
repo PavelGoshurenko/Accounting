@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'spending' spending.id %}">{{ spending.name }}</a> {{ spending.amount }} грн. 
+  <a href="{% url 'spending_update' spending.id %}">Edit</a> 
+    <a href="{% url 'spending_delete' spending.id %}">Delete</a></p>
+
+{% endblock %}
