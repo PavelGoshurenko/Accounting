@@ -2,11 +2,11 @@ from django.db import models
 from django.urls import reverse
 
 
-class Source(models.Model):
+class Asset(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Хранилище денег")
+        help_text="Актив")
     amount = models.FloatField(
         help_text="Колличество денег",
         null=False, blank=False
@@ -25,10 +25,12 @@ class Spending(models.Model):
         help_text="Колличество потраченных денег",
         null=False, blank=False
         )
-    source = models.ForeignKey(Source, on_delete=models.ProtectedError)
+    asset = models.ForeignKey(Asset, on_delete=models.ProtectedError)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('spending', args=[str(self.id)])
+        return reverse('asset', args=[str(self.id)])
+
+    

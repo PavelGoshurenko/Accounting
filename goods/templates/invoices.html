@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if invoices %}
+    <table>
+    {% for invoice in invoices %}
+    <tr>
+    <td><a href="{% url 'invoice_update' invoice.id %}">{{ invoice.name }}</a> </td><td>{{ invoice.shop_price }} грн.</td> 
+    <td>{{ invoice.source.name }}</td>
+    <td>  <a href="{% url 'invoice_delete' invoice.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any invoices. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'invoice_create'%}?next={{request.path}}">New invoice</a></p>
+
+
+  
+    
+{% endblock %}

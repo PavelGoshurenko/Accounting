@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post" class="form">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit" class="btn btn-primary">
+      Add product
+    </button>
+  
+</form>
+
+
+
+    <h3 class="cover-heading">products list:</h3>
+    {% if products %}
+    {% for product in products %}
+    <div class="card text-white bg-secondary mb-3">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-6"><div class="text-left"><a href="{% url 'product' product.id %}">{{ product.name }}</a></div></div>
+          <div class="col-md-6"><div class="text-right"><a href="{% url 'product_update' product.id %}">Edit</a> <a href="{% url 'product_delete' product.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any products. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  

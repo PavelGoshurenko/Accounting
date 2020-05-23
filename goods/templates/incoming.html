@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'incoming' incoming.id %}">{{ incoming.product.name }}</a> {{ incoming.quantity }} шт. 
+  <a href="{% url 'incoming_update' incoming.id %}">Edit</a> 
+    <a href="{% url 'incoming_delete' incoming.id %}">Delete</a></p>
+
+{% endblock %}

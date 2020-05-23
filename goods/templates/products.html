@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if products %}
+    <table>
+    {% for product in products %}
+    <tr>
+    <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td><td>{{ product.shop_price }} грн.</td> 
+    <td>{{ product.source.name }}</td>
+    <td>  <a href="{% url 'product_delete' product.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any products. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'product_create'%}?next={{request.path}}">New product</a></p>
+
+
+  
+    
+{% endblock %}

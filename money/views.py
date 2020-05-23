@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from money.models import Spending, Source
+from money.models import Spending, Asset
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
+from django.http import HttpResponseRedirect, HttpResponse
 
 
 # Spending views
@@ -12,7 +13,7 @@ class SpendingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sources'] = Source.objects.all()
+        context['assets'] = Asset.objects.all()
         return context
 
     def get_queryset(self):
@@ -37,10 +38,10 @@ class SpendingCreate(CreateView):
     def form_valid(self, form):
         parameters = self.request.POST
         amount = parameters['amount']
-        source_id = parameters['source']
-        source = get_object_or_404(Source, id=source_id)
-        source.amount = source.amount - float(amount)
-        source.save()
+        asset_id = parameters['asset']
+        asset = get_object_or_404(Asset, id=asset_id)
+        asset.amount = asset.amount - float(amount)
+        asset.save()
         return super().form_valid(form)
 
 
@@ -55,7 +56,74 @@ class SpendingUpdate(UpdateView):
         context['spendings'] = Spending.objects.all()
         return context
 
+    def form_valid(self, form):
+        self.object = self.get_object()
+        previous_amount = self.object.amount
+        previous_asset = self.object.asset
+        previous_asset.amount = previous_asset.amount + float(previous_amount)
+        previous_asset.save()
+
+        parameters = self.request.POST
+        amount = parameters['amount']
+        asset_id = parameters['asset']
+        asset = get_object_or_404(Asset, id=asset_id)
+        asset.amount = asset.amount - float(amount)
+        asset.save()
+        return super().form_valid(form)
+
 
 class SpendingDelete(DeleteView):
     model = Spending
     success_url = reverse_lazy('spendings')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        amount = self.object.amount
+        asset = self.object.asset
+        asset.amount = asset.amount + float(amount)
+        asset.save()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+
+# Assets views
+class AssetsView(generic.ListView):
+    template_name = 'assets.html'
+    context_object_name = 'assets'
+
+    def get_queryset(self):
+        return Asset.objects.all()
+
+
+class AssetView(generic.DetailView):
+    model = Asset
+    template_name = "asset.html"
+
+
+class AssetCreate(CreateView):
+    model = Asset
+    fields = '__all__'
+    success_url = reverse_lazy('assets')
+
+    def get_context_data(self, **kwargs):
+        context = super(AssetCreate, self).get_context_data(**kwargs)
+        context['assets'] = Asset.objects.all()
+        return context
+
+
+class AssetUpdate(UpdateView):
+    model = Asset
+    fields = '__all__'
+    success_url = reverse_lazy('assets')
+    template_name = 'asset_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AssetUpdate, self).get_context_data(**kwargs)
+        context['assets'] = Asset.objects.all()
+        return context
+
+
+class AssetDelete(DeleteView):
+    model = Asset
+    success_url = reverse_lazy('assets')

@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if incomings %}
+    <table>
+    {% for incoming in incomings %}
+    <tr>
+    <td><a href="{% url 'incoming_update' incoming.id %}">{{ incoming.product }}</a> </td><td>{{ incoming.quantity }} шт.</td> 
+    <td>{{ incoming.source.name }}</td>
+    <td>  <a href="{% url 'incoming_delete' incoming.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any incomings. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'incoming_create'%}?next={{request.path}}">New incoming</a></p>
+
+
+  
+    
+{% endblock %}

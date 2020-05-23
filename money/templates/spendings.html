@@ -8,10 +8,9 @@
     <table>
     {% for spending in spendings %}
     <tr>
-    <td><a href="{% url 'spending' spending.id %}">{{ spending.name }}</a> </td><td>{{ spending.amount }} грн.</td> 
-    <td>{{ spending.source.name }}</td>
-    <td>      <a href="{% url 'spending_update' spending.id %}">Edit</a> 
-            <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
+    <td><a href="{% url 'spending_update' spending.id %}">{{ spending.name }}</a> </td><td>{{ spending.amount }} грн.</td> 
+    <td>{{ spending.asset.name }}</td>
+    <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
        
           </tr>
   {% endfor %}
@@ -22,11 +21,11 @@
   {% endif %}  
   <p><a href="{% url 'spending_create'%}?next={{request.path}}">New spending</a></p>
 
-  {% if sources %}
+  {% if assets %}
   <table>
-  {% for source in sources %}
+  {% for asset in assets %}
   <tr>
-  <td>{{ source.name }} </td><td>{{ source.amount }} грн.</td> 
+  <td>{{ asset.name }} </td><td>{{ asset.amount }} грн.</td> 
   
      
         </tr>

@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'product' product.id %}">{{ product.name }}</a> {{ product.amount }} грн. 
+  <a href="{% url 'product_update' product.id %}">Edit</a> 
+    <a href="{% url 'product_delete' product.id %}">Delete</a></p>
+
+{% endblock %}

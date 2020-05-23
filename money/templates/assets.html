@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if assets %}
+    <table>
+    {% for asset in assets %}
+    <tr>
+    <td><a href="{% url 'asset_update' asset.id %}">{{ asset.name }}</a> </td><td>{{ asset.amount }} шт.</td> 
+    <td>{{ asset.source.name }}</td>
+    <td>  <a href="{% url 'asset_delete' asset.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any assets. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'asset_create'%}?next={{request.path}}">New asset</a></p>
+
+
+  
+    
+{% endblock %}

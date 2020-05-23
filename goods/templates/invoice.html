@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'invoice' invoice.id %}">{{ invoice.name }}</a> {{ invoice.amount }} грн. 
+  <a href="{% url 'invoice_update' invoice.id %}">Edit</a> 
+    <a href="{% url 'invoice_delete' invoice.id %}">Delete</a></p>
+
+{% endblock %}
