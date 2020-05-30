@@ -33,4 +33,36 @@ class Spending(models.Model):
     def get_absolute_url(self):
         return reverse('asset', args=[str(self.id)])
 
-    
+
+class Transfer(models.Model):
+    name = models.CharField(
+        max_length=200,
+        help_text="Перевод")
+    amount = models.FloatField(
+        help_text="Сумма",
+        null=False, blank=False
+        )
+    asset_from = models.ForeignKey(
+        Asset, on_delete=models.ProtectedError,
+        related_name='asset_from'
+        )
+    asset_to = models.ForeignKey(
+        Asset,
+        on_delete=models.ProtectedError,
+        related_name='asset_to')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('transfer', args=[str(self.id)])
+  
+
+class Department(models.Model):
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Наименование отдела")
+
+    def __str__(self):
+        return self.name

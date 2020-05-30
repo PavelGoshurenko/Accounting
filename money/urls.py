@@ -30,4 +30,18 @@ urlpatterns = [
         views.AssetDelete.as_view(),
         name='asset_delete'
         ),
+    # transfers
+    path('transfers/', views.TransfersView.as_view(), name='transfers'),
+    path('<int:pk>/', views.TransferView.as_view(), name='transfer'),
+    path('transfer/create/', views.TransferCreate.as_view(), name='transfer_create'),
+    path(
+        'transfer/<int:pk>/update/',
+        views.TransferUpdate.as_view(),
+        name='transfer_update'
+        ),
+    path(
+        'transfer/<int:pk>/delete/',
+        views.TransferDelete.as_view(),
+        name='transfer_delete'
+        ),
 ]

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit">
+      Add transfer
+    </button>
+  
+</form>
+
+
+
+    <h3>transfers list:</h3>
+    {% if transfers %}
+    {% for transfer in transfers %}
+    <div>
+      <div>
+        <div>
+          <div><div><a href="{% url 'transfer' transfer.id %}">{{ transfer.product }}</a></div></div>
+          <div><div><a href="{% url 'transfer_update' transfer.id %}">Edit</a> <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any transfers. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  

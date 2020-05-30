@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'transfer' transfer.id %}">{{ transfer.name }}</a> {{ transfer.amount }} шт. 
+  <a href="{% url 'transfer_update' transfer.id %}">Edit</a> 
+    <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></p>
+
+{% endblock %}

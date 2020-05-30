@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from money.models import Spending, Asset
+from money.models import Spending, Asset, Transfer
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
@@ -127,3 +127,45 @@ class AssetUpdate(UpdateView):
 class AssetDelete(DeleteView):
     model = Asset
     success_url = reverse_lazy('assets')
+
+
+# Transfers views
+class TransfersView(generic.ListView):
+    template_name = 'transfers.html'
+    context_object_name = 'transfers'
+
+    def get_queryset(self):
+        return Transfer.objects.all()
+
+
+class TransferView(generic.DetailView):
+    model = Transfer
+    template_name = "transfer.html"
+
+
+class TransferCreate(CreateView):
+    model = Transfer
+    fields = '__all__'
+    success_url = reverse_lazy('transfers')
+
+    def get_context_data(self, **kwargs):
+        context = super(TransferCreate, self).get_context_data(**kwargs)
+        context['transfers'] = Transfer.objects.all()
+        return context
+
+
+class TransferUpdate(UpdateView):
+    model = Transfer
+    fields = '__all__'
+    success_url = reverse_lazy('transfers')
+    template_name = 'transfer_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TransferUpdate, self).get_context_data(**kwargs)
+        context['transfers'] = Transfer.objects.all()
+        return context
+
+
+class TransferDelete(DeleteView):
+    model = Transfer
+    success_url = reverse_lazy('transfers')

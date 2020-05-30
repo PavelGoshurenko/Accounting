@@ -44,4 +44,18 @@ urlpatterns = [
         views.IncomingDelete.as_view(),
         name='incoming_delete'
         ),
+    # sales
+    path('sales/', views.SalesView.as_view(), name='sales'),
+    path('<int:pk>/', views.SaleView.as_view(), name='sale'),
+    path('sale/create/', views.SaleCreate.as_view(), name='sale_create'),
+    path(
+        'sale/<int:pk>/update/',
+        views.SaleUpdate.as_view(),
+        name='sale_update'
+        ),
+    path(
+        'sale/<int:pk>/delete/',
+        views.SaleDelete.as_view(),
+        name='sale_delete'
+        ),
 ]

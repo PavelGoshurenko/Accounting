@@ -9,7 +9,7 @@
     {% for product in products %}
     <tr>
     <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td><td>{{ product.shop_price }} грн.</td> 
-    <td>{{ product.source.name }}</td>
+    <td>{{ product.quantity }} шт.</td> 
     <td>  <a href="{% url 'product_delete' product.id %}">Delete</a></td>
        
           </tr>

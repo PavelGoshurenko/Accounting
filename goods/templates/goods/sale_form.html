@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit">
+      Add sale
+    </button>
+  
+</form>
+
+
+
+    <h3>sales list:</h3>
+    {% if sales %}
+    {% for sale in sales %}
+    <div>
+      <div>
+        <div>
+          <div><div><a href="{% url 'sale' sale.id %}">{{ sale.product }}</a></div></div>
+          <div><div><a href="{% url 'sale_update' sale.id %}">Edit</a> <a href="{% url 'sale_delete' sale.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any sales. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  

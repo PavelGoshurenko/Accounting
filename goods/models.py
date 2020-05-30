@@ -1,5 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
+from money.models import Department
+from django.shortcuts import get_object_or_404
 
 
 class ProductCategory(models.Model):
@@ -76,3 +79,36 @@ class Incoming(models.Model):
     purchase_price = models.FloatField(blank=False, null=False)
     quantity = models.IntegerField(blank=False)
 
+    def save(self, *args, **kwargs):
+        '''Переопределям save() чтобы появление / изменение прихода
+         автоматически меняло остатки'''
+        if self.id:
+            previous_incoming = Incoming.objects.get(id=self.id)
+            previous_quantity = previous_incoming.quantity
+        else:
+            previous_quantity = 0
+        related_product = self.product
+        related_product.quantity = related_product.quantity + self.quantity - previous_quantity
+        related_product.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        related_product = self.product
+        related_product.quantity = related_product.quantity - self.quantity
+        related_product.save()
+        super().delete(*args, **kwargs)
+
+
+class Sale(models.Model):
+    date = models.DateField(null=False, blank=False)
+    manager = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.ProtectedError)
+    price = models.FloatField(blank=False, null=False)
+    product = models.ForeignKey(Product, on_delete=models.ProtectedError)
+    quantity = models.IntegerField(blank=False)
+
+    def __str__(self):
+        return "{} s{}".format(self.department.name, self.date)

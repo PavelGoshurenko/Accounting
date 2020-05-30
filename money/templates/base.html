@@ -7,10 +7,14 @@
 </head>
 
 <body>
-    <p><a href="/">Главная</a> <a href="/admin/">Админка</a> <a href="{% url 'products' %}">Товары</a> 
+    <p><a href="/">Главная</a> 
+        <a href="{% url 'transfers' %}">Трансферы</a> 
+        <a href="/admin/">Админка</a> 
+        <a href="{% url 'products' %}">Товары</a> 
         <a href="{% url 'assets' %}">Активы</a> 
         <a href="{% url 'invoices' %}">Накладные</a> 
         <a href="{% url 'incomings' %}">Приходы</a> 
+        <a href="{% url 'sales' %}">Продажи</a> 
         <a href="{% url 'add_products_from_file' %}">Загрузить товары с excel</a> 
         <a href="{% url 'add_incomings' %}">Новые приходы</a>
     </p>

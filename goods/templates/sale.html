@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'sale' sale.id %}">{{ sale.product.name }}</a> {{ sale.quantity }} шт. 
+  <a href="{% url 'sale_update' sale.id %}">Edit</a> 
+    <a href="{% url 'sale_delete' sale.id %}">Delete</a></p>
+
+{% endblock %}

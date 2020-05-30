@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if transfers %}
+    <table>
+    {% for transfer in transfers %}
+    <tr>
+    <td><a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> </td><td>{{ transfer.amount }} грн.</td> 
+    <td>{{ transfer.source.name }}</td>
+    <td>  <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any transfers. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'transfer_create'%}?next={{request.path}}">New transfer</a></p>
+
+
+  
+    
+{% endblock %}

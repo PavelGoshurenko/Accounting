@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+   
+    {% if sales %}
+    <table>
+    {% for sale in sales %}
+    <tr>
+    <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td><td>{{ sale.quantity }} шт.</td> 
+    <td>{{ sale.source.name }}</td>
+    <td>  <a href="{% url 'sale_delete' sale.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any sales. </p>
+    
+  {% endif %}  
+  <p><a href="{% url 'sale_create'%}?next={{request.path}}">New sale</a></p>
+
+
+  
+    
+{% endblock %}

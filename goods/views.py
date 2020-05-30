@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice
+from goods.models import Product, Incoming, Invoice, Sale
 from django.views.generic.base import TemplateView
 import openpyxl
 from goods.forms import AddInvoiceForm
@@ -160,3 +160,44 @@ class IncomingUpdate(UpdateView):
 class IncomingDelete(DeleteView):
     model = Incoming
     success_url = reverse_lazy('incomings')
+
+# Sales views
+class SalesView(generic.ListView):
+    template_name = 'sales.html'
+    context_object_name = 'sales'
+
+    def get_queryset(self):
+        return Sale.objects.all()
+
+
+class SaleView(generic.DetailView):
+    model = Sale
+    template_name = "sale.html"
+
+
+class SaleCreate(CreateView):
+    model = Sale
+    fields = '__all__'
+    success_url = reverse_lazy('sales')
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleCreate, self).get_context_data(**kwargs)
+        context['sales'] = Sale.objects.all()
+        return context
+
+
+class SaleUpdate(UpdateView):
+    model = Sale
+    fields = '__all__'
+    success_url = reverse_lazy('sales')
+    template_name = 'sale_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SaleUpdate, self).get_context_data(**kwargs)
+        context['sales'] = Sale.objects.all()
+        return context
+
+
+class SaleDelete(DeleteView):
+    model = Sale
+    success_url = reverse_lazy('sales')
