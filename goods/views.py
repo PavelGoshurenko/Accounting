@@ -9,6 +9,9 @@ import openpyxl
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect
 from django.forms.models import modelformset_factory
+from goods.forms import SalesFromFileForm
+from goods.filters import SaleFilter
+import json
 
 # Products views
 
@@ -62,11 +65,39 @@ class AddProductsView(TemplateView):
         context = super().get_context_data(**kwargs)
         wb = openpyxl.load_workbook('1.xlsx')
         sheet = wb.active
+        i = 3
+        while i < 2350:
+            if sheet['A{}'.format(i)].value and sheet['I{}'.format(i)].value:
+                new_product = Product(
+                    name=sheet['A{}'.format(i)].value,
+                    shop_price=sheet['I{}'.format(i)].value,
+                    purchase_price=sheet['L{}'.format(i)].value,
+                    internet_price=sheet['J{}'.format(i)].value,
+                    quantity=sheet['G{}'.format(i)].value,
+                    category=None,
+                    brand=None
+                    )
+                new_product.save()
+            i += 1
         context['who'] = sheet["A44"].value
         return context
 
 
 # invoices views
+
+def new_invoice(request):
+    products = {}
+    for product in Product.objects.all():
+        products[str(product.id)] = {
+            'name': product.name,
+            'purchase_price': product.purchase_price,
+            'quantity': 0,
+        }
+    js_data = json.dumps(products)
+    context = {'js_data': js_data}
+    return render(request, 'new_incoming.html', context)
+
+
 class InvoicesView(generic.ListView):
     template_name = 'invoices.html'
     context_object_name = 'invoices'
@@ -108,6 +139,7 @@ class InvoiceDelete(DeleteView):
     success_url = reverse_lazy('invoices')
 
 
+# Incomings views
 def add_incomings(request):
     IncomingFormSet = modelformset_factory(Incoming, exclude=('id',), extra=10)
     if request.method == 'POST':
@@ -120,7 +152,6 @@ def add_incomings(request):
     return render(request, 'add_incomings.html', {'formset': formset})
 
 
-# Incomings views
 class IncomingsView(generic.ListView):
     template_name = 'incomings.html'
     context_object_name = 'incomings'
@@ -132,6 +163,9 @@ class IncomingsView(generic.ListView):
 class IncomingView(generic.DetailView):
     model = Incoming
     template_name = "incoming.html"
+
+
+
 
 
 class IncomingCreate(CreateView):
@@ -161,12 +195,33 @@ class IncomingDelete(DeleteView):
     model = Incoming
     success_url = reverse_lazy('incomings')
 
+
 # Sales views
 class SalesView(generic.ListView):
     template_name = 'sales.html'
     context_object_name = 'sales'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sales = self.get_queryset()
+        context['filter'] = SaleFilter(
+            self.request.GET,
+            queryset=sales,
+        )
+        sum = 0
+        for sale in sales:
+            sum += sale.quantity * sale.price
+        context['sum'] = sum
+        return context
+
     def get_queryset(self):
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            return Sale.objects.filter(**filters)
         return Sale.objects.all()
 
 
@@ -201,3 +256,66 @@ class SaleUpdate(UpdateView):
 class SaleDelete(DeleteView):
     model = Sale
     success_url = reverse_lazy('sales')
+
+
+def get_sales_from_file():
+    wb = openpyxl.load_workbook('1.xlsx')
+    sheet = wb.active
+    sales = []
+    cost = 0
+    i = 3
+    while i < 2350:
+        if sheet['A{}'.format(i)].value and sheet['B{}'.format(i)].value:
+            sale = {}
+            sale['product_name'] = sheet['A{}'.format(i)].value
+            sale['quantity'] = sheet['B{}'.format(i)].value
+            sale['price'] = sheet['C{}'.format(i)].value
+            discount = sheet['E{}'.format(i)].value
+            if discount is None:
+                discount = 0
+            sale['discount'] = discount
+            sale['cost'] = sale['quantity'] * sale['price'] - sale['discount']
+            cost += sale['cost']
+            sales.append(sale)
+        i += 1
+    return (sales, cost)
+
+
+def sales_from_file(request):
+    # Если данный запрос типа POST, тогда
+    if request.method == 'POST':
+        # Создаем экземпляр формы и заполняем данными из запроса (связывание, binding):
+        form = SalesFromFileForm(request.POST)
+        # Проверка валидности данных формы:
+        if form.is_valid():
+            sales, cost = get_sales_from_file()
+            date = form.cleaned_data['date']
+            manager = form.cleaned_data['manager']
+            department = form.cleaned_data['department']
+            for sale in sales:
+                product = Product.objects.get(name=sale['product_name'])
+                if department.name == 'Магазин':
+                    price = product.shop_price
+                elif department.name == 'Интернет':
+                    price = product.internet_price
+                new_sale = Sale(
+                    date=date,
+                    manager=manager,
+                    department=department,
+                    price=price - sale['discount'] / sale['quantity'],
+                    product=product,
+                    quantity=sale['quantity']
+                )
+                new_sale.save()
+            return HttpResponseRedirect(reverse('sales'))
+
+    # Если это GET (или какой-либо еще), создать форму по умолчанию.
+    else:
+        form = SalesFromFileForm()
+        sales, cost = get_sales_from_file()
+        
+    return render(
+        request,
+        'sales_from_file.html',
+        context={'sales': sales, 'cost': cost, 'form': form}
+        )

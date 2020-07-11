@@ -61,6 +61,9 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('products', args=[str(self.id)])
 
+    class Meta:
+        ordering = ['category', 'brand', 'created_at']
+
         
 class Invoice(models.Model):
     name = models.CharField(
@@ -93,6 +96,7 @@ class Incoming(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        '''Переопределяем delete для того чтобы вернуть остатки к исходным значениям'''
         related_product = self.product
         related_product.quantity = related_product.quantity - self.quantity
         related_product.save()
@@ -100,7 +104,7 @@ class Incoming(models.Model):
 
 
 class Sale(models.Model):
-    date = models.DateField(null=False, blank=False)
+    date = models.DateField(null=True, blank=True)
     manager = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -109,6 +113,23 @@ class Sale(models.Model):
     price = models.FloatField(blank=False, null=False)
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
     quantity = models.IntegerField(blank=False)
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            previous_sale = Sale.objects.get(id=self.id)
+            previous_quantity = previous_sale.quantity
+        else:
+            previous_quantity = 0
+        related_product = self.product
+        related_product.quantity = related_product.quantity - self.quantity + previous_quantity
+        related_product.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        related_product = self.product
+        related_product.quantity = related_product.quantity + self.quantity
+        related_product.save()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return "{} s{}".format(self.department.name, self.date)

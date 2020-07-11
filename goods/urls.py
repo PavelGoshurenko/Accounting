@@ -21,6 +21,7 @@ urlpatterns = [
     path('invoices/', views.InvoicesView.as_view(), name='invoices'),
     path('<int:pk>/', views.InvoiceView.as_view(), name='invoice'),
     path('invoice/create/', views.InvoiceCreate.as_view(), name='invoice_create'),
+    path('invoice/new/', views.new_invoice, name='new_invoice'),
     path(
         'invoice/<int:pk>/update/',
         views.InvoiceUpdate.as_view(),
@@ -58,4 +59,5 @@ urlpatterns = [
         views.SaleDelete.as_view(),
         name='sale_delete'
         ),
+    path('sales_from_file/', views.sales_from_file, name="sales_from_file"),
 ]

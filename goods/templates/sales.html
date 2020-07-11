@@ -4,16 +4,41 @@
 {% block content %}
 
    
+<form method="get">
+  <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+            {{ filter.form.date }}
+            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+          </div>
+          
+          <script>
+            $(function () {
+              $("#datetimepicker1").datetimepicker({
+                format: 'YYYY-MM-DD',
+              });
+            });
+          </script>
+  {{ filter.form.department }}
+  <input type="submit" />
+</form>
+
+
     {% if sales %}
-    <table>
+    <table border="1">
     {% for sale in sales %}
     <tr>
-    <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td><td>{{ sale.quantity }} шт.</td> 
-    <td>{{ sale.source.name }}</td>
+    <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td>
+    <td>{{ sale.quantity }} шт.</td> 
+    <td>{{ sale.price }} грн.</td>
+    <td>{{ sale.department }}</td>
+    <td>{{ sale.date }}</td>
+    <td>{{ sale.manager }}</td>
     <td>  <a href="{% url 'sale_delete' sale.id %}">Delete</a></td>
        
           </tr>
   {% endfor %}
+  <tr><td colspan="7"> {{ sum }}</td></tr>
 </table>
   {% else %}
     <p>You don't have any sales. </p>

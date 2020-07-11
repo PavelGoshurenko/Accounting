@@ -1,0 +1,53 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+    
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+            {{ form.date }}
+            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+          </div>
+          
+          <script>
+            $(function () {
+              $("#datetimepicker1").datetimepicker({
+                format: 'DD/MM/YYYY',
+              });
+            });
+          </script>
+          {{ form.manager }}
+          {{ form.department }}
+        <input type="submit" value="Submit" />
+    </form>
+{% if sales %}
+    <div><table border="1"> <tr>
+      <td> Товар </td>
+      <td> Колличество </td>
+      <td> Цена </td>
+      <td> Скидка </td>
+      <td> Стоимость </td></tr>
+      {% for sale in sales %}
+    <tr>
+      <td>{{ sale.product_name }}</td>
+      <td>{{ sale.quantity }}</td>
+      <td>{{ sale.price }}</td>
+      <td>{{ sale.discount }}</td>
+      <td>{{ sale.cost }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><strong>{{ cost }}</strong></td>
+    </tr>
+  </table></div>
+{% endif %}
+    
+
+{% endblock %}

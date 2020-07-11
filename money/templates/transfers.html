@@ -8,7 +8,7 @@
     <table>
     {% for transfer in transfers %}
     <tr>
-    <td><a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> </td><td>{{ transfer.amount }} грн.</td> 
+    <td><a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> </td><td>С {{ transfer.asset_from.name }} в {{ transfer.asset_to.name }} перешло {{ transfer.amount }}  грн.</td> 
     <td>{{ transfer.source.name }}</td>
     <td>  <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></td>
        
@@ -22,6 +22,19 @@
   <p><a href="{% url 'transfer_create'%}?next={{request.path}}">New transfer</a></p>
 
 
+  {% if assets %}
+  <table>
+  {% for asset in assets %}
+  <tr>
+  <td>{{ asset.name }} </td><td>{{ asset.amount }} грн.</td> 
   
+     
+        </tr>
+{% endfor %}
+</table>
+{% else %}
+  <p>You don't have any assets. </p>
+  
+{% endif %}  
     
 {% endblock %}

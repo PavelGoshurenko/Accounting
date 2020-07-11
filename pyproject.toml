@@ -8,6 +8,7 @@ authors = ["Goshurenko Pavel"]
 python = "^3.8"
 django = "^3.0.6"
 openpyxl = "^3.0.3"
+django-filter = "^2.3.0"
 
 [tool.poetry.dev-dependencies]
 gunicorn = "^20.0.4"

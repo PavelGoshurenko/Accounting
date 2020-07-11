@@ -35,15 +35,6 @@ class SpendingCreate(CreateView):
         context['spendings'] = Spending.objects.all()
         return context
 
-    def form_valid(self, form):
-        parameters = self.request.POST
-        amount = parameters['amount']
-        asset_id = parameters['asset']
-        asset = get_object_or_404(Asset, id=asset_id)
-        asset.amount = asset.amount - float(amount)
-        asset.save()
-        return super().form_valid(form)
-
 
 class SpendingUpdate(UpdateView):
     model = Spending
@@ -56,35 +47,10 @@ class SpendingUpdate(UpdateView):
         context['spendings'] = Spending.objects.all()
         return context
 
-    def form_valid(self, form):
-        self.object = self.get_object()
-        previous_amount = self.object.amount
-        previous_asset = self.object.asset
-        previous_asset.amount = previous_asset.amount + float(previous_amount)
-        previous_asset.save()
-
-        parameters = self.request.POST
-        amount = parameters['amount']
-        asset_id = parameters['asset']
-        asset = get_object_or_404(Asset, id=asset_id)
-        asset.amount = asset.amount - float(amount)
-        asset.save()
-        return super().form_valid(form)
-
 
 class SpendingDelete(DeleteView):
     model = Spending
     success_url = reverse_lazy('spendings')
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
-        amount = self.object.amount
-        asset = self.object.asset
-        asset.amount = asset.amount + float(amount)
-        asset.save()
-        self.object.delete()
-        return HttpResponseRedirect(success_url)
 
 
 # Assets views
@@ -133,6 +99,11 @@ class AssetDelete(DeleteView):
 class TransfersView(generic.ListView):
     template_name = 'transfers.html'
     context_object_name = 'transfers'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['assets'] = Asset.objects.all()
+        return context
 
     def get_queryset(self):
         return Transfer.objects.all()
