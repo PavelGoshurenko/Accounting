@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -86,16 +86,35 @@ class AddProductsView(TemplateView):
 # invoices views
 
 def new_invoice(request):
-    products = {}
-    for product in Product.objects.all():
-        products[str(product.id)] = {
-            'name': product.name,
-            'purchase_price': product.purchase_price,
-            'quantity': 0,
-        }
-    js_data = json.dumps(products)
-    context = {'js_data': js_data}
-    return render(request, 'new_incoming.html', context)
+    if request.method == 'POST':
+        data = json.loads(request.POST['request'])
+        new_invoice = Invoice(name=data['name'])
+        new_invoice.save()
+        new_incomings = data['incomings']
+        for key, value in new_incomings.items():
+            product = Product.objects.get(id=key)
+            purchase_price = value['purchase_price']
+            quantity = value['quantity']
+            new_incoming = Incoming(
+                product=product,
+                invoice=new_invoice,
+                purchase_price=purchase_price,
+                quantity=quantity,
+            )
+            new_incoming.save()
+        return redirect(reverse_lazy('invoices'))
+        
+    else:
+        products = {}
+        for product in Product.objects.all():
+            products[str(product.id)] = {
+                'name': product.name,
+                'purchase_price': product.purchase_price,
+                'quantity': 0,
+                }
+        js_data = json.dumps(products)
+        context = {'js_data': js_data}
+        return render(request, 'new_incoming.html', context)
 
 
 class InvoicesView(generic.ListView):
@@ -163,8 +182,6 @@ class IncomingsView(generic.ListView):
 class IncomingView(generic.DetailView):
     model = Incoming
     template_name = "incoming.html"
-
-
 
 
 

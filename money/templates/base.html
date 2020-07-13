@@ -8,11 +8,18 @@
     <title>Static Example</title>
 
     <!-- Bootstrap 4 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-
+    {# Load the tag library #}
+    {% load bootstrap4 %}
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    <script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-json/2.6.0/jquery.json.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    
     <!-- Font Awesome -->
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
@@ -22,25 +29,223 @@
     <!-- Tempus Dominus Bootstrap 4 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-    <p><a href="/">Главная</a> 
-        <a href="{% url 'transfers' %}">Трансферы</a> 
-        <a href="/admin/">Админка</a> 
-        <a href="{% url 'products' %}">Товары</a> 
-        <a href="{% url 'assets' %}">Активы</a> 
-        <a href="{% url 'invoices' %}">Накладные</a> 
-        <a href="{% url 'incomings' %}">Приходы</a> 
-        <a href="{% url 'sales' %}">Продажи</a> 
-        <a href="{% url 'add_products_from_file' %}">Загрузить товары с excel</a> 
-        <a href="{% url 'sales_from_file' %}">Загрузить продажу с excel</a> 
-        <a href="{% url 'add_incomings' %}">Новые приходы</a>
-        <a href="{% url 'new_invoice' %}">Новая правильная накладая</a>
-    </p>
-    
-    
+
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">gari.net.ua</a>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        <ul class="navbar-nav px-3">
+          <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#">Sign out</a>
+          </li>
+        </ul>
+      </nav>
+  
+
+
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link active" href="/">
+                    <span data-feather="home"></span>
+                    Главная <span class="sr-only">(current)</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'spendings' %}">
+                    <span data-feather="file"></span>
+                    Траты
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'assets' %}">
+                    <span data-feather="bar-chart-2"></span>
+                    Активы
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'transfers' %}">
+                    <span data-feather="file"></span>
+                    Трансферы
+                  </a>
+                </li>
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'products' %}">
+                    <span data-feather="users"></span>
+                    Товары
+                  </a>
+                </li>
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'invoices' %}">
+                    <span data-feather="layers"></span>
+                    Накладные
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'incomings' %}">
+                      <span data-feather="layers"></span>
+                      Приходы
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sales' %}">
+                      <span data-feather="layers"></span>
+                      Продажи
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_products_from_file' %}">
+                      <span data-feather="layers"></span>
+                      Загрузить товары с excel
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sales_from_file' %}">
+                      <span data-feather="layers"></span>
+                      Загрузить продажу с excel
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_incomings' %}">
+                      <span data-feather="layers"></span>
+                      Новые приходы
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'new_invoice' %}">
+                      <span data-feather="layers"></span>
+                      Новая правильная накладная
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/admin/">
+                      <span data-feather="shopping-cart"></span>
+                      Админка
+                    </a>
+                  </li>
+              </ul>
+  
+              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Контекстное меню</span>
+                <a class="d-flex align-items-center text-muted" href="#">
+                  <span data-feather="plus-circle"></span>
+                </a>
+              </h6>
+              <ul class="nav flex-column mb-2">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Current month
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Last quarter
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Social engagement
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Year-end sale
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+  
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+              <h1 class="h2">Dashboard</h1>
+              <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                  <button class="btn btn-sm btn-outline-secondary">Share</button>
+                  <button class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                  <span data-feather="calendar"></span>
+                  This week
+                </button>
+              </div>
+            </div>
+  
+            
+  
+            <h2>Section title</h2>
+            <div class="table-responsive"></div>
+            <div id='main-data'>
             {% block content %}{% endblock %}
+             </div>
+            </div>
+          </main>
+        </div>
+      </div>
+  
+      <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      
+      <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+      <script src="../../../../assets/js/vendor/popper.min.js"></script>
+      <script src="../../../../dist/js/bootstrap.min.js"></script>
+  
+      <!-- Icons -->
+      <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+      <script>
+        feather.replace()
+      </script>
+  
+      <!-- Graphs -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+      <script>
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            datasets: [{
+              data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+              lineTension: 0,
+              backgroundColor: 'transparent',
+              borderColor: '#007bff',
+              borderWidth: 4,
+              pointBackgroundColor: '#007bff'
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: false
+                }
+              }]
+            },
+            legend: {
+              display: false,
+            }
+          }
+        });
+      </script>
+
+
+    
+    
+    
+       
 
        
 </body>

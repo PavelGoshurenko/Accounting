@@ -68,7 +68,7 @@ class Product(models.Model):
 class Invoice(models.Model):
     name = models.CharField(
         max_length=200,
-        unique=True,
+        unique=False,
         help_text="Наименование накладной")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 

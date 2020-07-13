@@ -5,7 +5,16 @@
 
    
     {% if products %}
-    <table>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Цена</th>
+          <th>Остаток</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
     {% for product in products %}
     <tr>
     <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td><td>{{ product.shop_price }} грн.</td> 
@@ -14,6 +23,7 @@
        
           </tr>
   {% endfor %}
+</tbody>
 </table>
   {% else %}
     <p>You don't have any products. </p>

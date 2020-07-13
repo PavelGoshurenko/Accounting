@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import datetime
 
 
 class Asset(models.Model):
@@ -26,6 +27,7 @@ class Spending(models.Model):
         null=False, blank=False
         )
     asset = models.ForeignKey(Asset, on_delete=models.ProtectedError)
+    created_at = models.DateTimeField(default=datetime.now, null=True)
 
     def save(self, *args, **kwargs):
         '''Переопределям save() чтобы появление / изменение расхода

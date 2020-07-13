@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'money',
     'goods',
     'django_filters',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

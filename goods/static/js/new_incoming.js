@@ -1,27 +1,34 @@
 
 
 // обработчики
+
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  };
+
 const submit = (e) => {
-    const f = 4;
-};
-
-/* const minusHandler = (e) => {
     e.preventDefault();
-    const id = $(e.target).attr('data-id');
-    $input = $(`input[data-id=${id}]`);
-    state[String(id)].quantity -= 1;
-    $input.val(state[String(id)].quantity);
-    //render(state);
+    const name = $('#invoiceName').val();
+    const sendData = {};
+    sendData['name'] = name;
+    const incomings = {};
+    Object.keys(state).filter((key) => (state[key].quantity !== 0)).forEach((key) => {
+        incomings[key] = state[key];
+    });
+    sendData['incomings'] = incomings;
+    //отправим JSON
+    $.ajax({
+        type: "POST",
+        //url: "products/invoice/new/",
+        data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
+        success: function(res) {
+            alert("Данные успешно отправлены на сервер");
+        }
+    });
 };
-
-const plusHandler = (e) => {
-    e.preventDefault();
-    const id = $(e.target).attr('data-id');
-    $input = $(`input[data-id=${id}]`);
-    state[String(id)].quantity += 1;
-    $input.val(state[String(id)].quantity);
-    //render(state);
-}; */
 
 const inputHandler = (e) => {
     const id = $(e.target).attr('data-id');
@@ -35,11 +42,11 @@ const priceHandler = (e) => {
     const id = $(e.target).attr('data-id');
     $input = $(e.target);
     state[String(id)].purchase_price = Number($input.val());
-    render(state);
+    //render(state);
 };
 
 // render
-const $div = $('<div>').appendTo('body');
+const $div = $('<div>').appendTo('#main-data');
 $('<input>', {
     id: 'invoiceName',
     type: "text",
@@ -49,22 +56,20 @@ $('<input>', {
            type: 'submit',
            on: {click: submit}
         }).appendTo($div);
-const $mainTable = $('<table>');
-$('body').append($mainTable);
+const $tabDiv = $('<div>', {class: 'table-responsive'}).appendTo('#main-data')
+const $mainTable = $('<table>', {
+    class: "table table-striped table-sm",
+}).appendTo($tabDiv);
+$('#main-data').append($tabDiv);
 
 const render = (state) => {
     $mainTable.empty();
-    $('<tr><th>Товар</th><th>Куплено на склад</th><th>Цена покупки</th></tr>').appendTo($mainTable);
+    $('<thead><tr><th>Товар</th><th>Куплено на склад</th><th>Цена покупки</th></tr></thead>').appendTo($mainTable);
+    const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
     Object.keys(state).forEach((key) => {
-        const $tr = $('<tr>').appendTo($mainTable);
+        const $tr = $('<tr>').appendTo($tbody);
         const $tdName = $(`<td>${state[key].name}</td>`).appendTo($tr);
         const $tdControler = $('<td>').appendTo($tr);
-        /* const aMinus = $('<a>', {
-            text: ' - ' ,
-            href: '#',
-            'data-id': key,
-            on: {click: minusHandler}
-        }).appendTo($tdControler); */
         const $input = $('<input>', {
            value: state[String(key)].quantity,
            id: `quantity${key}`,
@@ -73,12 +78,6 @@ const render = (state) => {
            size: 1,
            on: {change: inputHandler}
         }).appendTo($tdControler);
-        /* const aPlus = $('<a>', {
-            text: ' + ',
-            href: '#',
-            'data-id': key,
-            on: {click: plusHandler}
-        }).appendTo($tdControler); */
         const $tdPrice = $('<td>').appendTo($tr);
         const $price = $('<input>', {
             value: state[String(key)].purchase_price,
