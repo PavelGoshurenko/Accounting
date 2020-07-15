@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from money.models import Department
 from django.shortcuts import get_object_or_404
+from datetime import datetime, date
+from money.models import Asset
 
 
 class ProductCategory(models.Model):
@@ -69,8 +71,50 @@ class Invoice(models.Model):
     name = models.CharField(
         max_length=200,
         unique=False,
-        help_text="Наименование накладной")
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
+        verbose_name='Накладная')
+    created_at = models.DateTimeField(
+        default=datetime.now,
+        null=True,
+        verbose_name='Создана')
+    paid = models.FloatField(
+        verbose_name='Оплачено',
+        blank=True,
+        null=True,
+        default=0)
+    asset = models.ForeignKey(
+        Asset,
+        on_delete=models.ProtectedError,
+        blank=True,
+        null=True,
+        verbose_name='Источник')
+
+    def save(self, *args, **kwargs):
+        '''Переопределям save() чтобы появление / изменение оплаты
+         автоматически меняло остатки источника'''
+        if self.id:
+            previous_invoice = Invoice.objects.get(id=self.id)
+            previous_paid = previous_invoice.paid
+            previous_asset = previous_invoice.asset
+        else:
+            previous_paid = 0
+            previous_asset = self.asset
+        related_asset = self.asset
+        if related_asset == previous_asset:
+            related_asset.amount = related_asset.amount - self.paid + previous_paid
+            related_asset.save()
+        else:
+            related_asset.amount = related_asset.amount - self.paid
+            related_asset.save()
+            previous_asset.amount = previous_asset.amount + previous_paid
+            previous_asset.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
+        related_asset = self.asset
+        related_asset.amount = related_asset.amount + self.paid
+        related_asset.save()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.name

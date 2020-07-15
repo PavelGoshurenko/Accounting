@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Asset(models.Model):
@@ -21,13 +21,19 @@ class Spending(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Трата")
+        verbose_name="Трата")
     amount = models.FloatField(
-        help_text="Колличество потраченных денег",
+        verbose_name="Сумма",
         null=False, blank=False
         )
-    asset = models.ForeignKey(Asset, on_delete=models.ProtectedError)
-    created_at = models.DateTimeField(default=datetime.now, null=True)
+    asset = models.ForeignKey(
+        Asset,
+        on_delete=models.ProtectedError,
+        verbose_name='Источник')
+    created_at = models.DateTimeField(
+        default=datetime.now,
+        null=True,
+        verbose_name='Дата')
 
     def save(self, *args, **kwargs):
         '''Переопределям save() чтобы появление / изменение расхода
@@ -35,11 +41,19 @@ class Spending(models.Model):
         if self.id:
             previous_spending = Spending.objects.get(id=self.id)
             previous_amount = previous_spending.amount
+            previous_asset = previous_spending.asset
         else:
             previous_amount = 0
+            previous_asset = self.asset
         related_asset = self.asset
-        related_asset.amount = related_asset.amount - self.amount + previous_amount
-        related_asset.save()
+        if (related_asset == previous_asset):
+            related_asset.amount = related_asset.amount - self.amount + previous_amount
+            related_asset.save()
+        else:
+            related_asset.amount = related_asset.amount - self.amount
+            related_asset.save()
+            previous_asset.amount = previous_asset.amount + previous_amount
+            previous_asset.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
