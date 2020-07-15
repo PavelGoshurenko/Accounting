@@ -7,9 +7,9 @@ class Asset(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Актив")
+        verbose_name="Актив")
     amount = models.FloatField(
-        help_text="Колличество денег",
+        verbose_name='Сумма',
         null=False, blank=False
         )
 

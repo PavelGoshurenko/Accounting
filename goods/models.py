@@ -5,6 +5,7 @@ from money.models import Department
 from django.shortcuts import get_object_or_404
 from datetime import datetime, date
 from money.models import Asset
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ProductCategory(models.Model):
@@ -167,6 +168,13 @@ class Sale(models.Model):
         related_product = self.product
         related_product.quantity = related_product.quantity - self.quantity + previous_quantity
         related_product.save()
+        asset_name = '{} {}'.format(self.date, self.department.name)
+        try:
+            asset_to_change = Asset.objects.get(name=asset_name)
+        except ObjectDoesNotExist:
+            asset_to_change = Asset(name=asset_name, amount=0)
+        asset_to_change.amount += (self.price * self.quantity - previous_quantity * self.price)
+        asset_to_change.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
