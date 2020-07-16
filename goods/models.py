@@ -96,25 +96,20 @@ class Invoice(models.Model):
             previous_invoice = Invoice.objects.get(id=self.id)
             previous_paid = previous_invoice.paid
             previous_asset = previous_invoice.asset
-        else:
-            previous_paid = 0
-            previous_asset = self.asset
-        related_asset = self.asset
-        if related_asset == previous_asset:
-            related_asset.amount = related_asset.amount - self.paid + previous_paid
+            if previous_asset:
+                previous_asset.amount += previous_paid
+                previous_asset.save()
+        if self.asset:
+            related_asset = Asset.objects.get(id=self.asset.id)  # !!!
+            related_asset.amount -= self.paid
             related_asset.save()
-        else:
-            related_asset.amount = related_asset.amount - self.paid
-            related_asset.save()
-            previous_asset.amount = previous_asset.amount + previous_paid
-            previous_asset.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
-        related_asset = self.asset
-        related_asset.amount = related_asset.amount + self.paid
-        related_asset.save()
+        if self.asset:
+            self.asset.amount += self.paid
+            self.asset.save()
         super().delete(*args, **kwargs)
 
     def __str__(self):
@@ -133,10 +128,11 @@ class Incoming(models.Model):
         if self.id:
             previous_incoming = Incoming.objects.get(id=self.id)
             previous_quantity = previous_incoming.quantity
-        else:
-            previous_quantity = 0
-        related_product = self.product
-        related_product.quantity = related_product.quantity + self.quantity - previous_quantity
+            previous_product = previous_incoming.product
+            previous_product.quantity -= previous_quantity
+            previous_product.save()
+        related_product = Product.objects.get(id=self.product.id)  # !!!
+        related_product.quantity += self.quantity
         related_product.save()
         super().save(*args, **kwargs)
 
@@ -163,24 +159,34 @@ class Sale(models.Model):
         if self.id:
             previous_sale = Sale.objects.get(id=self.id)
             previous_quantity = previous_sale.quantity
-        else:
-            previous_quantity = 0
-        related_product = self.product
-        related_product.quantity = related_product.quantity - self.quantity + previous_quantity
+            previos_asset_name = '{} {}'.format(
+                previous_sale.date,
+                previous_sale.department.name)
+            previous_asset = Asset.objects.get(name=previos_asset_name)
+            previous_product = previous_sale.product
+            previous_product.quantity += previous_quantity
+            previous_product.save()
+            previous_asset.amount -= previous_quantity * previous_sale.price
+            previous_asset.save()
+        related_product = Product.objects.get(id=self.product.id)
+        related_product.quantity -= self.quantity
         related_product.save()
         asset_name = '{} {}'.format(self.date, self.department.name)
         try:
             asset_to_change = Asset.objects.get(name=asset_name)
         except ObjectDoesNotExist:
             asset_to_change = Asset(name=asset_name, amount=0)
-        asset_to_change.amount += (self.price * self.quantity - previous_quantity * self.price)
+        asset_to_change.amount += self.price * self.quantity
         asset_to_change.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         related_product = self.product
-        related_product.quantity = related_product.quantity + self.quantity
+        related_product.quantity += self.quantity
         related_product.save()
+        asset_name = '{} {}'.format(self.date, self.department.name)
+        asset_to_change = Asset.objects.get(name=asset_name)
+        asset_to_change.amount -= self.price * self.quantity
         super().delete(*args, **kwargs)
 
     def __str__(self):

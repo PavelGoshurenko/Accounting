@@ -42,25 +42,21 @@ class Spending(models.Model):
             previous_spending = Spending.objects.get(id=self.id)
             previous_amount = previous_spending.amount
             previous_asset = previous_spending.asset
-        else:
-            previous_amount = 0
-            previous_asset = self.asset
-        related_asset = self.asset
-        if (related_asset == previous_asset):
-            related_asset.amount = related_asset.amount - self.amount + previous_amount
-            related_asset.save()
-        else:
-            related_asset.amount = related_asset.amount - self.amount
-            related_asset.save()
-            previous_asset.amount = previous_asset.amount + previous_amount
+            previous_asset.amount += previous_amount
             previous_asset.save()
+            if previous_asset == self.asset:
+                previous_asset.amount -= self.amount
+                previous_asset.save()
+                super().save(*args, **kwargs)
+                return
+        self.asset.amount -= self.amount
+        self.asset.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
-        related_asset = self.asset
-        related_asset.amount = related_asset.amount + self.amount
-        related_asset.save()
+        self.asset.amount += self.amount
+        self.asset.save()
         super().delete(*args, **kwargs)
 
     def __str__(self):
@@ -91,12 +87,17 @@ class Transfer(models.Model):
         if self.id:
             previous_transfer = Transfer.objects.get(id=self.id)
             previous_amount = previous_transfer.amount
-        else:
-            previous_amount = 0
-        related_asset_from = self.asset_from
-        related_asset_to = self.asset_to
-        related_asset_from.amount = related_asset_from.amount - self.amount + previous_amount
-        related_asset_to.amount = related_asset_to.amount + self.amount - previous_amount
+            previous_asset_from = previous_transfer.asset_from
+            previous_asset_to = previous_transfer.asset_to
+            previous_asset_from.amount += previous_amount
+            previous_asset_to.amount -= previous_amount
+            previous_asset_from.save()
+            previous_asset_to.save()
+        # Берем значения активов с БД т.к. они после сохранения не совпадают с self.assets
+        related_asset_from = Asset.objects.get(id=self.asset_from.id)
+        related_asset_to = Asset.objects.get(id=self.asset_to.id)
+        related_asset_from.amount -= self.amount
+        related_asset_to.amount += self.amount
         related_asset_from.save()
         related_asset_to.save()
         super().save(*args, **kwargs)
@@ -104,8 +105,8 @@ class Transfer(models.Model):
     def delete(self, *args, **kwargs):
         related_asset_from = self.asset_from
         related_asset_to = self.asset_to
-        related_asset_from.amount = related_asset_from.amount + self.amount
-        related_asset_to.amount = related_asset_to.amount - self.amount
+        related_asset_from.amount += self.amount
+        related_asset_to.amount -= self.amount
         related_asset_from.save()
         related_asset_to.save()
         super().delete(*args, **kwargs)
