@@ -42,13 +42,15 @@ class Product(models.Model):
         ProductCategory,
         on_delete=models.ProtectedError,
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Категория'
         )
     brand = models.ForeignKey(
         ProductBrand,
         on_delete=models.ProtectedError,
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Бренд'
         )
 
     def add_quantity(self, quantity, purchase_price):

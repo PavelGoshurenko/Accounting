@@ -1,5 +1,12 @@
 
 
+
+// дополнительный state - так получилось - больше так не делать
+filterState = {
+    'category': '',
+    'brand': '',
+}
+
 // обработчики
 
 function getCookie(name) {
@@ -45,6 +52,15 @@ const priceHandler = (e) => {
     //render(state);
 };
 
+const categoryChangeHandler = (e) => {
+    filterState.category = e.target.value
+    render(state);
+}
+
+const brandChangeHandler = (e) => {
+    filterState.brand = e.target.value
+    render(state);
+}
 // render
 const $div = $('<div>').appendTo('#main-data');
 $('<input>', {
@@ -62,11 +78,26 @@ const $mainTable = $('<table>', {
 }).appendTo($tabDiv);
 $('#main-data').append($tabDiv);
 
+$categorySelector = $('select[name=category]');
+$categorySelector.change(categoryChangeHandler);
+
+$brandSelector = $('select[name=brand]');
+$brandSelector.change(brandChangeHandler);
+
 const render = (state) => {
+    $categorySelector.val(filterState.category);
+    $brandSelector.val(filterState.brand);
     $mainTable.empty();
     $('<thead><tr><th>Товар</th><th>Куплено на склад</th><th>Цена покупки</th></tr></thead>').appendTo($mainTable);
     const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
-    Object.keys(state).forEach((key) => {
+    let keysToShow = Object.keys(state)
+    if (filterState.category) {
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(filterState.category))
+    }
+    if (filterState.brand) {
+        keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand))
+    }
+    keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
         const $tdName = $(`<td>${state[key].name}</td>`).appendTo($tr);
         const $tdControler = $('<td>').appendTo($tr);

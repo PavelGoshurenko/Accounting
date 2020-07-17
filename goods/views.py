@@ -10,8 +10,9 @@ from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect
 from django.forms.models import modelformset_factory
 from goods.forms import SalesFromFileForm
-from goods.filters import SaleFilter
+from goods.filters import SaleFilter, ProductFilter
 import json
+from django.forms import modelform_factory
 
 # Products views
 
@@ -20,7 +21,22 @@ class ProductsView(generic.ListView):
     template_name = 'products.html'
     context_object_name = 'products'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = ProductFilter(
+            self.request.GET,
+            queryset=self.get_queryset(),
+        )
+        return context
+
     def get_queryset(self):
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            return Product.objects.filter(**filters)
         return Product.objects.all()
 
 
@@ -111,9 +127,15 @@ def new_invoice(request):
                 'name': product.name,
                 'purchase_price': product.purchase_price,
                 'quantity': 0,
+                'brand': product.brand.id if product.brand else None,
+                'category': product.category.id if product.category else None,
                 }
         js_data = json.dumps(products)
-        context = {'js_data': js_data}
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'js_data': js_data, 'form': filter_form}
         return render(request, 'new_incoming.html', context)
 
 
