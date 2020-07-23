@@ -1,39 +1,25 @@
 {% extends "base.html" %}
-
+{% load bootstrap4 %}
+{% block title %} Добавить трату {% endblock %}
+{% block h %} Добавить трату {% endblock %}
 {% block content %}
-    <form action="" method="post" class="form">
+<form action="" method="post" class="form">
   {% csrf_token %}
-  {{form.as_p}}
   
-    <button type="submit" class="btn btn-primary">
-      Add spending
-    </button>
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Добавить трату
+</button>
+{% endbuttons %}
   
 </form>
 
 
 
-    <h3 class="cover-heading">spendings list:</h3>
-    {% if spendings %}
-    {% for spending in spendings %}
-    <div class="card text-white bg-secondary mb-3">
-      <div class="card-header">
-        <div class="row">
-          <div class="col-md-6"><div class="text-left"><a href="{% url 'spending' spending.id %}">{{ spending.name }}</a></div></div>
-          <div class="col-md-6"><div class="text-right"><a href="{% url 'spending_update' spending.id %}" class="badge badge-primary">Edit</a> <a href="{% url 'spending_delete' spending.id %}" class="badge badge-danger">Delete</a></div></div>
-        </div>
-      </div>
-      
-
-     
-
-    </div>
-    
-  {% endfor %}
-  {% else %}
-    <p>You don't have any spendings. </p>
-    
-  {% endif %}  
+  
   
 {% endblock %}
   

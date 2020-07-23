@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from money.models import Department
 from django.shortcuts import get_object_or_404
-from datetime import datetime, date
+import datetime
 from money.models import Asset
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -32,12 +32,16 @@ class Product(models.Model):
     name = models.CharField(
         max_length=250,
         unique=True,
-        help_text="Наименование товара")
-    shop_price = models.FloatField(blank=False, null=False)
+        verbose_name="Наименование товара")
+    shop_price = models.FloatField(blank=False, null=False, verbose_name="Цена магазин")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    purchase_price = models.FloatField(blank=False, null=False)
-    internet_price = models.FloatField(blank=False, null=False)
-    quantity = models.IntegerField(blank=False)
+    purchase_price = models.FloatField(blank=False, null=False, verbose_name='Цена покупки')
+    internet_price = models.FloatField(blank=False, null=False, verbose_name='Цена интернет')
+    quantity = models.IntegerField(
+        blank=False,
+        verbose_name='Количество',
+        default=0
+        )
     category = models.ForeignKey(
         ProductCategory,
         on_delete=models.ProtectedError,
@@ -75,10 +79,12 @@ class Invoice(models.Model):
         max_length=200,
         unique=False,
         verbose_name='Накладная')
-    created_at = models.DateTimeField(
-        default=datetime.now,
+    created_at = models.DateField(
         null=True,
-        verbose_name='Создана')
+        blank=True,
+        default=datetime.date.today(),
+        verbose_name='Создана'
+    )
     paid = models.FloatField(
         verbose_name='Оплачено',
         blank=True,
@@ -147,7 +153,11 @@ class Incoming(models.Model):
 
 
 class Sale(models.Model):
-    date = models.DateField(null=True, blank=True)
+    date = models.DateField(
+        null=True,
+        blank=True,
+        default=datetime.date.today()
+    )
     manager = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

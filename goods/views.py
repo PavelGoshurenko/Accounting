@@ -4,7 +4,9 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale
+from money.models import Department
 from django.views.generic.base import TemplateView
+from django.views.generic import TodayArchiveView
 import openpyxl
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect
@@ -13,6 +15,8 @@ from goods.forms import SalesFromFileForm
 from goods.filters import SaleFilter, ProductFilter
 import json
 from django.forms import modelform_factory
+import datetime
+from django.contrib.auth.models import User
 
 # Products views
 
@@ -171,7 +175,8 @@ class InvoiceUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(InvoiceUpdate, self).get_context_data(**kwargs)
-        context['invoices'] = Invoice.objects.all()
+        invoice = self.get_object()
+        context['incomings'] = invoice.incoming_set.all()
         return context
 
 
@@ -236,6 +241,24 @@ class IncomingDelete(DeleteView):
 
 
 # Sales views
+class TodayShopSalesView(generic.ListView):
+    template_name = 'today_sales_shop.html'
+    context_object_name = 'sales'
+
+    def get_queryset(self):
+        department = Department.objects.get(name='Магазин')
+        return Sale.objects.filter(date=datetime.date.today(), department=department)
+
+
+class TodayInternetSalesView(generic.ListView):
+    template_name = 'today_sales_internet.html'
+    context_object_name = 'sales'
+
+    def get_queryset(self):
+        department = Department.objects.get(name='Интернет')
+        return Sale.objects.filter(date=datetime.date.today(), department=department)
+
+
 class SalesView(generic.ListView):
     template_name = 'sales.html'
     context_object_name = 'sales'
@@ -358,3 +381,89 @@ def sales_from_file(request):
         'sales_from_file.html',
         context={'sales': sales, 'cost': cost, 'form': form}
         )
+
+
+def add_sales_shop(request):
+    if request.method == 'POST':
+        data = json.loads(request.POST['request'])
+        date = datetime.date.today()
+        department = Department.objects.get(name='Магазин')
+        manager = request.user
+        # new_invoice = Invoice(name=data['name'])
+        new_sales = data['sales']
+        for key, value in new_sales.items():
+            product = Product.objects.get(id=key)
+            price = value['shop_price'] - value['discount'] / value['quantity']
+            quantity = value['quantity']
+            new_sale = Sale(
+                date=date,
+                manager=manager,
+                price=price,
+                product=product,
+                department=department,
+                quantity=quantity,
+            )
+            new_sale.save()
+        return redirect(reverse_lazy('sales'))
+        
+    else:
+        products = {}
+        for product in Product.objects.all():
+            products[str(product.id)] = {
+                'name': product.name,
+                'shop_price': product.shop_price,
+                'quantity': 0,
+                'discount': 0,
+                'brand': product.brand.id if product.brand else None,
+                'category': product.category.id if product.category else None,
+                }
+        js_data = json.dumps(products)
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'js_data': js_data, 'form': filter_form}
+        return render(request, 'add_sales.html', context)
+
+
+def add_sales_internet(request):
+    if request.method == 'POST':
+        data = json.loads(request.POST['request'])
+        date = datetime.date.today()
+        department = Department.objects.get(name='Интернет')
+        manager = request.user
+        # new_invoice = Invoice(name=data['name'])
+        new_sales = data['sales']
+        for key, value in new_sales.items():
+            product = Product.objects.get(id=key)
+            price = value['shop_price'] - value['discount'] / value['quantity']
+            quantity = value['quantity']
+            new_sale = Sale(
+                date=date,
+                manager=manager,
+                price=price,
+                product=product,
+                department=department,
+                quantity=quantity,
+            )
+            new_sale.save()
+        return redirect(reverse_lazy('sales'))
+        
+    else:
+        products = {}
+        for product in Product.objects.all():
+            products[str(product.id)] = {
+                'name': product.name,
+                'shop_price': product.internet_price,
+                'quantity': 0,
+                'discount': 0,
+                'brand': product.brand.id if product.brand else None,
+                'category': product.category.id if product.category else None,
+                }
+        js_data = json.dumps(products)
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'js_data': js_data, 'form': filter_form}
+        return render(request, 'add_sales.html', context)

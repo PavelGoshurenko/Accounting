@@ -1,15 +1,47 @@
 {% extends "base.html" %}
-
+{% load bootstrap4 %}
+{% block title %} Редактировать накладную {% endblock %}
+{% block h %} Редактировать накладную {% endblock %}
 {% block content %}
     <form action="" method="post" class="form">
   {% csrf_token %}
-  {{form.as_p}}
   
-    <button type="submit">
-      Редактировать накладную
-    </button>
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Редактировать накладную
+</button>
+{% endbuttons %}
   
 </form>
   
+{% if incomings %}
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+      
+      <th>Товар</th>
+      <th>колличество</th>
+      <th>Накладная</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+{% for incoming in incomings %}
+<tr>
+<td><a href="{% url 'incoming_update' incoming.id %}">{{ incoming.product }}</a> </td>
+<td>{{ incoming.quantity }} шт.</td> 
+<td>{{ incoming.invoice.name }}</td>
+<td>  <a href="{% url 'incoming_delete' incoming.id %}">Delete</a></td>
+   
+      </tr>
+{% endfor %}
+</table>
+{% else %}
+<p>You don't have any incomings. </p>
+
+{% endif %}  
+
 {% endblock %}
-  

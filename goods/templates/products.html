@@ -1,6 +1,10 @@
 
 {% extends "base.html" %}
 {% load bootstrap4 %}
+{% block title %} Товары {% endblock %}
+{% block h %} Товары {% endblock %}
+
+
 
 {% block content %}
 
@@ -10,7 +14,9 @@
       <thead>
         <tr>
           <th>Наименование</th>
-          <th>Цена</th>
+          <th>Цена магазин</th>
+          <th>Цена интернет</th>
+          <th>Цена покупки</th>
           <th>Остаток</th>
           <th></th>
         </tr>
@@ -18,7 +24,10 @@
       <tbody>
     {% for product in products %}
     <tr>
-    <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td><td>{{ product.shop_price }} грн.</td> 
+    <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td>
+    <td>{{ product.shop_price }} грн.</td>
+    <td>{{ product.internet_price }} грн.</td>
+    <td>{{ product.purchase_price }} грн.</td> 
     <td>{{ product.quantity }} шт.</td> 
     <td>  <a href="{% url 'product_delete' product.id %}">Delete</a></td>
        
@@ -30,7 +39,7 @@
     <p>You don't have any products. </p>
     
   {% endif %}  
-  <p><a href="{% url 'product_create'%}?next={{request.path}}">New product</a></p>
+  
 
 
   
@@ -38,11 +47,12 @@
 {% endblock %}
 
 {% block context %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'product_create'%}" role="button">Добавить товар</a></p>
 <form action="" method="get" class="form">
   {% bootstrap_form filter.form %}
   {% buttons %}
     <button type="submit" class="btn btn-primary">
-      Filter
+      Фильтр
     </button>
   {% endbuttons %}
 </form>

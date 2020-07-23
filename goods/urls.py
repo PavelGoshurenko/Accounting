@@ -47,6 +47,8 @@ urlpatterns = [
         ),
     # sales
     path('sales/', views.SalesView.as_view(), name='sales'),
+    path('sales/today/shop', views.TodayShopSalesView.as_view(), name='today_sales_shop'),
+    path('sales/today/internet', views.TodayInternetSalesView.as_view(), name='today_sales_internet'),
     path('<int:pk>/', views.SaleView.as_view(), name='sale'),
     path('sale/create/', views.SaleCreate.as_view(), name='sale_create'),
     path(
@@ -60,4 +62,6 @@ urlpatterns = [
         name='sale_delete'
         ),
     path('sales_from_file/', views.sales_from_file, name="sales_from_file"),
+    path('add_sales/shop', views.add_sales_shop, name="add_sales_shop"),
+    path('add_sales/internet', views.add_sales_internet, name="add_sales_internet"),
 ]

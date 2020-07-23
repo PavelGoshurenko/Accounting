@@ -69,19 +69,21 @@ class Spending(models.Model):
 class Transfer(models.Model):
     name = models.CharField(
         max_length=200,
-        help_text="Перевод")
+        verbose_name='Перевод')
     amount = models.FloatField(
-        help_text="Сумма",
+        verbose_name="Сумма",
         null=False, blank=False
         )
     asset_from = models.ForeignKey(
         Asset, on_delete=models.ProtectedError,
-        related_name='asset_from'
+        related_name='asset_from',
+        verbose_name='Откуда'
         )
     asset_to = models.ForeignKey(
         Asset,
         on_delete=models.ProtectedError,
-        related_name='asset_to')
+        related_name='asset_to',
+        verbose_name="Куда")
 
     def save(self, *args, **kwargs):
         if self.id:
@@ -122,7 +124,7 @@ class Department(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Наименование отдела")
+        verbose_name="Отдел")
 
     def __str__(self):
         return self.name

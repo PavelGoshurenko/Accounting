@@ -1,40 +1,45 @@
 
 {% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Траты {% endblock %}
+{% block h %} Траты {% endblock %}
+
+{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'spending_create'%}" role="button">Новая трата</a></p>{% endblock %}
 
 {% block content %}
 
-   
+
     {% if spendings %}
-    <table>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Дата</th>
+          <th>Сумма</th>
+          <th>Источник</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
     {% for spending in spendings %}
     <tr>
-    <td><a href="{% url 'spending_update' spending.id %}">{{ spending.name }}</a> </td><td>{{ spending.amount }} грн.</td> 
+    <td><a href="{% url 'spending_update' spending.id %}">{{ spending.name }}</a> </td>
+    <td>{{ spending.created_at |date:"SHORT_DATE_FORMAT" }}</td>
+    <td>{{ spending.amount }} грн.</td> 
     <td>{{ spending.asset.name }}</td>
     <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
        
           </tr>
   {% endfor %}
+  </tbody>
 </table>
   {% else %}
     <p>You don't have any spendings. </p>
     
   {% endif %}  
-  <p><a href="{% url 'spending_create'%}?next={{request.path}}">New spending</a></p>
+  
 
-  {% if assets %}
-  <table>
-  {% for asset in assets %}
-  <tr>
-  <td>{{ asset.name }} </td><td>{{ asset.amount }} грн.</td> 
-  
-     
-        </tr>
-{% endfor %}
-</table>
-{% else %}
-  <p>You don't have any spendings. </p>
-  
-{% endif %}  
+
   
     
 {% endblock %}

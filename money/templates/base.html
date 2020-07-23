@@ -51,6 +51,40 @@
         <div class="row">
           <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
+
+              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Контекстное меню</span>
+                
+                
+              </h6>
+              
+
+              <ul class="nav flex-column mb-2">
+                <li class="nav-item">
+                  <div id='context-block' class="nav-link">{% block context %}{% endblock %}</div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Last quarter
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Social engagement
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="file-text"></span>
+                    Year-end sale
+                  </a>
+                </li>
+              </ul>
+
+
+
               <ul class="nav flex-column">
                 <li class="nav-item">
                   <a class="nav-link active" href="/">
@@ -103,6 +137,18 @@
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a class="nav-link" href="{% url 'today_sales_shop' %}">
+                      <span data-feather="layers"></span>
+                      Продажи за сегодня (Магазин)
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'today_sales_internet' %}">
+                      <span data-feather="layers"></span>
+                      Продажи за сегодня (Интернет)
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_products_from_file' %}">
                       <span data-feather="layers"></span>
                       Загрузить товары с excel
@@ -114,18 +160,14 @@
                       Загрузить продажу с excel
                     </a>
                   </li>
+                  
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_incomings' %}">
                       <span data-feather="layers"></span>
                       Новые приходы
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'new_invoice' %}">
-                      <span data-feather="layers"></span>
-                      Новая правильная накладная
-                    </a>
-                  </li>
+                 
                   <li class="nav-item">
                     <a class="nav-link" href="/admin/">
                       <span data-feather="shopping-cart"></span>
@@ -134,44 +176,13 @@
                   </li>
               </ul>
   
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Контекстное меню</span>
-                
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
               
-
-              <ul class="nav flex-column mb-2">
-                <li class="nav-item">
-                  <div id='context-block' class="nav-link">{% block context %}{% endblock %}</div>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Last quarter
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Social engagement
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Year-end sale
-                  </a>
-                </li>
-              </ul>
             </div>
           </nav>
   
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-              <h1 class="h2">Dashboard</h1>
+              <h1 class="h2">{% block h %}переопредели меня{% endblock %}</h1>
               <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
                   <button class="btn btn-sm btn-outline-secondary">Share</button>
@@ -186,7 +197,7 @@
   
             
   
-            <h2>Section title</h2>
+            
             <div class="table-responsive"></div>
             <div id='main-data'>
             {% block content %}{% endblock %}

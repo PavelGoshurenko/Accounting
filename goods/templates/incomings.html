@@ -1,15 +1,31 @@
 
+
 {% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Приходы {% endblock %}
+{% block h %} Приходы {% endblock %}
+{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'incoming_create'%}" role="button">Добавить приход</a></p>{% endblock %}
 
 {% block content %}
 
    
     {% if incomings %}
-    <table>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          
+          <th>Товар</th>
+          <th>колличество</th>
+          <th>Накладная</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
     {% for incoming in incomings %}
     <tr>
-    <td><a href="{% url 'incoming_update' incoming.id %}">{{ incoming.product }}</a> </td><td>{{ incoming.quantity }} шт.</td> 
-    <td>{{ incoming.source.name }}</td>
+    <td><a href="{% url 'incoming_update' incoming.id %}">{{ incoming.product }}</a> </td>
+    <td>{{ incoming.quantity }} шт.</td> 
+    <td>{{ incoming.invoice.name }}</td>
     <td>  <a href="{% url 'incoming_delete' incoming.id %}">Delete</a></td>
        
           </tr>
@@ -19,7 +35,7 @@
     <p>You don't have any incomings. </p>
     
   {% endif %}  
-  <p><a href="{% url 'incoming_create'%}?next={{request.path}}">New incoming</a></p>
+  
 
 
   

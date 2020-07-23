@@ -1,39 +1,25 @@
 {% extends "base.html" %}
-
+{% load bootstrap4 %}
+{% block title %} Добавить актив {% endblock %}
+{% block h %} Добавить актив {% endblock %}
 {% block content %}
-    <form action="" method="post">
+<form action="" method="post" class="form">
   {% csrf_token %}
-  {{form.as_p}}
   
-    <button type="submit">
-      Add asset
-    </button>
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Добавить актив
+</button>
+{% endbuttons %}
   
 </form>
 
 
 
-    <h3>assets list:</h3>
-    {% if assets %}
-    {% for asset in assets %}
-    <div>
-      <div>
-        <div>
-          <div><div><a href="{% url 'asset' asset.id %}">{{ asset.product }}</a></div></div>
-          <div><div><a href="{% url 'asset_update' asset.id %}">Edit</a> <a href="{% url 'asset_delete' asset.id %}">Delete</a></div></div>
-        </div>
-      </div>
-      
-
-     
-
-    </div>
-    
-  {% endfor %}
-  {% else %}
-    <p>You don't have any assets. </p>
-    
-  {% endif %}  
+   
   
 {% endblock %}
   

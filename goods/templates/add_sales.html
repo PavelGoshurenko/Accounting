@@ -1,13 +1,13 @@
 
 {% extends "base.html" %}
 {% load bootstrap4 %}
-{% block title %} Новая накладная {% endblock %}
-{% block h %} Новая накладная {% endblock %}
+{% block title %} Добавить продажи {% endblock %}
+{% block h %} Добавить продажи {% endblock %}
 {% block content %}
     
 
 {% load static %}
-<script type="text/javascript" src="{% static 'js/new_incoming.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/add_sales.js' %}"></script>
 
 <script type="text/javascript">
   const state = {{ js_data|safe }};
@@ -16,6 +16,8 @@
 {% endblock %}
 
 {% block context %}
+
+<div id='submit_button'></div>
 <form action="" method="get" class="form">
   {% bootstrap_form form %}
  

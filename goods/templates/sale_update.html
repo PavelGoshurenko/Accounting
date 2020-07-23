@@ -1,15 +1,20 @@
 {% extends "base.html" %}
-
+{% load bootstrap4 %}
+{% block title %} Редактировать продажу {% endblock %}
+{% block h %} Редактировать продажу {% endblock %}
 {% block content %}
     <form action="" method="post" class="form">
   {% csrf_token %}
-  {{form.as_p}}
   
-    <button type="submit">
-      Редактировать продажу
-    </button>
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Редактировать продажу
+</button>
+{% endbuttons %}
   
 </form>
   
 {% endblock %}
-  
