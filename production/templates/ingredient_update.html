@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Редактировать ингредиент {% endblock %}
+{% block h %} Редактировать ингредиент {% endblock %}
+{% block content %}
+    <form action="" method="post" class="form">
+  {% csrf_token %}
+  
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Редактировать ингредиент
+</button>
+{% endbuttons %}
+  
+</form>
+  
+{% endblock %}

@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'ingredient' ingredient.id %}">{{ ingredient.name }}</a> {{ ingredient.amount }} грн. 
+  <a href="{% url 'ingredient_update' ingredient.id %}">Edit</a> 
+    <a href="{% url 'ingredient_delete' ingredient.id %}">Delete</a></p>
+
+{% endblock %}

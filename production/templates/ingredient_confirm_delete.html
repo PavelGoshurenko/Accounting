@@ -1,0 +1,15 @@
+
+    {% extends "base.html" %}
+    {% block content %}
+
+    <h1>Удалить ингредиент</h1>
+    
+    <p>Вы действительно хотите удалить ингредиент: {{ ingredient }}?</p>
+    
+    <form action="" method="POST">
+      {% csrf_token %}
+      <input type="submit" action="" value="Yes, delete" />
+    </form>
+    
+    {% endblock %}
+  

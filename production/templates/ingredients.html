@@ -1,0 +1,52 @@
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Ингредиенты {% endblock %}
+{% block h %} Ингредиенты {% endblock %}
+
+
+
+{% block content %}
+
+   
+    {% if ingredients %}
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Цена покупки</th>
+          <th>Остаток</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for ingredient in ingredients %}
+    <tr>
+    <td><a href="{% url 'ingredient_update' ingredient.id %}">{{ ingredient.name }}</a> </td>
+    <td>{{ ingredient.purchase_price }} грн.</td> 
+    <td>{{ ingredient.quantity }} мл./шт.</td> 
+    <td>  <a href="{% url 'ingredient_delete' ingredient.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</tbody>
+</table>
+  {% else %}
+    <p>You don't have any ingredients. </p>
+    
+  {% endif %}  
+  
+    
+{% endblock %}
+
+{% block context %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'ingredient_create'%}" role="button">Добавить ингредиент</a></p>
+<form action="" method="get" class="form">
+  {% bootstrap_form filter.form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Фильтр
+    </button>
+  {% endbuttons %}
+</form>
+{% endblock %}

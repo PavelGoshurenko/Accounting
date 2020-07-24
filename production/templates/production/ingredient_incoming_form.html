@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit">
+      Add incoming
+    </button>
+  
+</form>
+
+
+
+    <h3>incomings list:</h3>
+    {% if incomings %}
+    {% for incoming in incomings %}
+    <div>
+      <div>
+        <div>
+          <div><div><a href="{% url 'ingredient_incoming' incoming.id %}">{{ incoming.ingredient }}</a></div></div>
+          <div><div><a href="{% url 'ingredient_incoming_update' incoming.id %}">Edit</a> <a href="{% url 'ingredient_incoming_delete' incoming.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any incomings. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  

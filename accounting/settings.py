@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'money',
     'goods',
+    'production',
     'django_filters',
     'bootstrap4',
 ]

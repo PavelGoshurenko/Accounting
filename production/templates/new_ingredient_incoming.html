@@ -1,0 +1,24 @@
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Новая накладная {% endblock %}
+{% block h %} Новая накладная {% endblock %}
+{% block content %}
+    
+
+{% load static %}
+<script type="text/javascript" src="{% static 'js/new_ingredient_incoming.js' %}"></script>
+
+<script type="text/javascript">
+  const state = {{ js_data|safe }};
+</script> 
+
+{% endblock %}
+
+{% block context %}
+<form action="" method="get" class="form">
+  {% bootstrap_form form %}
+ 
+</form>
+{% endblock %}
+

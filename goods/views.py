@@ -6,7 +6,6 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale
 from money.models import Department
 from django.views.generic.base import TemplateView
-from django.views.generic import TodayArchiveView
 import openpyxl
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect
@@ -99,7 +98,6 @@ class AddProductsView(TemplateView):
                     )
                 new_product.save()
             i += 1
-        context['who'] = sheet["A44"].value
         return context
 
 

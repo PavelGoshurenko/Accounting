@@ -167,6 +167,39 @@
                       Новые приходы
                     </a>
                   </li>
+
+
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'ingredients' %}">
+      <span data-feather="users"></span>
+      Ингредиенты
+    </a>
+  </li>
+  
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'ingredient_invoices' %}">
+      <span data-feather="layers"></span>
+      Накладные (Ингредиенты)
+    </a>
+  </li>
+  <li class="nav-item">
+      <a class="nav-link" href="{% url 'ingredient_incomings' %}">
+        <span data-feather="layers"></span>
+        Приходы (Ингредиенты)
+      </a>
+    </li>
+    
+    
+    
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'add_ingredients_from_file' %}">
+        <span data-feather="layers"></span>
+        Загрузить Ингредиенты с excel
+      </a>
+    </li>
+    
+    
+ 
                  
                   <li class="nav-item">
                     <a class="nav-link" href="/admin/">

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit">
+      Add invoice
+    </button>
+  
+</form>
+
+
+
+    <h3>Invoices list:</h3>
+    {% if invoices %}
+    {% for invoice in invoices %}
+    <div>
+      <div>
+        <div>
+          <div><div><a href="{% url 'ingredient_invoice' invoice.id %}">{{ invoice.name }}</a></div></div>
+          <div><div><a href="{% url 'ingredient_invoice_update' invoice.id %}">Edit</a> <a href="{% url 'ingredient_invoice_delete' invoice.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any invoices. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  
