@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="post">
+  {% csrf_token %}
+  {{form.as_p}}
+  
+    <button type="submit">
+      Add manufacturing
+    </button>
+  
+</form>
+
+
+
+    <h3>manufacturings list:</h3>
+    {% if manufacturings %}
+    {% for manufacturing in manufacturings %}
+    <div>
+      <div>
+        <div>
+          <div><div><a href="{% url 'manufacturing' manufacturing.id %}">{{ manufacturing.product }}</a></div></div>
+          <div><div><a href="{% url 'manufacturing_update' manufacturing.id %}">Edit</a> <a href="{% url 'manufacturing_delete' manufacturing.id %}">Delete</a></div></div>
+        </div>
+      </div>
+      
+
+     
+
+    </div>
+    
+  {% endfor %}
+  {% else %}
+    <p>You don't have any manufacturings. </p>
+    
+  {% endif %}  
+  
+{% endblock %}
+  

@@ -1,0 +1,9 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<p><a href="{% url 'manufacturing' manufacturing.id %}">{{ manufacturing.product.name }}</a> {{ manufacturing.quantity }} шт. 
+  <a href="{% url 'manufacturing_update' manufacturing.id %}">Edit</a> 
+    <a href="{% url 'manufacturing_delete' manufacturing.id %}">Delete</a></p>
+
+{% endblock %}

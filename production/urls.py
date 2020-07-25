@@ -44,4 +44,18 @@ urlpatterns = [
         views.IngredientIncomingDelete.as_view(),
         name='ingredient_incoming_delete'
         ),
+    # manufacturings
+    path('manufacturings/', views.ManufacturingsView.as_view(), name='manufacturings'),
+    path('<int:pk>/', views.ManufacturingView.as_view(), name='manufacturing'),
+    path('manufacturing/create/', views.ManufacturingCreate.as_view(), name='manufacturing_create'),
+    path(
+        'manufacturing/<int:pk>/update/',
+        views.ManufacturingUpdate.as_view(),
+        name='manufacturing_update'
+        ),
+    path(
+        'manufacturing/<int:pk>/delete/',
+        views.ManufacturingDelete.as_view(),
+        name='manufacturing_delete'
+        ),
 ]

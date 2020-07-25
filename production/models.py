@@ -135,7 +135,35 @@ class Proportion(models.Model):
     quantity = models.IntegerField(blank=False)
 
     def __str__(self):
-        return "В {} {} {}".format(self.product.name, self.quantity, self.ingredient.name)
+        return "В ({}) {} ({})".format(self.product.name, self.quantity, self.ingredient.name)
 
 
+class Manufacturing (models.Model):
+    product = models.ForeignKey(Product, on_delete=models.ProtectedError)
+    quantity = models.IntegerField(blank=False)
+    created_at = models.DateField(
+        null=True,
+        blank=True,
+        default=datetime.date.today(),
+        verbose_name='Создана')
 
+    def save(self, *args, **kwargs):
+        '''Переопределям save() чтобы появление / изменение прихода
+         автоматически меняло остатки'''
+        if self.id:
+            previous_manufacturing = Manufacturing.objects.get(id=self.id)
+            previous_quantity = previous_manufacturing.quantity
+            previous_product = previous_manufacturing.product
+            previous_product.quantity -= previous_quantity
+            previous_product.save()
+        related_product = Product.objects.get(id=self.product.id)  # !!!
+        related_product.quantity += self.quantity
+        related_product.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        '''Переопределяем delete для того чтобы вернуть остатки к исходным значениям'''
+        related_product = self.product
+        related_product.quantity = related_product.quantity - self.quantity
+        related_product.save()
+        super().delete(*args, **kwargs)

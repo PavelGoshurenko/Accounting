@@ -1,0 +1,41 @@
+
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} manufacturings {% endblock %}
+{% block h %} manufacturings {% endblock %}
+{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'manufacturing_create'%}" role="button">Добавить manufacturing</a></p>{% endblock %}
+
+{% block content %}
+
+   
+    {% if manufacturings %}
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          
+          <th>Товар</th>
+          <th>колличество</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for manufacturing in manufacturings %}
+    <tr>
+    <td><a href="{% url 'manufacturing_update' manufacturing.id %}">{{ manufacturing.product }}</a> </td>
+    <td>{{ manufacturing.quantity }} шт.</td> 
+    <td>  <a href="{% url 'manufacturing_delete' manufacturing.id %}">Delete</a></td>
+       
+          </tr>
+  {% endfor %}
+</table>
+  {% else %}
+    <p>You don't have any manufacturings. </p>
+    
+  {% endif %}  
+  
+
+
+  
+    
+{% endblock %}

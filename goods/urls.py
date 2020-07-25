@@ -32,8 +32,9 @@ urlpatterns = [
         views.InvoiceDelete.as_view(),
         name='invoice_delete'
         ),
+    # incomings
     path('incomings/', views.IncomingsView.as_view(), name='incomings'),
-    path('<int:pk>/', views.IncomingView.as_view(), name='incoming'),
+    path('incoming/<int:pk>/', views.IncomingView.as_view(), name='incoming'),
     path('incoming/create/', views.IncomingCreate.as_view(), name='incoming_create'),
     path(
         'incoming/<int:pk>/update/',
@@ -49,7 +50,7 @@ urlpatterns = [
     path('sales/', views.SalesView.as_view(), name='sales'),
     path('sales/today/shop', views.TodayShopSalesView.as_view(), name='today_sales_shop'),
     path('sales/today/internet', views.TodayInternetSalesView.as_view(), name='today_sales_internet'),
-    path('<int:pk>/', views.SaleView.as_view(), name='sale'),
+    path('sale/<int:pk>/', views.SaleView.as_view(), name='sale'),
     path('sale/create/', views.SaleCreate.as_view(), name='sale_create'),
     path(
         'sale/<int:pk>/update/',

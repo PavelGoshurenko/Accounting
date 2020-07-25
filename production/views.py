@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from production.models import Ingredient, IngredientIncoming, IngredientInvoice
+from production.models import Ingredient, IngredientIncoming, IngredientInvoice, Manufacturing
 from django.views.generic.base import TemplateView
 import openpyxl
 from production.filters import IngredientFilter
@@ -212,3 +212,45 @@ class IngredientIncomingUpdate(UpdateView):
 class IngredientIncomingDelete(DeleteView):
     model = IngredientIncoming
     success_url = reverse_lazy('ingredient_incomings')
+
+
+# Manufacturing views
+class ManufacturingsView(generic.ListView):
+    template_name = 'manufacturings.html'
+    context_object_name = 'manufacturings'
+
+    def get_queryset(self):
+        return Manufacturing.objects.all()
+
+
+class ManufacturingView(generic.DetailView):
+    model = Manufacturing
+    template_name = "manufacturing.html"
+
+
+class ManufacturingCreate(CreateView):
+    model = Manufacturing
+    fields = '__all__'
+    success_url = reverse_lazy('manufacturings')
+
+    def get_context_data(self, **kwargs):
+        context = super(ManufacturingCreate, self).get_context_data(**kwargs)
+        context['manufacturings'] = Manufacturing.objects.all()
+        return context
+
+
+class ManufacturingUpdate(UpdateView):
+    model = Manufacturing
+    fields = '__all__'
+    success_url = reverse_lazy('manufacturings')
+    template_name = 'manufacturing_update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ManufacturingUpdate, self).get_context_data(**kwargs)
+        context['manufacturings'] = Manufacturing.objects.all()
+        return context
+
+
+class ManufacturingDelete(DeleteView):
+    model = Manufacturing
+    success_url = reverse_lazy('manufacturings')
