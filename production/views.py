@@ -3,12 +3,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from production.models import Ingredient, IngredientIncoming, IngredientInvoice, Manufacturing
+from production.models import Ingredient, IngredientIncoming, IngredientInvoice, Manufacturing, IngredientCategory
 from django.views.generic.base import TemplateView
 import openpyxl
 from production.filters import IngredientFilter
 import json
 from django.forms import modelform_factory
+from production.forms import ManufacturingForm
 
 # Ingredient views
 
@@ -19,10 +20,15 @@ class IngredientsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        ingredients = self.get_queryset()
         context['filter'] = IngredientFilter(
             self.request.GET,
             queryset=self.get_queryset(),
         )
+        sum = 0
+        for ingredient in ingredients:
+            sum += ingredient.quantity * ingredient.purchase_price
+        context['sum'] = sum
         return context
 
     def get_queryset(self):
@@ -75,16 +81,16 @@ class AddIngredientsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('1.xlsx')
+        wb = openpyxl.load_workbook('ingredients.xlsx')
         sheet = wb.active
-        i = 3
-        while i < 2350:
-            if sheet['A{}'.format(i)].value and sheet['I{}'.format(i)].value:
+        i = 2
+        while i < 242:
+            if sheet['A{}'.format(i)].value:
                 new_ingredient = Ingredient(
                     name=sheet['A{}'.format(i)].value,
-                    purchase_price=sheet['L{}'.format(i)].value,
-                    quantity=sheet['G{}'.format(i)].value,
-                    category=None,
+                    purchase_price=sheet['C{}'.format(i)].value,
+                    quantity=sheet['D{}'.format(i)].value,
+                    category=IngredientCategory.objects.get(name=sheet['B{}'.format(i)].value),
                     )
                 new_ingredient.save()
             i += 1
@@ -230,7 +236,8 @@ class ManufacturingView(generic.DetailView):
 
 class ManufacturingCreate(CreateView):
     model = Manufacturing
-    fields = '__all__'
+    form_class = ManufacturingForm
+    # fields = '__all__'
     success_url = reverse_lazy('manufacturings')
 
     def get_context_data(self, **kwargs):

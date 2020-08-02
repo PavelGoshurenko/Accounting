@@ -3,16 +3,36 @@ from django.urls import reverse
 from datetime import datetime, date
 
 
-class Asset(models.Model):
+class Department(models.Model):
     name = models.CharField(
         max_length=200,
+        unique=True,
+        verbose_name="Отдел")
+
+    def __str__(self):
+        return self.name
+
+
+class Asset(models.Model):
+    name = models.CharField(
+        max_length=500,
         unique=True,
         verbose_name="Актив")
     amount = models.FloatField(
         verbose_name='Сумма',
         null=False, blank=False
         )
+    
+    def __str__(self):
+        return self.name
 
+
+class SpendingCategory(models.Model):
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="Категория")
+   
     def __str__(self):
         return self.name
 
@@ -22,6 +42,20 @@ class Spending(models.Model):
         max_length=200,
         unique=True,
         verbose_name="Трата")
+    category = models.ForeignKey(
+        SpendingCategory,
+        on_delete=models.ProtectedError,
+        null=True,
+        blank=True,
+        verbose_name='Категория'
+        )
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.ProtectedError,
+        null=True,
+        blank=True,
+        verbose_name='Отдел'
+        )
     amount = models.FloatField(
         verbose_name="Сумма",
         null=False, blank=False
@@ -120,11 +154,4 @@ class Transfer(models.Model):
         return reverse('transfer', args=[str(self.id)])
   
 
-class Department(models.Model):
-    name = models.CharField(
-        max_length=200,
-        unique=True,
-        verbose_name="Отдел")
 
-    def __str__(self):
-        return self.name

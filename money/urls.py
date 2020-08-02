@@ -16,6 +16,7 @@ urlpatterns = [
         views.SpendingDelete.as_view(),
         name='spending_delete'
         ),
+    path('spending/today/create', views.TodaySpendingCreate.as_view(), name='today_spending_create'),
     # assets
     path('assets/', views.AssetsView.as_view(), name='assets'),
     path('<int:pk>/', views.AssetView.as_view(), name='asset'),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('transfers/', views.TransfersView.as_view(), name='transfers'),
     path('<int:pk>/', views.TransferView.as_view(), name='transfer'),
     path('transfer/create/', views.TransferCreate.as_view(), name='transfer_create'),
+    path('transfer/pickup_create/', views.PickupCreate.as_view(), name='pickup_create'),
     path(
         'transfer/<int:pk>/update/',
         views.TransferUpdate.as_view(),

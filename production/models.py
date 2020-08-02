@@ -21,7 +21,7 @@ class Ingredient(models.Model):
         unique=True,
         verbose_name="Наименование ингредиента")
     purchase_price = models.FloatField(blank=False, null=False, verbose_name='Цена покупки')
-    quantity = models.IntegerField(
+    quantity = models.FloatField(
         blank=False,
         verbose_name='Количество',
         default=0
@@ -132,7 +132,7 @@ class IngredientIncoming(models.Model):
 class Proportion(models.Model):
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.ProtectedError)
-    quantity = models.IntegerField(blank=False)
+    quantity = models.FloatField(blank=False)
 
     def __str__(self):
         return "В ({}) {} ({})".format(self.product.name, self.quantity, self.ingredient.name)
@@ -156,9 +156,20 @@ class Manufacturing (models.Model):
             previous_product = previous_manufacturing.product
             previous_product.quantity -= previous_quantity
             previous_product.save()
+            previous_proportions = Proportion.objects.filter(product=previous_product)
+            for proportion in previous_proportions:
+                ingredient = proportion.ingredient
+                ingredient.quantity += previous_quantity * proportion.quantity
+                ingredient.save()
+            
         related_product = Product.objects.get(id=self.product.id)  # !!!
         related_product.quantity += self.quantity
         related_product.save()
+        relarted_proportions = Proportion.objects.filter(product=related_product)
+        for proportion in relarted_proportions:
+            ingredient = proportion.ingredient
+            ingredient.quantity -= self.quantity * proportion.quantity
+            ingredient.save()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -166,4 +177,9 @@ class Manufacturing (models.Model):
         related_product = self.product
         related_product.quantity = related_product.quantity - self.quantity
         related_product.save()
+        proportions = Proportion.objects.filter(product=self.product)
+        for proportion in proportions:
+            ingredient = proportion.ingredient
+            ingredient.quantity += self.quantity * proportion.quantity
+            ingredient.save()
         super().delete(*args, **kwargs)

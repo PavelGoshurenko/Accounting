@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
+from money.forms import TodaySpendingsForm, PickupForm
 
 
 # Spending views
@@ -36,6 +37,13 @@ class SpendingCreate(CreateView):
         return context
 
 
+class TodaySpendingCreate(CreateView):  
+    model = Spending
+    form_class = TodaySpendingsForm
+    success_url = reverse_lazy('today_sales_shop')
+
+
+
 class SpendingUpdate(UpdateView):
     model = Spending
     fields = '__all__'
@@ -57,6 +65,15 @@ class SpendingDelete(DeleteView):
 class AssetsView(generic.ListView):
     template_name = 'assets.html'
     context_object_name = 'assets'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        assets = self.get_queryset()
+        sum = 0
+        for asset in assets:
+            sum += asset.amount
+        context['sum'] = sum
+        return context
 
     def get_queryset(self):
         return Asset.objects.all()
@@ -124,6 +141,10 @@ class TransferCreate(CreateView):
         context['transfers'] = Transfer.objects.all()
         return context
 
+class PickupCreate(CreateView):  
+    model = Transfer
+    form_class = PickupForm
+    success_url = reverse_lazy('today_sales_shop')
 
 class TransferUpdate(UpdateView):
     model = Transfer

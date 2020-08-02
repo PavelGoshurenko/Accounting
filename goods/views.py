@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice, Sale
-from money.models import Department
+from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory
+from money.models import Department, Spending, Asset, Transfer
 from django.views.generic.base import TemplateView
 import openpyxl
 from goods.forms import AddInvoiceForm
@@ -16,6 +16,7 @@ import json
 from django.forms import modelform_factory
 import datetime
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 # Products views
 
@@ -26,10 +27,18 @@ class ProductsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        products = self.get_queryset()
         context['filter'] = ProductFilter(
             self.request.GET,
-            queryset=self.get_queryset(),
+            queryset=products,
         )
+        sale_sum = 0
+        purchase_sum = 0
+        for product in products:
+            sale_sum += product.quantity * product.shop_price
+            purchase_sum += product.quantity * product.purchase_price
+        context['sale_sum'] = sale_sum
+        context['purchase_sum'] = purchase_sum
         return context
 
     def get_queryset(self):
@@ -82,19 +91,27 @@ class AddProductsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('1.xlsx')
+        wb = openpyxl.load_workbook('products.xlsx')
         sheet = wb.active
         i = 3
         while i < 2350:
-            if sheet['A{}'.format(i)].value and sheet['I{}'.format(i)].value:
+            if sheet['A{}'.format(i)].value and sheet['C{}'.format(i)].value:
+                if sheet['F{}'.format(i)].value:
+                    category = ProductCategory.objects.get(name=sheet['F{}'.format(i)].value)
+                else:
+                    category = None
+                if sheet['G{}'.format(i)].value:
+                    brand = ProductBrand.objects.get(name=sheet['G{}'.format(i)].value)
+                else:
+                    brand = None
                 new_product = Product(
                     name=sheet['A{}'.format(i)].value,
-                    shop_price=sheet['I{}'.format(i)].value,
-                    purchase_price=sheet['L{}'.format(i)].value,
-                    internet_price=sheet['J{}'.format(i)].value,
-                    quantity=sheet['G{}'.format(i)].value,
-                    category=None,
-                    brand=None
+                    shop_price=sheet['C{}'.format(i)].value,
+                    purchase_price=sheet['E{}'.format(i)].value,
+                    internet_price=sheet['D{}'.format(i)].value,
+                    quantity=sheet['B{}'.format(i)].value,
+                    category=category,
+                    brand=brand
                     )
                 new_product.save()
             i += 1
@@ -247,6 +264,32 @@ class TodayShopSalesView(generic.ListView):
         department = Department.objects.get(name='Магазин')
         return Sale.objects.filter(date=datetime.date.today(), department=department)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sales = self.get_queryset()
+        sum = 0
+        for sale in sales:
+            sum += sale.quantity * sale.price
+        context['sum'] = sum
+        asset_name = '{} {}'.format(datetime.date.today(), "Магазин")
+        try:
+            asset = Asset.objects.get(name=asset_name)
+        except ObjectDoesNotExist:
+            return context
+        spendings = Spending.objects.filter(asset=asset)
+        context['spendings'] = spendings
+        spendings_sum = 0
+        for spending in spendings:
+            spendings_sum += spending.amount
+        context['spendings_sum'] = spendings_sum
+        pickups = Transfer.objects.filter(asset_to=asset)
+        context['transfers'] = pickups
+        pickups_sum = 0
+        for pickup in pickups:
+            pickups_sum += pickup.amount
+        context['transfers_sum'] = pickups_sum
+        return context
+
 
 class TodayInternetSalesView(generic.ListView):
     template_name = 'today_sales_internet.html'
@@ -255,6 +298,15 @@ class TodayInternetSalesView(generic.ListView):
     def get_queryset(self):
         department = Department.objects.get(name='Интернет')
         return Sale.objects.filter(date=datetime.date.today(), department=department)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sales = self.get_queryset()
+        sum = 0
+        for sale in sales:
+            sum += sale.quantity * sale.price
+        context['sum'] = sum
+        return context
 
 
 class SalesView(generic.ListView):
@@ -387,7 +439,6 @@ def add_sales_shop(request):
         date = datetime.date.today()
         department = Department.objects.get(name='Магазин')
         manager = request.user
-        # new_invoice = Invoice(name=data['name'])
         new_sales = data['sales']
         for key, value in new_sales.items():
             product = Product.objects.get(id=key)
@@ -400,6 +451,7 @@ def add_sales_shop(request):
                 product=product,
                 department=department,
                 quantity=quantity,
+                purchase_price=product.purchase_price
             )
             new_sale.save()
         return redirect(reverse_lazy('sales'))

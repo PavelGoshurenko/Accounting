@@ -37,11 +37,21 @@
 
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">gari.net.ua</a>
-        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        {% if user.is_authenticated %}
+        <div class="text-white text-uppercase">Здравствуйте, уважаемый {{ user.get_username }}</div>
+        {% else %}
+        <div class="text-white text-uppercase">Вам необходимо авторизироваться -->> </div>
+                    {% endif %}
         <ul class="navbar-nav px-3">
+          {% if user.is_authenticated %}
           <li class="nav-item text-nowrap">
-            <a class="nav-link" href="#">Sign out</a>
+            <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
           </li>
+          {% else %}
+          <li class="nav-item text-nowrap">
+            <a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Войти</a>
+          </li>
+          {% endif %}
         </ul>
       </nav>
   
@@ -126,18 +136,8 @@
                       Продажи за сегодня (Интернет)
                     </a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_products_from_file' %}">
-                      <span data-feather="layers"></span>
-                      Загрузить товары с excel
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'sales_from_file' %}">
-                      <span data-feather="layers"></span>
-                      Загрузить продажу с excel
-                    </a>
-                  </li>
+              
+                
                   
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'add_incomings' %}">

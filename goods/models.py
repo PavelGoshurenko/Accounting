@@ -17,6 +17,9 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
     
 class ProductBrand(models.Model):
     name = models.CharField(
@@ -26,6 +29,9 @@ class ProductBrand(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['name']
 
 
 class Product(models.Model):
@@ -37,10 +43,20 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     purchase_price = models.FloatField(blank=False, null=False, verbose_name='Цена покупки')
     internet_price = models.FloatField(blank=False, null=False, verbose_name='Цена интернет')
-    quantity = models.IntegerField(
+    quantity = models.FloatField(
         blank=False,
         verbose_name='Количество',
         default=0
+        )
+    min_quantity = models.IntegerField(
+        blank=True,
+        verbose_name='Минимальное Количество',
+        default=-1000
+        )
+    max_quantity = models.IntegerField(
+        blank=True,
+        verbose_name='Максимальное Количество',
+        default=-1000
         )
     category = models.ForeignKey(
         ProductCategory,
@@ -164,6 +180,7 @@ class Sale(models.Model):
         null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.ProtectedError)
     price = models.FloatField(blank=False, null=False)
+    purchase_price = models.FloatField(blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
     quantity = models.IntegerField(blank=False)
 

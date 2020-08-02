@@ -29,14 +29,16 @@
     <td>{{ product.internet_price }} грн.</td>
     <td>{{ product.purchase_price }} грн.</td> 
     <td>{{ product.quantity }} шт.</td> 
-    <td>  <a href="{% url 'product_delete' product.id %}">Delete</a></td>
+    <td>  <a href="{% url 'product_delete' product.id %}">Удалить</a></td>
        
           </tr>
   {% endfor %}
 </tbody>
 </table>
+<div>Стоимость товаров: {{ sale_sum }} грн.</div>
+<div>Закупочная cтоимость товаров: {{ purchase_sum }} грн.</div>
   {% else %}
-    <p>You don't have any products. </p>
+    <p>Товаров нет. Зайдите позже. </p>
     
   {% endif %}  
   
