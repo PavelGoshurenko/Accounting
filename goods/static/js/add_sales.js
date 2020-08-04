@@ -32,7 +32,6 @@ const submit = (e) => {
         //url: "products/invoice/new/",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
-            alert("Данные о вашей продаже успешно сохранены");
             if (window.location.pathname.substr(-4) === 'shop') {
                 window.location.href = '/products/sales/today/shop';
             }

@@ -65,4 +65,8 @@ urlpatterns = [
     path('sales_from_file/', views.sales_from_file, name="sales_from_file"),
     path('add_sales/shop', views.add_sales_shop, name="add_sales_shop"),
     path('add_sales/internet', views.add_sales_internet, name="add_sales_internet"),
+    # inventory
+    path('add_inventories', views.add_inventories, name="add_inventories"),
+    path('inventories', views.inventories, name='inventories'),
+    path('confirm_inventories', views.confirm_inventories, name='confirm_inventories'),
 ]

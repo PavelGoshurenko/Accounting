@@ -3,7 +3,10 @@
 {% load bootstrap4 %}
 {% block title %} Трансферы {% endblock %}
 {% block h %} Трансферы {% endblock %}
-{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'transfer_create'%}" role="button">Добавить Трансфер</a></p>{% endblock %}
+{% block context %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'transfer_create'%}" role="button">Добавить Трансфер</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'terminal_create'%}" role="button">Добавить Терминал</a></p>
+{% endblock %}
 
 {% block content %}
 
@@ -33,30 +36,6 @@
     
   {% endif %}  
   
-<h2>Активы</h2>
 
-  {% if assets %}
-  <table class="table table-striped table-sm">
-    <thead>
-      <tr>
-        <th>Наименование</th>
-        <th>Сумма</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-  {% for asset in assets %}
-  <tr>
-  <td><a href="{% url 'asset_update' asset.id %}">{{ asset.name }}</a> </td><td>{{ asset.amount }} грн.</td> 
-  <td>  <a href="{% url 'asset_delete' asset.id %}">Delete</a></td>
-     
-        </tr>
-{% endfor %}
-</tbody>
-</table>
-{% else %}
-  <p>You don't have any assets. </p>
-  
-{% endif %}  
     
 {% endblock %}

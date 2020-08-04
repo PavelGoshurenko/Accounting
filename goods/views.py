@@ -3,20 +3,21 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory
+from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory
 from money.models import Department, Spending, Asset, Transfer
 from django.views.generic.base import TemplateView
 import openpyxl
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect
 from django.forms.models import modelformset_factory
-from goods.forms import SalesFromFileForm
+from goods.forms import SalesFromFileForm, InventoryForm
 from goods.filters import SaleFilter, ProductFilter
 import json
 from django.forms import modelform_factory
 import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django import forms
 
 # Products views
 
@@ -268,6 +269,7 @@ class TodayShopSalesView(generic.ListView):
         context = super().get_context_data(**kwargs)
         sales = self.get_queryset()
         sum = 0
+        final_sum = sum
         for sale in sales:
             sum += sale.quantity * sale.price
         context['sum'] = sum
@@ -288,6 +290,8 @@ class TodayShopSalesView(generic.ListView):
         for pickup in pickups:
             pickups_sum += pickup.amount
         context['transfers_sum'] = pickups_sum
+        final_sum = sum - spendings_sum + pickups_sum
+        context['final_sum'] = final_sum
         return context
 
 
@@ -517,3 +521,77 @@ def add_sales_internet(request):
         )
         context = {'js_data': js_data, 'form': filter_form}
         return render(request, 'add_sales.html', context)
+
+
+# inventories views
+def add_inventories(request):
+    if request.method == 'POST':
+        data = json.loads(request.POST['request'])
+        date = datetime.date.today()
+        new_inventories = data['inventories']
+        for key, value in new_inventories.items():
+            product = Product.objects.get(id=key)
+            new_inventory = Inventory(
+                date=date,
+                product=product,
+                supposed_quantity=product.quantity,
+            )
+            new_inventory.save()
+        return redirect(reverse_lazy('sales'))
+        
+    else:
+        products = {}
+        for product in Product.objects.all():
+            products[str(product.id)] = {
+                'name': product.name,
+                'added': False,
+                'brand': product.brand.id if product.brand else None,
+                'category': product.category.id if product.category else None,
+                }
+        js_data = json.dumps(products)
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'js_data': js_data, 'form': filter_form}
+        return render(request, 'add_inventories.html', context)
+
+
+def inventories(request):
+    InventoryFormSet = modelformset_factory(
+        Inventory,
+        form=InventoryForm,
+        fields=('product', 'supposed_quantity', 'fact_quantity'),
+        extra=0,
+    )
+    if request.method == 'POST':
+        formset = InventoryFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('products')
+    else:
+        formset = InventoryFormSet(
+            queryset=Inventory.objects.filter(confirmed=False)
+        )
+    context = {'formset': formset}
+    return render(request, 'inventories.html', context)
+
+
+def confirm_inventories(request):
+    inventories = Inventory.objects.filter(confirmed=False)
+    for inventory in inventories:
+        shortage = inventory.supposed_quantity - inventory.fact_quantity
+        product = inventory.product
+        sale = Sale(
+            manager=User.objects.get(username='fisher'),
+            department=Department.objects.get(name='Офис'),
+            price=product.internet_price,
+            purchase_price=product.purchase_price,
+            product=product,
+            quantity=shortage
+        )
+        sale.save()
+        inventory.confirmed = True
+        inventory.save()
+    return redirect('inventories')
+    

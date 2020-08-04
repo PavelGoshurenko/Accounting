@@ -62,3 +62,17 @@ class PickupForm (forms.ModelForm):
         labels = {
             'name': 'Примечание',
         }
+
+class TerminalForm (forms.ModelForm):
+    asset_to = forms.ModelChoiceField(
+        initial=Asset.objects.get(name="Терминал"),
+        disabled=True,
+        queryset=Asset.objects.all(),
+    )
+
+    class Meta:
+        model = Transfer
+        fields = ('amount', 'name', 'asset_from', 'asset_to')
+        labels = {
+            'name': 'Примечание',
+        }

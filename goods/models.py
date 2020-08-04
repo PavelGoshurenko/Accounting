@@ -182,7 +182,10 @@ class Sale(models.Model):
     price = models.FloatField(blank=False, null=False)
     purchase_price = models.FloatField(blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
-    quantity = models.IntegerField(blank=False)
+    quantity = models.FloatField(blank=False)
+
+    def cost(self):
+        return self.price * self.quantity
 
     def save(self, *args, **kwargs):
         if self.id:
@@ -220,3 +223,16 @@ class Sale(models.Model):
 
     def __str__(self):
         return "{} s{}".format(self.department.name, self.date)
+
+
+class Inventory(models.Model):
+    date = models.DateField(
+        null=True,
+        blank=True,
+        default=datetime.date.today()
+    )
+    product = models.ForeignKey(Product, on_delete=models.ProtectedError)
+    supposed_quantity = models.FloatField(blank=False)
+    fact_quantity = models.FloatField(blank=False, default=0)
+    confirmed = models.BooleanField(blank=False, default=False)
+    

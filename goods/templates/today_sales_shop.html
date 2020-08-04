@@ -22,6 +22,7 @@
           <th>Наименование</th>
           <th>Количество</th>
           <th>Цена</th>
+           <th>Стоимость</th>
           <th>Отдел</th>
           <th>Дата</th>
           <th>Менеджер</th>
@@ -34,6 +35,7 @@
     <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td>
     <td>{{ sale.quantity }} шт.</td> 
     <td>{{ sale.price }} грн.</td>
+    <td> {{ sale.cost }} грн.</td>
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>
     <td>{{ sale.manager }}</td>
@@ -43,7 +45,7 @@
   {% endfor %}
   </tbody>
 </table>
-<div>Стоимость продаж: {{ sum }} грн.</div>
+<div class="text-right">Стоимость продаж: {{ sum }} грн.</div>
   {% else %}
     <p>Еще ничего не продано :-(</p>
     
@@ -74,7 +76,7 @@
 {% endfor %}
 </tbody>
 </table>
-<div>Стоимость растрат: {{ spendings_sum }} грн.</div>
+<div class="text-right">Стоимость растрат: {{ spendings_sum }} грн.</div>
 {% endif %}  
 
 {% if transfers %}
@@ -98,7 +100,8 @@
 {% endfor %}
 </tbody>
 </table>
-<div>Стоимость самовывозов: {{ transfers_sum }} грн.</div>
+<div class="text-right">Стоимость самовывозов: {{ transfers_sum }} грн.</div>
+<div class="text-right">Остаток в кассе: {{ final_sum }} грн.</div>
 
 {% endif %}  
 

@@ -36,6 +36,7 @@ urlpatterns = [
     path('<int:pk>/', views.TransferView.as_view(), name='transfer'),
     path('transfer/create/', views.TransferCreate.as_view(), name='transfer_create'),
     path('transfer/pickup_create/', views.PickupCreate.as_view(), name='pickup_create'),
+    path('transfer/terminal_create/', views.TerminalCreate.as_view(), name='terminal_create'),
     path(
         'transfer/<int:pk>/update/',
         views.TransferUpdate.as_view(),

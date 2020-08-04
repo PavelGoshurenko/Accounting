@@ -30,7 +30,7 @@ const submit = (e) => {
         type: "POST",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
-            alert("Данные успешно отправлены на сервер");
+            alert("и тут у нас нет редиреректа ");
         }
     });
 };

@@ -10,6 +10,8 @@
 
    
     {% if products %}
+    <div></div>Стоимость товаров: {{ sale_sum }} грн.</div>
+    <div>Закупочная cтоимость товаров: {{ purchase_sum }} грн.</div>
     <table class="table table-striped table-sm">
       <thead>
         <tr>
@@ -35,8 +37,7 @@
   {% endfor %}
 </tbody>
 </table>
-<div>Стоимость товаров: {{ sale_sum }} грн.</div>
-<div>Закупочная cтоимость товаров: {{ purchase_sum }} грн.</div>
+
   {% else %}
     <p>Товаров нет. Зайдите позже. </p>
     

@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from money.models import Spending, Asset, Transfer
+from money.models import Spending, Asset, Transfer, SpendingCategory, Department
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
-from money.forms import TodaySpendingsForm, PickupForm
+from money.forms import TodaySpendingsForm, PickupForm, TerminalForm
+from django.core.exceptions import ObjectDoesNotExist
+import datetime
 
 
 # Spending views
@@ -145,6 +147,32 @@ class PickupCreate(CreateView):
     model = Transfer
     form_class = PickupForm
     success_url = reverse_lazy('today_sales_shop')
+
+class TerminalCreate(CreateView):
+    model = Transfer
+    form_class = TerminalForm
+    success_url = reverse_lazy('transfers')
+
+    def form_valid(self, form):
+        parameters = self.request.POST
+        amount = float(parameters['amount'])
+        spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B'))
+        try:
+            spending = Spending.objects.get(name=spending_name)
+        except ObjectDoesNotExist:
+            asset = Asset.objects.get(name='Терминал')
+            category = SpendingCategory.objects.get(name='Затраты')
+            department = Department.objects.get(name='Магазин')
+            spending = Spending(
+                name=spending_name,
+                amount=0,
+                asset=asset,
+                department=department,
+                category=category
+            )
+        spending.amount += round((amount * 0.02), 2)
+        spending.save()
+        return super().form_valid(form)
 
 class TransferUpdate(UpdateView):
     model = Transfer
