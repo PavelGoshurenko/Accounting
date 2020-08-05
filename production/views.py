@@ -10,11 +10,13 @@ from production.filters import IngredientFilter
 import json
 from django.forms import modelform_factory
 from production.forms import ManufacturingForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Ingredient views
 
 
-class IngredientsView(generic.ListView):
+class IngredientsView(LoginRequiredMixin, generic.ListView):
     template_name = 'ingredients.html'
     context_object_name = 'ingredients'
 
@@ -42,12 +44,12 @@ class IngredientsView(generic.ListView):
         return Ingredient.objects.all()
 
 
-class IngredientView(generic.DetailView):
+class IngredientView(LoginRequiredMixin, generic.DetailView):
     model = Ingredient
     template_name = "ingredient.html"
 
 
-class IngredientCreate(CreateView):
+class IngredientCreate(LoginRequiredMixin, CreateView):
     model = Ingredient
     fields = '__all__'
     success_url = reverse_lazy('ingredients')
@@ -58,7 +60,7 @@ class IngredientCreate(CreateView):
         return context
 
 
-class IngredientUpdate(UpdateView):
+class IngredientUpdate(LoginRequiredMixin, UpdateView):
     model = Ingredient
     fields = '__all__'
     success_url = reverse_lazy('ingredients')
@@ -70,12 +72,12 @@ class IngredientUpdate(UpdateView):
         return context
 
 
-class IngredientDelete(DeleteView):
+class IngredientDelete(LoginRequiredMixin, DeleteView):
     model = Ingredient
     success_url = reverse_lazy('ingredients')
 
 
-class AddIngredientsView(TemplateView):
+class AddIngredientsView(LoginRequiredMixin, TemplateView):
 
     template_name = "add_ingredients.html"
 
@@ -98,7 +100,7 @@ class AddIngredientsView(TemplateView):
 
 
 # invoices views
-
+@login_required
 def new_ingredient_invoice(request):
     if request.method == 'POST':
         data = json.loads(request.POST['request'])
@@ -136,7 +138,7 @@ def new_ingredient_invoice(request):
         return render(request, 'new_ingredient_incoming.html', context)
 
 
-class IngredientInvoicesView(generic.ListView):
+class IngredientInvoicesView(LoginRequiredMixin, generic.ListView):
     template_name = 'ingredient_invoices.html'
     context_object_name = 'invoices'
 
@@ -144,12 +146,12 @@ class IngredientInvoicesView(generic.ListView):
         return IngredientInvoice.objects.all()
 
 
-class IngredientInvoiceView(generic.DetailView):
+class IngredientInvoiceView(LoginRequiredMixin, generic.DetailView):
     model = IngredientInvoice
     template_name = "ingredient_invoice.html"
 
 
-class IngredientInvoiceCreate(CreateView):
+class IngredientInvoiceCreate(LoginRequiredMixin, CreateView):
     model = IngredientInvoice
     fields = '__all__'
     success_url = reverse_lazy('ingredient_invoices')
@@ -160,7 +162,7 @@ class IngredientInvoiceCreate(CreateView):
         return context
 
 
-class IngredientInvoiceUpdate(UpdateView):
+class IngredientInvoiceUpdate(LoginRequiredMixin, UpdateView):
     model = IngredientInvoice
     fields = '__all__'
     success_url = reverse_lazy('ingredient_invoices')
@@ -173,13 +175,13 @@ class IngredientInvoiceUpdate(UpdateView):
         return context
 
 
-class IngredientInvoiceDelete(DeleteView):
+class IngredientInvoiceDelete(LoginRequiredMixin, DeleteView):
     model = IngredientInvoice
     success_url = reverse_lazy('ingredient_invoices')
 
 
 # Incomings views
-class IngredientIncomingsView(generic.ListView):
+class IngredientIncomingsView(LoginRequiredMixin, generic.ListView):
     template_name = 'ingredient_incomings.html'
     context_object_name = 'incomings'
 
@@ -187,12 +189,12 @@ class IngredientIncomingsView(generic.ListView):
         return IngredientIncoming.objects.all()
 
 
-class IngredientIncomingView(generic.DetailView):
+class IngredientIncomingView(LoginRequiredMixin, generic.DetailView):
     model = IngredientIncoming
     template_name = "ingredient_incoming.html"
 
 
-class IngredientIncomingCreate(CreateView):
+class IngredientIncomingCreate(LoginRequiredMixin, CreateView):
     model = IngredientIncoming
     fields = '__all__'
     success_url = reverse_lazy('ingredient_incomings')
@@ -203,7 +205,7 @@ class IngredientIncomingCreate(CreateView):
         return context
 
 
-class IngredientIncomingUpdate(UpdateView):
+class IngredientIncomingUpdate(LoginRequiredMixin, UpdateView):
     model = IngredientIncoming
     fields = '__all__'
     success_url = reverse_lazy('ingredient_incomings')
@@ -215,13 +217,13 @@ class IngredientIncomingUpdate(UpdateView):
         return context
 
 
-class IngredientIncomingDelete(DeleteView):
+class IngredientIncomingDelete(LoginRequiredMixin, DeleteView):
     model = IngredientIncoming
     success_url = reverse_lazy('ingredient_incomings')
 
 
 # Manufacturing views
-class ManufacturingsView(generic.ListView):
+class ManufacturingsView(LoginRequiredMixin, generic.ListView):
     template_name = 'manufacturings.html'
     context_object_name = 'manufacturings'
 
@@ -229,12 +231,12 @@ class ManufacturingsView(generic.ListView):
         return Manufacturing.objects.all()
 
 
-class ManufacturingView(generic.DetailView):
+class ManufacturingView(LoginRequiredMixin, generic.DetailView):
     model = Manufacturing
     template_name = "manufacturing.html"
 
 
-class ManufacturingCreate(CreateView):
+class ManufacturingCreate(LoginRequiredMixin, CreateView):
     model = Manufacturing
     form_class = ManufacturingForm
     # fields = '__all__'
@@ -246,7 +248,7 @@ class ManufacturingCreate(CreateView):
         return context
 
 
-class ManufacturingUpdate(UpdateView):
+class ManufacturingUpdate(LoginRequiredMixin, UpdateView):
     model = Manufacturing
     fields = '__all__'
     success_url = reverse_lazy('manufacturings')
@@ -258,6 +260,6 @@ class ManufacturingUpdate(UpdateView):
         return context
 
 
-class ManufacturingDelete(DeleteView):
+class ManufacturingDelete(LoginRequiredMixin, DeleteView):
     model = Manufacturing
     success_url = reverse_lazy('manufacturings')

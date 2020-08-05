@@ -38,7 +38,7 @@
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">gari.net.ua</a>
         {% if user.is_authenticated %}
-        <div class="text-white text-uppercase">Здравствуйте, уважаемый {{ user.get_username }}</div>
+        <div class="text-white text-uppercase">Здравствуйте, уважаемый {{ user.get_username }} </div>
         {% else %}
         <div class="text-white text-uppercase">Вам необходимо авторизироваться -->> </div>
                     {% endif %}
@@ -74,130 +74,170 @@
 
 
               <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link active" href="/">
-                    <span data-feather="home"></span>
-                    Главная <span class="sr-only">(current)</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'spendings' %}">
-                    <span data-feather="file"></span>
-                    Траты
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'assets' %}">
-                    <span data-feather="bar-chart-2"></span>
-                    Активы
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'transfers' %}">
-                    <span data-feather="file"></span>
-                    Трансферы
-                  </a>
-                </li>
                 
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'products' %}">
-                    <span data-feather="users"></span>
-                    Товары
-                  </a>
-                </li>
-                
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'invoices' %}">
-                    <span data-feather="layers"></span>
-                    Накладные
-                  </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'incomings' %}">
-                      <span data-feather="layers"></span>
-                      Приходы
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'sales' %}">
-                      <span data-feather="layers"></span>
-                      Продажи
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'today_sales_shop' %}">
-                      <span data-feather="layers"></span>
-                      Продажи за сегодня (Магазин)
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'today_sales_internet' %}">
-                      <span data-feather="layers"></span>
-                      Продажи за сегодня (Интернет)
-                    </a>
-                  </li>
-              
-                
-                  
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_incomings' %}">
-                      <span data-feather="layers"></span>
-                      Новые приходы
-                    </a>
-                  </li>
+{% if user.is_staff %}
+<li class="nav-item">
+  <a class="nav-link active" href="/">
+    <span data-feather="home"></span>
+    Главная <span class="sr-only">(current)</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'spendings' %}">
+    <span data-feather="file"></span>
+    Траты
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'assets' %}">
+    <span data-feather="bar-chart-2"></span>
+    Активы
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'transfers' %}">
+    <span data-feather="file"></span>
+    Трансферы
+  </a>
+</li>
 
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'products' %}">
+    <span data-feather="users"></span>
+    Товары
+  </a>
+</li>
 
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'ingredients' %}">
-      <span data-feather="users"></span>
-      Ингредиенты
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'invoices' %}">
+    <span data-feather="layers"></span>
+    Накладные
+  </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'incomings' %}">
+      <span data-feather="layers"></span>
+      Приходы
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'sales' %}">
+      <span data-feather="layers"></span>
+      Продажи
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'today_sales_shop' %}">
+      <span data-feather="layers"></span>
+      Продажи за сегодня (Магазин)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'today_sales_internet' %}">
+      <span data-feather="layers"></span>
+      Продажи за сегодня (Интернет)
+    </a>
+  </li>
+
+
   
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'ingredient_invoices' %}">
+    <a class="nav-link" href="{% url 'add_incomings' %}">
       <span data-feather="layers"></span>
-      Накладные (Ингредиенты)
+      Новые приходы
+    </a>
+  </li>
+
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'ingredients' %}">
+<span data-feather="users"></span>
+Ингредиенты
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'ingredient_invoices' %}">
+<span data-feather="layers"></span>
+Накладные (Ингредиенты)
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'ingredient_incomings' %}">
+<span data-feather="layers"></span>
+Приходы (Ингредиенты)
+</a>
+</li>
+
+
+
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'manufacturings' %}">
+<span data-feather="layers"></span>
+Manufacturings
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'add_inventories' %}">
+<span data-feather="layers"></span>
+Добавить переучет
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'inventories' %}">
+<span data-feather="layers"></span>
+Переучет
+</a>
+</li>
+
+
+
+ 
+  <li class="nav-item">
+    <a class="nav-link" href="/admin/">
+      <span data-feather="shopping-cart"></span>
+      Админка
+    </a>
+  </li>
+  {% else %}
+
+  <li class="nav-item">
+    <a class="nav-link active" href="/">
+      <span data-feather="home"></span>
+      Главная <span class="sr-only">(current)</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'products' %}">
+      <span data-feather="users"></span>
+      Товары
     </a>
   </li>
   <li class="nav-item">
-      <a class="nav-link" href="{% url 'ingredient_incomings' %}">
-        <span data-feather="layers"></span>
-        Приходы (Ингредиенты)
-      </a>
+    <a class="nav-link" href="{% url 'today_sales_shop' %}">
+      <span data-feather="layers"></span>
+      Продажи за сегодня (Магазин)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'today_sales_internet' %}">
+      <span data-feather="layers"></span>
+      Продажи за сегодня (Интернет)
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'inventories' %}">
+    <span data-feather="layers"></span>
+    Переучет
+    </a>
     </li>
-    
-    
-    
- 
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'manufacturings' %}">
-        <span data-feather="layers"></span>
-        Manufacturings
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'add_inventories' %}">
-        <span data-feather="layers"></span>
-        Добавить переучет
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'inventories' %}">
-        <span data-feather="layers"></span>
-        Переучет
-      </a>
-    </li>
-    
-    
- 
-                 
-                  <li class="nav-item">
-                    <a class="nav-link" href="/admin/">
-                      <span data-feather="shopping-cart"></span>
-                      Админка
-                    </a>
-                  </li>
+
+{% endif %}
+
+
+
               </ul>
   
               
@@ -209,13 +249,9 @@
               <h1 class="h2">{% block h %}переопредели меня{% endblock %}</h1>
               <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group mr-2">
-                  <button class="btn btn-sm btn-outline-secondary">Share</button>
-                  <button class="btn btn-sm btn-outline-secondary">Export</button>
+                  
                 </div>
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                  <span data-feather="calendar"></span>
-                  This week
-                </button>
+               
               </div>
             </div>
   

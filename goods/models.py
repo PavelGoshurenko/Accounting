@@ -219,6 +219,7 @@ class Sale(models.Model):
         asset_name = '{} {}'.format(self.date, self.department.name)
         asset_to_change = Asset.objects.get(name=asset_name)
         asset_to_change.amount -= self.price * self.quantity
+        asset_to_change.save()
         super().delete(*args, **kwargs)
 
     def __str__(self):
@@ -235,4 +236,10 @@ class Inventory(models.Model):
     supposed_quantity = models.FloatField(blank=False)
     fact_quantity = models.FloatField(blank=False, default=0)
     confirmed = models.BooleanField(blank=False, default=False)
+
+    def shortage(self):
+        return self.supposed_quantity - self.fact_quantity
+
+    def cost(self):
+        return self.shortage * self.product.internet_price
     

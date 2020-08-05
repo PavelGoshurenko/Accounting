@@ -32,14 +32,21 @@
       <tbody>
     {% for sale in sales %}
     <tr>
-    <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td>
+    <td>
+      {% if user.is_staff %}
+ <a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a>
+  {% else %}
+  {{ sale.product }}
+{% endif %}
+     
+     </td>
     <td>{{ sale.quantity }} шт.</td> 
     <td>{{ sale.price }} грн.</td>
     <td> {{ sale.cost }} грн.</td>
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>
     <td>{{ sale.manager }}</td>
-    <td>  <a href="{% url 'sale_delete' sale.id %}">Delete</a></td>
+    <td>  <a href="{% url 'sale_delete' sale.id %}">Удалить</a></td>
        
           </tr>
   {% endfor %}
@@ -66,11 +73,17 @@
     <tbody>
   {% for spending in spendings %}
   <tr>
-  <td><a href="{% url 'spending_update' spending.id %}">{{ spending.name }}</a> </td>
+  <td>
+    {% if user.is_staff %}
+<a href="{% url 'spending_update' spending.id %}">{{ spending.name }}</a> </td>
+  {% else %}
+  {{ spending.name }}
+{% endif %}
+    
   <td>{{ spending.created_at |date:"SHORT_DATE_FORMAT" }}</td>
   <td>{{ spending.amount }} грн.</td> 
   <td>{{ spending.asset.name }}</td>
-  <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
+  <td>  <a href="{% url 'spending_delete' spending.id %}">Удалить</a></td>
      
         </tr>
 {% endfor %}
@@ -92,19 +105,25 @@
   <tbody>
 {% for transfer in transfers %}
 <tr>
-<td><a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> </td>
+<td>
+  {% if user.is_staff %}
+<a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> 
+  {% else %}
+  {{ transfer.name }}
+{% endif %}
+  </td>
 <td>{{ transfer.amount }}  грн.</td> 
-<td>  <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></td>
+<td>  <a href="{% url 'transfer_delete' transfer.id %}">Удалить</a></td>
    
       </tr>
 {% endfor %}
 </tbody>
 </table>
-<div class="text-right">Стоимость самовывозов: {{ transfers_sum }} грн.</div>
-<div class="text-right">Остаток в кассе: {{ final_sum }} грн.</div>
 
+<div class="text-right">Стоимость самовывозов: {{ transfers_sum }} грн.</div>
 {% endif %}  
 
+<div class="text-right">Остаток в кассе: {{ final_sum }} грн.</div>
 
   
     

@@ -1,14 +1,16 @@
 
-    {% extends "base.html" %}
+      {% extends "base.html" %}
+      {% load bootstrap4 %}
+      {% block title %} Удалить трату {% endblock %}
+      {% block h %} Удалить трату {% endblock %}
     {% block content %}
 
-    <h1>Delete Task</h1>
     
-    <p>Are you sure you want to delete the spending: {{ spending }}?</p>
+    <p>Вы действительно хотите удалить растрату: {{ spending }}?</p>
     
     <form action="" method="POST">
       {% csrf_token %}
-      <input type="submit" action="" class="btn btn-primary" value="Yes, delete" />
+      <input type="submit" action="" class="btn btn-primary" value="Удалить" />
     </form>
     
     {% endblock %}

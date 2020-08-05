@@ -28,13 +28,17 @@
       <tbody>
     {% for sale in sales %}
     <tr>
-    <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td>
+    <td>  {% if user.is_staff %}
+      <a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a>
+       {% else %}
+       {{ sale.product }}
+     {% endif %}</td>
     <td>{{ sale.quantity }} шт.</td> 
     <td>{{ sale.price }} грн.</td>
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>
     <td>{{ sale.manager }}</td>
-    <td>  <a href="{% url 'sale_delete' sale.id %}">Delete</a></td>
+    <td>  <a href="{% url 'sale_delete' sale.id %}">Удалить</a></td>
        
           </tr>
   {% endfor %}

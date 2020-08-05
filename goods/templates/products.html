@@ -26,12 +26,26 @@
       <tbody>
     {% for product in products %}
     <tr>
-    <td><a href="{% url 'product_update' product.id %}">{{ product.name }}</a> </td>
+    <td>
+      {% if user.is_staff %}
+ <a href="{% url 'product_update' product.id %}">{{ product.name }}</a> 
+  {% else %}
+  {{ product.name }}
+{% endif %}
+     
+    </td>
     <td>{{ product.shop_price }} грн.</td>
     <td>{{ product.internet_price }} грн.</td>
     <td>{{ product.purchase_price }} грн.</td> 
     <td>{{ product.quantity }} шт.</td> 
-    <td>  <a href="{% url 'product_delete' product.id %}">Удалить</a></td>
+    <td> 
+      {% if user.is_staff %}
+<a href="{% url 'product_delete' product.id %}">Удалить</a>
+
+{% endif %}
+       
+      
+      </td>
        
           </tr>
   {% endfor %}

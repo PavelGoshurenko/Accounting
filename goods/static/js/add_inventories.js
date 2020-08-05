@@ -29,7 +29,7 @@ const submit = (e) => {
         type: "POST",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
-            window.location.href = '/products/sales/today/shop';
+            window.location.href = '/products/inventories';
             
         }
     });

@@ -1,8 +1,11 @@
 
-    {% extends "base.html" %}
+      {% extends "base.html" %}
+      {% load bootstrap4 %}
+      {% block title %} Удалить товар {% endblock %}
+      {% block h %} Удалить товар {% endblock %}
     {% block content %}
 
-    <h1>Delete Task</h1>
+    
     
     <p>Are you sure you want to delete the product: {{ product }}?</p>
     

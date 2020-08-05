@@ -1,5 +1,8 @@
+
 {% extends "base.html" %}
 {% load bootstrap4 %}
+{% block title %} Страница авторизации {% endblock %}
+{% block h %} Страница авторизации {% endblock %}
 {% block content %}
 
     {% if form.errors %}
@@ -11,7 +14,7 @@
         <p>Your account doesn't have access to this page. To proceed,
         please login with an account that has access.</p>
       {% else %}
-        <p>Please login to see this page.</p>
+        <p>Пожалуйста, введите логин и пароль</p>
       {% endif %}
     {% endif %}
     
@@ -19,7 +22,7 @@
     {% csrf_token %}
     {% bootstrap_form form %}
      {% buttons %}
-    <input type="submit" value="login" class="btn btn-primary" />
+    <input type="submit" value="Войти" class="btn btn-primary" />
     <input type="hidden" name="next" value="{{ next }}" />
     {% endbuttons %}
     </form>

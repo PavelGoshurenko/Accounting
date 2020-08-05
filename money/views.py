@@ -7,10 +7,12 @@ from django.http import HttpResponseRedirect, HttpResponse
 from money.forms import TodaySpendingsForm, PickupForm, TerminalForm
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Spending views
-class SpendingsView(generic.ListView):
+class SpendingsView(LoginRequiredMixin, generic.ListView):
     template_name = 'spendings.html'
     context_object_name = 'spendings'
 
@@ -23,12 +25,12 @@ class SpendingsView(generic.ListView):
         return Spending.objects.all()
 
 
-class SpendingView(generic.DetailView):
+class SpendingView(LoginRequiredMixin, generic.DetailView):
     model = Spending
     template_name = "spending.html"
 
 
-class SpendingCreate(CreateView):
+class SpendingCreate(LoginRequiredMixin, CreateView):
     model = Spending
     fields = '__all__'
     success_url = reverse_lazy('spendings')
@@ -39,14 +41,14 @@ class SpendingCreate(CreateView):
         return context
 
 
-class TodaySpendingCreate(CreateView):  
+class TodaySpendingCreate(LoginRequiredMixin, CreateView):  
     model = Spending
     form_class = TodaySpendingsForm
     success_url = reverse_lazy('today_sales_shop')
 
 
 
-class SpendingUpdate(UpdateView):
+class SpendingUpdate(LoginRequiredMixin, UpdateView):
     model = Spending
     fields = '__all__'
     success_url = reverse_lazy('spendings')
@@ -58,13 +60,13 @@ class SpendingUpdate(UpdateView):
         return context
 
 
-class SpendingDelete(DeleteView):
+class SpendingDelete(LoginRequiredMixin, DeleteView):
     model = Spending
     success_url = reverse_lazy('spendings')
 
 
 # Assets views
-class AssetsView(generic.ListView):
+class AssetsView(LoginRequiredMixin, generic.ListView):
     template_name = 'assets.html'
     context_object_name = 'assets'
 
@@ -81,12 +83,12 @@ class AssetsView(generic.ListView):
         return Asset.objects.all()
 
 
-class AssetView(generic.DetailView):
+class AssetView(LoginRequiredMixin, generic.DetailView):
     model = Asset
     template_name = "asset.html"
 
 
-class AssetCreate(CreateView):
+class AssetCreate(LoginRequiredMixin, CreateView):
     model = Asset
     fields = '__all__'
     success_url = reverse_lazy('assets')
@@ -97,7 +99,7 @@ class AssetCreate(CreateView):
         return context
 
 
-class AssetUpdate(UpdateView):
+class AssetUpdate(LoginRequiredMixin, UpdateView):
     model = Asset
     fields = '__all__'
     success_url = reverse_lazy('assets')
@@ -109,13 +111,13 @@ class AssetUpdate(UpdateView):
         return context
 
 
-class AssetDelete(DeleteView):
+class AssetDelete(LoginRequiredMixin, DeleteView):
     model = Asset
     success_url = reverse_lazy('assets')
 
 
 # Transfers views
-class TransfersView(generic.ListView):
+class TransfersView(LoginRequiredMixin, generic.ListView):
     template_name = 'transfers.html'
     context_object_name = 'transfers'
 
@@ -128,12 +130,12 @@ class TransfersView(generic.ListView):
         return Transfer.objects.all()
 
 
-class TransferView(generic.DetailView):
+class TransferView(LoginRequiredMixin, generic.DetailView):
     model = Transfer
     template_name = "transfer.html"
 
 
-class TransferCreate(CreateView):
+class TransferCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     fields = '__all__'
     success_url = reverse_lazy('transfers')
@@ -143,12 +145,12 @@ class TransferCreate(CreateView):
         context['transfers'] = Transfer.objects.all()
         return context
 
-class PickupCreate(CreateView):  
+class PickupCreate(LoginRequiredMixin, CreateView):  
     model = Transfer
     form_class = PickupForm
     success_url = reverse_lazy('today_sales_shop')
 
-class TerminalCreate(CreateView):
+class TerminalCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     form_class = TerminalForm
     success_url = reverse_lazy('transfers')
@@ -174,7 +176,7 @@ class TerminalCreate(CreateView):
         spending.save()
         return super().form_valid(form)
 
-class TransferUpdate(UpdateView):
+class TransferUpdate(LoginRequiredMixin, UpdateView):
     model = Transfer
     fields = '__all__'
     success_url = reverse_lazy('transfers')
@@ -186,6 +188,6 @@ class TransferUpdate(UpdateView):
         return context
 
 
-class TransferDelete(DeleteView):
+class TransferDelete(LoginRequiredMixin, DeleteView):
     model = Transfer
     success_url = reverse_lazy('transfers')

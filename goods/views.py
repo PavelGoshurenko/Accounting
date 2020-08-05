@@ -18,11 +18,13 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django import forms
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Products views
 
 
-class ProductsView(generic.ListView):
+class ProductsView(LoginRequiredMixin, generic.ListView):
     template_name = 'products.html'
     context_object_name = 'products'
 
@@ -53,12 +55,12 @@ class ProductsView(generic.ListView):
         return Product.objects.all()
 
 
-class ProductView(generic.DetailView):
+class ProductView(LoginRequiredMixin, generic.DetailView):
     model = Product
     template_name = "product.html"
 
 
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
     fields = '__all__'
     success_url = reverse_lazy('products')
@@ -69,7 +71,7 @@ class ProductCreate(CreateView):
         return context
 
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(LoginRequiredMixin, UpdateView):
     model = Product
     fields = '__all__'
     success_url = reverse_lazy('products')
@@ -81,12 +83,12 @@ class ProductUpdate(UpdateView):
         return context
 
 
-class ProductDelete(DeleteView):
+class ProductDelete(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('products')
 
 
-class AddProductsView(TemplateView):
+class AddProductsView(LoginRequiredMixin, TemplateView):
 
     template_name = "add_products.html"
 
@@ -121,6 +123,8 @@ class AddProductsView(TemplateView):
 
 # invoices views
 
+
+@login_required
 def new_invoice(request):
     if request.method == 'POST':
         data = json.loads(request.POST['request'])
@@ -159,7 +163,7 @@ def new_invoice(request):
         return render(request, 'new_incoming.html', context)
 
 
-class InvoicesView(generic.ListView):
+class InvoicesView(LoginRequiredMixin, generic.ListView):
     template_name = 'invoices.html'
     context_object_name = 'invoices'
 
@@ -167,12 +171,12 @@ class InvoicesView(generic.ListView):
         return Invoice.objects.all()
 
 
-class InvoiceView(generic.DetailView):
+class InvoiceView(LoginRequiredMixin, generic.DetailView):
     model = Invoice
     template_name = "invoice.html"
 
 
-class InvoiceCreate(CreateView):
+class InvoiceCreate(LoginRequiredMixin, CreateView):
     model = Invoice
     fields = '__all__'
     success_url = reverse_lazy('invoices')
@@ -183,7 +187,7 @@ class InvoiceCreate(CreateView):
         return context
 
 
-class InvoiceUpdate(UpdateView):
+class InvoiceUpdate(LoginRequiredMixin, UpdateView):
     model = Invoice
     fields = '__all__'
     success_url = reverse_lazy('invoices')
@@ -192,16 +196,22 @@ class InvoiceUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(InvoiceUpdate, self).get_context_data(**kwargs)
         invoice = self.get_object()
-        context['incomings'] = invoice.incoming_set.all()
+        incomings = invoice.incoming_set.all()
+        context['incomings'] = incomings
+        sum = 0
+        for incoming in incomings:
+            sum += incoming.quantity * incoming.purchase_price
+        context['sum'] = sum
         return context
 
-
-class InvoiceDelete(DeleteView):
+ 
+class InvoiceDelete(LoginRequiredMixin, DeleteView):
     model = Invoice
     success_url = reverse_lazy('invoices')
 
 
 # Incomings views
+@login_required
 def add_incomings(request):
     IncomingFormSet = modelformset_factory(Incoming, exclude=('id',), extra=10)
     if request.method == 'POST':
@@ -214,7 +224,7 @@ def add_incomings(request):
     return render(request, 'add_incomings.html', {'formset': formset})
 
 
-class IncomingsView(generic.ListView):
+class IncomingsView(LoginRequiredMixin, generic.ListView):
     template_name = 'incomings.html'
     context_object_name = 'incomings'
 
@@ -222,13 +232,13 @@ class IncomingsView(generic.ListView):
         return Incoming.objects.all()
 
 
-class IncomingView(generic.DetailView):
+class IncomingView(LoginRequiredMixin, generic.DetailView):
     model = Incoming
     template_name = "incoming.html"
 
 
 
-class IncomingCreate(CreateView):
+class IncomingCreate(LoginRequiredMixin, CreateView):
     model = Incoming
     fields = '__all__'
     success_url = reverse_lazy('incomings')
@@ -239,7 +249,7 @@ class IncomingCreate(CreateView):
         return context
 
 
-class IncomingUpdate(UpdateView):
+class IncomingUpdate(LoginRequiredMixin, UpdateView):
     model = Incoming
     fields = '__all__'
     success_url = reverse_lazy('incomings')
@@ -251,13 +261,13 @@ class IncomingUpdate(UpdateView):
         return context
 
 
-class IncomingDelete(DeleteView):
+class IncomingDelete(LoginRequiredMixin, DeleteView):
     model = Incoming
     success_url = reverse_lazy('incomings')
 
 
 # Sales views
-class TodayShopSalesView(generic.ListView):
+class TodayShopSalesView(LoginRequiredMixin, generic.ListView):
     template_name = 'today_sales_shop.html'
     context_object_name = 'sales'
 
@@ -295,7 +305,7 @@ class TodayShopSalesView(generic.ListView):
         return context
 
 
-class TodayInternetSalesView(generic.ListView):
+class TodayInternetSalesView(LoginRequiredMixin, generic.ListView):
     template_name = 'today_sales_internet.html'
     context_object_name = 'sales'
 
@@ -313,7 +323,7 @@ class TodayInternetSalesView(generic.ListView):
         return context
 
 
-class SalesView(generic.ListView):
+class SalesView(LoginRequiredMixin, generic.ListView):
     template_name = 'sales.html'
     context_object_name = 'sales'
 
@@ -341,12 +351,12 @@ class SalesView(generic.ListView):
         return Sale.objects.all()
 
 
-class SaleView(generic.DetailView):
+class SaleView(LoginRequiredMixin, generic.DetailView):
     model = Sale
     template_name = "sale.html"
 
 
-class SaleCreate(CreateView):
+class SaleCreate(LoginRequiredMixin, CreateView):
     model = Sale
     fields = '__all__'
     success_url = reverse_lazy('sales')
@@ -357,7 +367,7 @@ class SaleCreate(CreateView):
         return context
 
 
-class SaleUpdate(UpdateView):
+class SaleUpdate(LoginRequiredMixin, UpdateView):
     model = Sale
     fields = '__all__'
     success_url = reverse_lazy('sales')
@@ -369,7 +379,7 @@ class SaleUpdate(UpdateView):
         return context
 
 
-class SaleDelete(DeleteView):
+class SaleDelete(LoginRequiredMixin, DeleteView):
     model = Sale
     success_url = reverse_lazy('sales')
 
@@ -397,6 +407,7 @@ def get_sales_from_file():
     return (sales, cost)
 
 
+@login_required
 def sales_from_file(request):
     # Если данный запрос типа POST, тогда
     if request.method == 'POST':
@@ -437,6 +448,7 @@ def sales_from_file(request):
         )
 
 
+@login_required
 def add_sales_shop(request):
     if request.method == 'POST':
         data = json.loads(request.POST['request'])
@@ -480,6 +492,7 @@ def add_sales_shop(request):
         return render(request, 'add_sales.html', context)
 
 
+@login_required
 def add_sales_internet(request):
     if request.method == 'POST':
         data = json.loads(request.POST['request'])
@@ -524,6 +537,7 @@ def add_sales_internet(request):
 
 
 # inventories views
+@login_required
 def add_inventories(request):
     if request.method == 'POST':
         data = json.loads(request.POST['request'])
@@ -557,11 +571,11 @@ def add_inventories(request):
         return render(request, 'add_inventories.html', context)
 
 
+@login_required
 def inventories(request):
     InventoryFormSet = modelformset_factory(
         Inventory,
         form=InventoryForm,
-        fields=('product', 'supposed_quantity', 'fact_quantity'),
         extra=0,
     )
     if request.method == 'POST':
@@ -577,21 +591,22 @@ def inventories(request):
     return render(request, 'inventories.html', context)
 
 
+@login_required
 def confirm_inventories(request):
     inventories = Inventory.objects.filter(confirmed=False)
     for inventory in inventories:
         shortage = inventory.supposed_quantity - inventory.fact_quantity
-        product = inventory.product
-        sale = Sale(
-            manager=User.objects.get(username='fisher'),
-            department=Department.objects.get(name='Офис'),
-            price=product.internet_price,
-            purchase_price=product.purchase_price,
-            product=product,
-            quantity=shortage
-        )
-        sale.save()
+        if shortage:
+            product = inventory.product
+            sale = Sale(
+                manager=User.objects.get(username='fisher'),
+                department=Department.objects.get(name='Офис'),
+                price=product.internet_price,
+                purchase_price=product.purchase_price,
+                product=product,
+                quantity=shortage
+            )
+            sale.save()
         inventory.confirmed = True
         inventory.save()
     return redirect('inventories')
-    

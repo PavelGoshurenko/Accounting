@@ -23,7 +23,8 @@
     <tr>
       
       <th>Товар</th>
-      <th>колличество</th>
+      <th>Колличество</th>
+      <th>Цена покупки</th>
       <th>Накладная</th>
       <th></th>
     </tr>
@@ -33,12 +34,14 @@
 <tr>
 <td><a href="{% url 'incoming_update' incoming.id %}">{{ incoming.product }}</a> </td>
 <td>{{ incoming.quantity }} шт.</td> 
+<td>{{ incoming.purchase_price }} грн.</td> 
 <td>{{ incoming.invoice.name }}</td>
 <td>  <a href="{% url 'incoming_delete' incoming.id %}">Delete</a></td>
    
       </tr>
 {% endfor %}
 </table>
+<div class="text-right">Стоиммость закупки: {{ sum }} грн.</div>
 {% else %}
 <p>You don't have any incomings. </p>
 

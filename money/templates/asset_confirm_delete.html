@@ -1,8 +1,10 @@
 
-    {% extends "base.html" %}
+      {% extends "base.html" %}
+      {% load bootstrap4 %}
+      {% block title %} Удалить актив {% endblock %}
+      {% block h %} Удалить актив {% endblock %}
     {% block content %}
 
-    <h1>Delete Task</h1>
     
     <p>Are you sure you want to delete the asset: {{ asset }}?</p>
     
