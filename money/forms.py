@@ -27,7 +27,7 @@ class TodaySpendingsForm (forms.ModelForm):
         widget=forms.HiddenInput,
         )
     asset = forms.ModelChoiceField(
-        # initial=get_asset("Магазин"),
+        initial=get_asset("Магазин"),
         queryset=Asset.objects.all(),
         disabled=True,
         label='Источник',
@@ -62,6 +62,7 @@ class PickupForm (forms.ModelForm):
         labels = {
             'name': 'Примечание',
         }
+
 
 class TerminalForm (forms.ModelForm):
     asset_to = forms.ModelChoiceField(
