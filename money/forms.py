@@ -65,7 +65,7 @@ class PickupForm (forms.ModelForm):
 
 class TerminalForm (forms.ModelForm):
     asset_to = forms.ModelChoiceField(
-        # initial=Asset.objects.get(name="Терминал"),
+        # initial=Asset.objects.get(name="Терминал"),**************
         disabled=True,
         queryset=Asset.objects.all(),
     )
