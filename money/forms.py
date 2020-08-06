@@ -20,7 +20,7 @@ def get_asset(department):
 
 class TodaySpendingsForm (forms.ModelForm):
     category = forms.ModelChoiceField(
-        # initial=SpendingCategory.objects.get(name='Не отсортированные'),
+        initial=SpendingCategory.objects.get(name='Не отсортированные'),
         queryset=SpendingCategory.objects.all(),
         disabled=True,
         label='Категория',
@@ -42,14 +42,14 @@ class TodaySpendingsForm (forms.ModelForm):
 
 class PickupForm (forms.ModelForm):
     asset_from = forms.ModelChoiceField(
-        # initial=get_asset('Интернет'),
+        initial=get_asset('Интернет'),
         disabled=True,
         queryset=Asset.objects.all(),
         label='Из кассы:',
         widget=forms.HiddenInput,
     )
     asset_to = forms.ModelChoiceField(
-        # initial=get_asset('Магазин'),
+        initial=get_asset('Магазин'),
         disabled=True,
         queryset=Asset.objects.all(),
         label='В кассу:',
@@ -65,7 +65,7 @@ class PickupForm (forms.ModelForm):
 
 class TerminalForm (forms.ModelForm):
     asset_to = forms.ModelChoiceField(
-        # initial=Asset.objects.get(name="Терминал"),**************
+        initial=Asset.objects.get(name="Терминал"),
         disabled=True,
         queryset=Asset.objects.all(),
     )
