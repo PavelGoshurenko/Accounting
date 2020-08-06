@@ -3,6 +3,7 @@ from django.urls import reverse
 import datetime
 from money.models import Asset
 from goods.models import Product
+from django.utils import timezone
 
 
 class IngredientCategory(models.Model):
@@ -59,7 +60,7 @@ class IngredientInvoice(models.Model):
     created_at = models.DateField(
         null=True,
         blank=True,
-        default=datetime.date.today(),
+        default=timezone.now,
         verbose_name='Создана'
     )
     paid = models.FloatField(
@@ -144,7 +145,7 @@ class Manufacturing (models.Model):
     created_at = models.DateField(
         null=True,
         blank=True,
-        default=datetime.date.today(),
+        default=timezone.now,
         verbose_name='Создана')
 
     def save(self, *args, **kwargs):

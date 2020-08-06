@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 import datetime
 from money.models import Asset
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 
 class ProductCategory(models.Model):
@@ -98,7 +99,7 @@ class Invoice(models.Model):
     created_at = models.DateField(
         null=True,
         blank=True,
-        default=datetime.date.today(),
+        default=timezone.now,
         verbose_name='Создана'
     )
     paid = models.FloatField(
@@ -172,7 +173,7 @@ class Sale(models.Model):
     date = models.DateField(
         null=True,
         blank=True,
-        default=datetime.date.today()
+        default=timezone.now
     )
     manager = models.ForeignKey(
         User,
@@ -230,7 +231,7 @@ class Inventory(models.Model):
     date = models.DateField(
         null=True,
         blank=True,
-        default=datetime.date.today()
+        default=timezone.now
     )
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
     supposed_quantity = models.FloatField(blank=False)
