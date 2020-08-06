@@ -4,7 +4,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory
-from money.models import Department, Spending, Asset, Transfer
+from money.models import Department, Spending, Asset, Transfer, SpendingCategory
 from django.views.generic.base import TemplateView
 import openpyxl
 from goods.forms import AddInvoiceForm
@@ -291,6 +291,8 @@ class TodayShopSalesView(LoginRequiredMixin, generic.ListView):
         except ObjectDoesNotExist:
             return context
         spendings = Spending.objects.filter(asset=asset)
+        category = SpendingCategory.objects.get(name='Не отсортированные')
+        spendings = spendings.filter(category=category)
         context['spendings'] = spendings
         spendings_sum = 0
         for spending in spendings:
