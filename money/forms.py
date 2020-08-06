@@ -20,7 +20,7 @@ def get_asset(department):
 
 class TodaySpendingsForm (forms.ModelForm):
     category = forms.ModelChoiceField(
-        initial=SpendingCategory.objects.get(name='Не отсортированные'),
+        # initial=SpendingCategory.objects.get(name='Не отсортированные'),
         queryset=SpendingCategory.objects.all(),
         disabled=True,
         label='Категория',
