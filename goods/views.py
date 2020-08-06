@@ -20,6 +20,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounting.settings import BASE_DIR
+import os
 
 # Products views
 
@@ -94,7 +96,7 @@ class AddProductsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('/good/static/xlsx/products.xlsx')
+        wb = openpyxl.load_workbook(os.path.join(BASE_DIR, 'goods/static/xlsx/products.xlsx'))
         sheet = wb.active
         i = 3
         while i < 2350:

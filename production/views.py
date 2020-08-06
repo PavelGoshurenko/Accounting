@@ -12,6 +12,8 @@ from django.forms import modelform_factory
 from production.forms import ManufacturingForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounting.settings import BASE_DIR
+import os
 
 # Ingredient views
 
@@ -83,7 +85,7 @@ class AddIngredientsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('/good/static/xlsx/ingredients.xlsx')
+        wb = openpyxl.load_workbook(os.path.join(BASE_DIR, 'goods/static/xlsx/ingredients.xlsx'))
         sheet = wb.active
         i = 2
         while i < 242:
