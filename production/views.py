@@ -83,7 +83,7 @@ class AddIngredientsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('good/static/xlsx/ingredients.xlsx')
+        wb = openpyxl.load_workbook('/good/static/xlsx/ingredients.xlsx')
         sheet = wb.active
         i = 2
         while i < 242:

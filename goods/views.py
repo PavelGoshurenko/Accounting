@@ -94,7 +94,7 @@ class AddProductsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook('good/static/xlsx/products.xlsx')
+        wb = openpyxl.load_workbook('/good/static/xlsx/products.xlsx')
         sheet = wb.active
         i = 3
         while i < 2350:
