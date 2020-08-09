@@ -80,7 +80,7 @@ class AssetsView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self):
-        return Asset.objects.all()
+        return Asset.objects.filter(is_active=True)
 
 
 class AssetView(LoginRequiredMixin, generic.DetailView):
@@ -123,7 +123,7 @@ class TransfersView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assets'] = Asset.objects.all()
+        context['assets'] = Asset.objects.filter(is_active=True)
         return context
 
     def get_queryset(self):
