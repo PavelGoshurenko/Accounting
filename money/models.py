@@ -22,6 +22,12 @@ class Asset(models.Model):
         verbose_name='Сумма',
         null=False, blank=False
         )
+    is_active = models.BooleanField(
+        null=True,
+        blank=True,
+        default=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     
     def __str__(self):
         return '{} ({})'.format(self.name, self.amount)
