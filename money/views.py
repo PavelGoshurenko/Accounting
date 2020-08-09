@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
-from money.forms import TodaySpendingsForm, PickupForm, TerminalForm
+from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -137,7 +137,7 @@ class TransferView(LoginRequiredMixin, generic.DetailView):
 
 class TransferCreate(LoginRequiredMixin, CreateView):
     model = Transfer
-    fields = '__all__'
+    form_class = TransferForm
     success_url = reverse_lazy('transfers')
 
     def get_context_data(self, **kwargs):
@@ -145,10 +145,12 @@ class TransferCreate(LoginRequiredMixin, CreateView):
         context['transfers'] = Transfer.objects.all()
         return context
 
+
 class PickupCreate(LoginRequiredMixin, CreateView):  
     model = Transfer
     form_class = PickupForm
     success_url = reverse_lazy('today_sales_shop')
+
 
 class TerminalCreate(LoginRequiredMixin, CreateView):
     model = Transfer

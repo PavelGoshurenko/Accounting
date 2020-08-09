@@ -32,6 +32,9 @@ class Asset(models.Model):
     def __str__(self):
         return '{} ({})'.format(self.name, self.amount)
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class SpendingCategory(models.Model):
     name = models.CharField(
