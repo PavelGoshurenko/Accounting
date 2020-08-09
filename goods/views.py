@@ -598,6 +598,7 @@ def inventories(request):
 @login_required
 def confirm_inventories(request):
     inventories = Inventory.objects.filter(confirmed=False)
+    date = datetime.date.today()
     for inventory in inventories:
         shortage = inventory.supposed_quantity - inventory.fact_quantity
         if shortage:
@@ -608,7 +609,8 @@ def confirm_inventories(request):
                 price=product.internet_price,
                 purchase_price=product.purchase_price,
                 product=product,
-                quantity=shortage
+                quantity=shortage,
+                date=date
             )
             sale.save()
         inventory.confirmed = True

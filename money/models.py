@@ -24,7 +24,7 @@ class Asset(models.Model):
         )
     
     def __str__(self):
-        return self.name
+        return '{} ({})'.format(self.name, self.amount)
 
 
 class SpendingCategory(models.Model):
