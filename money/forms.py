@@ -65,12 +65,17 @@ class PickupForm (forms.ModelForm):
 
 
 class TerminalForm (forms.ModelForm):
+    asset_from = forms.ModelChoiceField(
+        queryset=Asset.objects.filter(is_active=True),
+        label='Откуда:'
+    )
     asset_to = forms.ModelChoiceField(
         initial=Asset.objects.get(name="Терминал"),
         disabled=True,
         queryset=Asset.objects.filter(is_active=True),
+        label='Куда:'
     )
-
+    
     class Meta:
         model = Transfer
         fields = ('amount', 'name', 'asset_from', 'asset_to')
