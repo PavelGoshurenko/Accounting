@@ -129,8 +129,19 @@ class Incoming(models.Model):
             previous_product = previous_incoming.product
             previous_product.quantity -= previous_quantity
             previous_product.save()
+            previous_invoice_name = previous_incoming.invoice.name
+            previous_asset = Asset.objects.get(name=previous_invoice_name)
+            previous_asset.amount += previous_quantity * previous_incoming.purchase_price
+            previous_asset.save()
         related_product = Product.objects.get(id=self.product.id)  # !!!
         related_product.quantity += self.quantity
+        related_invoice_name = self.invoice.name
+        try:
+            asset_to_change = Asset.objects.get(name=related_invoice_name)
+        except ObjectDoesNotExist:
+            asset_to_change = Asset(name=related_invoice_name, amount=0)
+        asset_to_change.amount -= self.quantity * self.purchase_price
+        asset_to_change.save()
         related_product.save()
         super().save(*args, **kwargs)
 
@@ -139,6 +150,9 @@ class Incoming(models.Model):
         related_product = self.product
         related_product.quantity = related_product.quantity - self.quantity
         related_product.save()
+        asset_to_change = Asset.objects.get(name=self.invoice.name)
+        asset_to_change.amount += self.quantity * self.purchase_price
+        asset_to_change.save()
         super().delete(*args, **kwargs)
 
 
