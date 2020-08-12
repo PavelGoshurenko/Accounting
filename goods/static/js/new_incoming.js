@@ -32,7 +32,7 @@ const submit = (e) => {
         //url: "products/invoice/new/",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
-            alert("а тут у нас нет редиректа");
+            window.location.href = '/products/invoices/';
         }
     });
 };

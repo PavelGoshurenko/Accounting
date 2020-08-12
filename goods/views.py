@@ -125,7 +125,6 @@ class AddProductsView(LoginRequiredMixin, TemplateView):
 
 # invoices views
 
-
 @login_required
 def new_invoice(request):
     if request.method == 'POST':
@@ -237,7 +236,6 @@ class IncomingsView(LoginRequiredMixin, generic.ListView):
 class IncomingView(LoginRequiredMixin, generic.DetailView):
     model = Incoming
     template_name = "incoming.html"
-
 
 
 class IncomingCreate(LoginRequiredMixin, CreateView):
@@ -386,6 +384,12 @@ class SaleUpdate(LoginRequiredMixin, UpdateView):
 class SaleDelete(LoginRequiredMixin, DeleteView):
     model = Sale
     success_url = reverse_lazy('sales')
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_staff:
+            return reverse_lazy('sales')
+        return reverse_lazy('products')
 
 
 def get_sales_from_file():

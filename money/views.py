@@ -62,7 +62,12 @@ class SpendingUpdate(LoginRequiredMixin, UpdateView):
 
 class SpendingDelete(LoginRequiredMixin, DeleteView):
     model = Spending
-    success_url = reverse_lazy('spendings')
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_staff:
+            return reverse_lazy('spendings')
+        return reverse_lazy('today_sales_shop')
 
 
 # Assets views
@@ -192,4 +197,9 @@ class TransferUpdate(LoginRequiredMixin, UpdateView):
 
 class TransferDelete(LoginRequiredMixin, DeleteView):
     model = Transfer
-    success_url = reverse_lazy('transfers')
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_staff:
+            return reverse_lazy('transfers')
+        return reverse_lazy('today_sales_shop')

@@ -94,7 +94,7 @@ class Product(models.Model):
 class Invoice(models.Model):
     name = models.CharField(
         max_length=200,
-        unique=False,
+        unique=True,
         verbose_name='Накладная')
     created_at = models.DateField(
         null=True,
@@ -102,40 +102,13 @@ class Invoice(models.Model):
         default=timezone.now,
         verbose_name='Создана'
     )
-    paid = models.FloatField(
-        verbose_name='Оплачено',
-        blank=True,
-        null=True,
-        default=0)
-    asset = models.ForeignKey(
-        Asset,
-        on_delete=models.ProtectedError,
-        blank=True,
-        null=True,
-        verbose_name='Источник')
 
-    def save(self, *args, **kwargs):
-        '''Переопределям save() чтобы появление / изменение оплаты
-         автоматически меняло остатки источника'''
-        if self.id:
-            previous_invoice = Invoice.objects.get(id=self.id)
-            previous_paid = previous_invoice.paid
-            previous_asset = previous_invoice.asset
-            if previous_asset:
-                previous_asset.amount += previous_paid
-                previous_asset.save()
-        if self.asset:
-            related_asset = Asset.objects.get(id=self.asset.id)  # !!!
-            related_asset.amount -= self.paid
-            related_asset.save()
-        super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
-        if self.asset:
-            self.asset.amount += self.paid
-            self.asset.save()
-        super().delete(*args, **kwargs)
+    def cost(self):
+        incomings = self.incoming_set.all()
+        sum = 0
+        for incoming in incomings:
+            sum += incoming.quantity * incoming.purchase_price
+        return sum
 
     def __str__(self):
         return self.name
