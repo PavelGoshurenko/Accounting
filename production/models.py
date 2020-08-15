@@ -4,6 +4,7 @@ import datetime
 from money.models import Asset
 from goods.models import Product
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class IngredientCategory(models.Model):
@@ -156,31 +157,57 @@ class Manufacturing (models.Model):
             previous_quantity = previous_manufacturing.quantity
             previous_product = previous_manufacturing.product
             previous_product.quantity -= previous_quantity
+            asset_name = "Разлив {}".format(datetime.date.today().strftime('%B'))
+            asset = Asset.objects.get(name=asset_name)
+            product_cost = previous_product.purchase_price * previous_quantity
             previous_product.save()
+            ingredients_cost = 0
             previous_proportions = Proportion.objects.filter(product=previous_product)
             for proportion in previous_proportions:
                 ingredient = proportion.ingredient
                 ingredient.quantity += previous_quantity * proportion.quantity
+                ingredients_cost += previous_quantity * proportion.quantity * ingredient.purchase_price
                 ingredient.save()
-            
+            asset.amount = asset.amount + product_cost - ingredients_cost
+            asset.save()
         related_product = Product.objects.get(id=self.product.id)  # !!!
+        asset_name = "Разлив {}".format(datetime.date.today().strftime('%B'))
+        try:
+            asset = Asset.objects.get(name=asset_name)
+        except ObjectDoesNotExist:
+            asset = Asset(
+                name=asset_name,
+                amount=0,
+            )
+        product_cost = related_product.purchase_price * self.quantity
         related_product.quantity += self.quantity
         related_product.save()
+        ingredients_cost = 0
         relarted_proportions = Proportion.objects.filter(product=related_product)
         for proportion in relarted_proportions:
             ingredient = proportion.ingredient
             ingredient.quantity -= self.quantity * proportion.quantity
+            ingredients_cost += self.quantity * proportion.quantity * ingredient.purchase_price
             ingredient.save()
+        asset.amount = asset.amount - product_cost + ingredients_cost
+        asset.save() 
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         '''Переопределяем delete для того чтобы вернуть остатки к исходным значениям'''
         related_product = self.product
+        asset_name = "Разлив {}".format(datetime.date.today().strftime('%B'))
+        asset = Asset.objects.get(name=asset_name)
+        product_cost = related_product.purchase_price * self.quantity
         related_product.quantity = related_product.quantity - self.quantity
         related_product.save()
+        ingredients_cost = 0
         proportions = Proportion.objects.filter(product=self.product)
         for proportion in proportions:
             ingredient = proportion.ingredient
             ingredient.quantity += self.quantity * proportion.quantity
+            ingredients_cost += self.quantity * proportion.quantity * ingredient.purchase_price
             ingredient.save()
+        asset.amount = asset.amount + product_cost - ingredients_cost
+        asset.save()
         super().delete(*args, **kwargs)

@@ -93,7 +93,7 @@ class Product(models.Model):
         
 class Invoice(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=500,
         unique=True,
         verbose_name='Накладная')
     created_at = models.DateField(
