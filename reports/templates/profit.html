@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Прибыль {% endblock %}
+{% block h %} Прибыль {% endblock %}
+{% block content %}
+
+    <h1>Прибыль по продажам</h1>
+    
+    <div>Маржа: {{ margin }} грн.</div>
+    <div>Затраты: {{ spendings_amount }} грн.</div>
+    <div><b>Прибыль: {{ sales_profit }} грн.</b></div>
+
+    <h1>Прибыль по активам</h1>
+    <div>Активы: {{ assets_amount }} грн.</div>
+    <div>Товар: {{ product_cost }} грн.</div>
+    <div>Ингредиенты: {{ ingredient_cost }} грн.</div>
+    <div>Фонды: {{ funds }} грн.</div>
+    <div>Наушники: {{ electronics }} грн.</div>
+    <div>Стоимость фирмы: {{ company_cost }} грн.</div>
+    <div>Начальная стоимость фирмы: {{ start_company_cost }} грн.</div>
+    <div><b>Прибыль: {{ assets_profit }} грн.</b></div>
+    
+    {% endblock %}
+  

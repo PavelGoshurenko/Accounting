@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'goods',
     'production',
     'django_filters',
+    'reports',
     'bootstrap4',
 ]
 
