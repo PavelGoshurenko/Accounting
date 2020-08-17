@@ -520,6 +520,7 @@ def add_sales_internet(request):
                 product=product,
                 department=department,
                 quantity=quantity,
+                purchase_price=product.purchase_price,
             )
             new_sale.save()
         return redirect(reverse_lazy('sales'))
