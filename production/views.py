@@ -232,6 +232,18 @@ class ManufacturingsView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Manufacturing.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super(ManufacturingsView, self).get_context_data(**kwargs)
+        manufacturings = Manufacturing.objects.all()
+        purchase_sum = 0
+        sale_sum = 0
+        for manufacturing in manufacturings:
+            purchase_sum += manufacturing.product.purchase_price * manufacturing.quantity
+            sale_sum += manufacturing.product.shop_price * manufacturing.quantity
+        context['sale_sum'] = sale_sum
+        context['purchase_sum'] = purchase_sum
+        return context
+
 
 class ManufacturingView(LoginRequiredMixin, generic.DetailView):
     model = Manufacturing
