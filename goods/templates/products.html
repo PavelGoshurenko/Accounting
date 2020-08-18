@@ -20,6 +20,8 @@
           <th>Цена интернет</th>
           <th>Цена покупки</th>
           <th>Остаток</th>
+          <th>Категоря</th>
+          <th>Бренд</th>
           <th></th>
         </tr>
       </thead>
@@ -38,8 +40,9 @@
     <td>{{ product.internet_price }} грн.</td>
     <td>{{ product.purchase_price }} грн.</td> 
     <td>{{ product.quantity }} шт.</td> 
-    <td> 
-      {% if user.is_staff %}
+    <td>{{ product.category }}</td>
+    <td>{{ product.brand }}</td>
+      <td>{% if user.is_staff %}
 <a href="{% url 'product_delete' product.id %}">Удалить</a>
 
 {% endif %}
