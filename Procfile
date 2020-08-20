@@ -1,1 +1,1 @@
-web: gunicorn accounting.wsgi
+web: gunicorn accounting.wsgi --timeout 15 --keep-alive 5 --log-level debug
