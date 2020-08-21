@@ -18,6 +18,10 @@ def get_asset(department):
     return asset
 
 
+def get_name():
+    return 'terminal {}'.format(datetime.date.today())
+
+
 class TodaySpendingsForm (forms.ModelForm):
     category = forms.ModelChoiceField(
         initial=SpendingCategory.objects.get(name='Не отсортированные'),
@@ -75,6 +79,10 @@ class TerminalForm (forms.ModelForm):
         queryset=Asset.objects.filter(is_active=True),
         label='Куда:'
     )
+    name = forms.CharField(
+        label='Примечание:',
+        initial=get_name()
+    )
     
     class Meta:
         model = Transfer
@@ -93,7 +101,8 @@ class TransferForm (forms.ModelForm):
         queryset=Asset.objects.filter(is_active=True),
         label='В актив:'
     )
-
+    
     class Meta:
         model = Transfer
         fields = ('amount', 'name', 'asset_from', 'asset_to')
+

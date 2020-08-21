@@ -17,6 +17,7 @@ function getCookie(name) {
 
 const submit = (e) => {
     e.preventDefault();
+    $(e.target).attr('disabled', 'disabled');
     const name = $('#invoiceName').val();
     const sendData = {};
     sendData['name'] = name;

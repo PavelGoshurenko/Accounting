@@ -18,6 +18,7 @@ function getCookie(name) {
 
 const submit = (e) => {
     e.preventDefault();
+    $(e.target).attr('disabled', 'disabled');
     const sendData = {};
     const inventories = {};
     Object.keys(state).filter((key) => (state[key].added )).forEach((key) => {
