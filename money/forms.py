@@ -37,11 +37,21 @@ class TodaySpendingsForm (forms.ModelForm):
         label='Источник',
         widget=forms.HiddenInput,
     )
-    # а не поломается ли сейл если при первой продаже уже будет ассет
     
     class Meta:
         model = Spending
         fields = ('name', 'amount', 'category', 'asset')
+
+
+class SpendingsForm (forms.ModelForm):
+    asset = forms.ModelChoiceField(
+        queryset=Asset.objects.filter(is_active=True),
+        label='Источник',
+    )
+    
+    class Meta:
+        model = Spending
+        fields = ('name', 'department', 'amount', 'category', 'asset', 'created_at')
 
 
 class PickupForm (forms.ModelForm):

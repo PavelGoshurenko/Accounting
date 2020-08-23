@@ -42,6 +42,7 @@
 {% endfor %}
 </table>
 <div class="text-right">Стоиммость закупки: {{ sum }} грн.</div>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_invoice' invoice.id %}" role="button">Скачать {{ invoice.name }}.xlsx</a></p>
 {% else %}
 <p>You don't have any incomings. </p>
 

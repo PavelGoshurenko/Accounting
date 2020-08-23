@@ -32,6 +32,7 @@ urlpatterns = [
         views.InvoiceDelete.as_view(),
         name='invoice_delete'
         ),
+    path('invoice/<int:pk>/download/', views.download_invoice, name='download_invoice'),
     # incomings
     path('incomings/', views.IncomingsView.as_view(), name='incomings'),
     path('incoming/<int:pk>/', views.IncomingView.as_view(), name='incoming'),

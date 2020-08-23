@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
-from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm
+from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm, SpendingsForm
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -32,7 +32,7 @@ class SpendingView(LoginRequiredMixin, generic.DetailView):
 
 class SpendingCreate(LoginRequiredMixin, CreateView):
     model = Spending
-    fields = '__all__'
+    form_class = SpendingsForm
     success_url = reverse_lazy('spendings')
 
     def get_context_data(self, **kwargs):
