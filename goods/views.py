@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounting.settings import BASE_DIR
 import os
-import mimetypes
+from utilities.download import download
 
 # Products views
 
@@ -214,40 +214,25 @@ class InvoiceDelete(LoginRequiredMixin, DeleteView):
 
 @login_required
 def download_invoice(request, pk):
-    data = []
+    data = [[
+        'Товар',
+        'Количество',
+        'Цена интернет',
+        'Цена магазин',
+    ]]
     invoice = Invoice.objects.get(id=pk)
     incomings = invoice.incoming_set.all()
     for incoming in incomings:
         row = [
             incoming.product.name,
             incoming.quantity,
+            incoming.product.internet_price,
+            incoming.product.shop_price,
         ]
         data.append(row)
-    # создаем новый excel-файл
-    wb = openpyxl.Workbook()
-    # добавляем новый лист
-    wb.create_sheet(title='Первый лист', index=0)
-    # получаем лист, с которым будем работать
-    sheet = wb['Первый лист']
-    for row_index, row in enumerate(data):
-        for col_index, col in enumerate(row):
-            value = str(col)
-            cell = sheet.cell(row=(row_index + 1), column=(col_index+1))
-            cell.value = value
     excel_file_name = '{}.xlsx'.format(pk)
-    wb.save(excel_file_name)
-    fp = open(excel_file_name, "rb")
-    response = HttpResponse(fp.read())
-    fp.close()
-    file_type = mimetypes.guess_type(excel_file_name)
-    if file_type is None:
-        file_type = 'application/octet-stream'
-    response['Content-Type'] = file_type
-    response['Content-Length'] = str(os.stat(excel_file_name).st_size)
-    response['Content-Disposition'] = "attachment; filename={}".format(excel_file_name)
-    os.remove(excel_file_name)
+    response = download(excel_file_name, data)
     return response
-    
 
 
 # Incomings views
