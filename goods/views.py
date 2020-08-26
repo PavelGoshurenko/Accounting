@@ -27,7 +27,7 @@ from utilities.download import download
 
 @login_required
 def main(request):
-    return HttpResponseRedirect('/products/all/?category=4&brand=')
+    return HttpResponseRedirect('/products/all/?category=1&brand=')
 
 
 class ProductsView(LoginRequiredMixin, generic.ListView):

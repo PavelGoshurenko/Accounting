@@ -3,7 +3,7 @@
 
 // дополнительный state - так получилось - больше так не делать
 filterState = {
-    'category': '',
+    'category': 1,
     'brand': '',
 }
 
