@@ -49,7 +49,6 @@ class SpendingCategory(models.Model):
 class Spending(models.Model):
     name = models.CharField(
         max_length=200,
-        unique=True,
         verbose_name="Трата")
     category = models.ForeignKey(
         SpendingCategory,

@@ -45,17 +45,24 @@ const submit = (e) => {
 };
 
 const inputHandler = (e) => {
-    const id = $(e.target).attr('data-id');
+    const id = String($(e.target).attr('data-id'));
     $input = $(e.target);
-    state[String(id)].quantity = Number($input.val());
-    //$input.val(state[String(id)].quantity);
+    state[id].quantity = Number($input.val());
+    if (state[id].quantity === 0 && state[id].discount !== 0) {
+        alert('Нельзя делать скидку на непроданный товар');
+        state[id].discount = 0;
+    }
     render(state);
 };
 
 const discountHandler = (e) => {
-    const id = $(e.target).attr('data-id');
+    const id = String($(e.target).attr('data-id'));
     $input = $(e.target);
-    state[String(id)].discount = Number($input.val());
+    if (state[id].quantity === 0) {
+        alert('Нельзя делать скидку на непроданный товар');
+    } else {
+        state[id].discount = Number($input.val());
+    }
     render(state);
 };
 

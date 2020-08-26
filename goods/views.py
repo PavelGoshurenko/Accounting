@@ -642,7 +642,7 @@ def inventories(request):
         formset = InventoryFormSet(request.POST)
         if formset.is_valid():
             formset.save()
-            return redirect('products')
+            return redirect('inventories_result')
     else:
         formset = InventoryFormSet(
             queryset=Inventory.objects.filter(confirmed=False)
@@ -672,3 +672,21 @@ def confirm_inventories(request):
         inventory.confirmed = True
         inventory.save()
     return redirect('inventories')
+
+
+class InventoriesResult(LoginRequiredMixin, generic.ListView):
+    template_name = 'inventories_result.html'
+    context_object_name = 'inventories'
+
+    def get_queryset(self):
+        queryset = Inventory.objects.filter(confirmed=False)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventories = self.get_queryset()
+        sum = 0
+        for inventory in inventories:
+            sum += inventory.cost()
+        context['sum'] = sum
+        return context

@@ -1,0 +1,53 @@
+
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Результат переучета {% endblock %}
+{% block h %} Результат переучета {% endblock %}
+{% block context %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'inventories'%}" role="button">Редактировать</a></p>
+{% endblock %}
+{% block content %}
+   
+
+
+
+    {% if inventories %}
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Количество по файлу</th>
+          <th>Количество по факту</th>
+          <th>Недостача</th>
+          <th>Цена интернет</th>
+          <th>Стоимость</th>
+
+        </tr>
+      </thead>
+      <tbody>
+    {% for inventory in inventories %}
+    <tr>
+    <td> {{ inventory.product }}</td>
+    <td>{{ inventory.supposed_quantity }} шт.</td> 
+    <td>{{ inventory.fact_quantity }} шт.</td>
+    <td>{{ inventory.shortage }} шт. </td>
+    <td>{{ inventory.product.internet_price }}</td>
+    <td>{{ inventory.cost  }}</td>
+       
+          </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<div>Итого: {{ sum }} грн.</div>
+  {% else %}
+    <p>Еще ничего не считали :-(</p>
+    
+  {% endif %}  
+
+
+
+  
+    
+{% endblock %}

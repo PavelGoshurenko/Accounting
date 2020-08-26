@@ -5,7 +5,10 @@
 {% block title %} Переучет {% endblock %}
 {% block h %} Переучет {% endblock %}
 {% block context %}
+{% if user.is_staff %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'confirm_inventories'%}" role="button">Подтвердить переучет</a></p>
+{% endif %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'inventories_result'%}" role="button">Посмотреть результат</a></p>
 {% endblock %}
 {% block content %}
    
@@ -69,5 +72,6 @@
     <input type="submit" vаluе="Сохранить" class="btn btn-secondary">
     </form>
 
-    
+    <div>* Данные не сохранятся если вы не нажмете кнопку "Отправить"</div>
+    <div>** Отправка данных не окончательна. Переучет можно будет отредактировать (доделать) и после отправки.</div>
 {% endblock %}

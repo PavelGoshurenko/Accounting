@@ -229,5 +229,5 @@ class Inventory(models.Model):
         return self.supposed_quantity - self.fact_quantity
 
     def cost(self):
-        return self.shortage * self.product.internet_price
+        return self.shortage() * self.product.internet_price
     

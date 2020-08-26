@@ -72,4 +72,5 @@ urlpatterns = [
     path('add_inventories', views.add_inventories, name="add_inventories"),
     path('inventories', views.inventories, name='inventories'),
     path('confirm_inventories', views.confirm_inventories, name='confirm_inventories'),
+    path('inventories_result/', views.InventoriesResult.as_view(), name='inventories_result'),
 ]
