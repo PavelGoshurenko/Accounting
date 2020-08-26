@@ -17,14 +17,17 @@ from django.forms import modelform_factory
 import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django import forms
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from accounting.settings import BASE_DIR
 import os
 from utilities.download import download
 
 # Products views
+
+
+@login_required
+def main(request):
+    return HttpResponseRedirect('/products/all/?category=4&brand=')
 
 
 class ProductsView(LoginRequiredMixin, generic.ListView):
@@ -56,6 +59,30 @@ class ProductsView(LoginRequiredMixin, generic.ListView):
                     filters[key] = value
             return Product.objects.filter(**filters)
         return Product.objects.all()
+
+
+@login_required
+def download_products(request):
+    data = [[
+        'Товар',
+        'Остаток',
+        'Цена интернет',
+        'Цена магазин',
+        'Цена покупки',
+    ]]
+    products = Product.objects.all()
+    for product in products:
+        row = [
+            product.name,
+            product.quantity,
+            product.internet_price,
+            product.shop_price,
+            product.purchase_price,
+        ]
+        data.append(row)
+    excel_file_name = 'goods.xlsx'
+    response = download(excel_file_name, data)
+    return response
 
 
 class ProductView(LoginRequiredMixin, generic.DetailView):

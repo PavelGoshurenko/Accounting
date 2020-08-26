@@ -70,6 +70,7 @@
 {% if user.is_staff %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'product_create'%}" role="button">Добавить товар</a></p>
 {% endif %}
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_products' %}" role="button">Скачать goods.xlsx</a></p>
 <form action="" method="get" class="form">
   {% bootstrap_form filter.form %}
   {% buttons %}

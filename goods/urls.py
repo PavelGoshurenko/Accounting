@@ -3,7 +3,9 @@ from django.urls import path, include
 from goods import views
 
 urlpatterns = [
-    path('', views.ProductsView.as_view(), name='products'),
+    path('', views.main, name='index'),
+    path('all/', views.ProductsView.as_view(), name='products'),
+    path('products/downloads/', views.download_products, name='download_products'),
     path('<int:pk>/', views.ProductView.as_view(), name='product'),
     path('product/create/', views.ProductCreate.as_view(), name='product_create'),
     path(
