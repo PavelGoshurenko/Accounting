@@ -21,6 +21,7 @@ from django.contrib.auth.decorators import login_required
 from accounting.settings import BASE_DIR
 import os
 from utilities.download import download
+from django.db.models import F
 
 # Products views
 
@@ -59,6 +60,38 @@ class ProductsView(LoginRequiredMixin, generic.ListView):
                     filters[key] = value
             return Product.objects.filter(**filters)
         return Product.objects.all()
+
+class ProductsOrder(LoginRequiredMixin, generic.ListView):
+    template_name = 'products_order.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = self.get_queryset()
+        context['filter'] = ProductFilter(
+            self.request.GET,
+            queryset=products,
+        )
+        sale_sum = 0
+        purchase_sum = 0
+        for product in products:
+            sale_sum += product.quantity * product.shop_price
+            purchase_sum += product.quantity * product.purchase_price
+        context['sale_sum'] = sale_sum
+        context['purchase_sum'] = purchase_sum
+        return context
+
+    def get_queryset(self):
+        f = F('min_quantity')
+        products = Product.objects.filter(quantity__lt=f)
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            return products.filter(**filters)
+        return products
 
 
 @login_required

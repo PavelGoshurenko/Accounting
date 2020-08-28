@@ -81,6 +81,10 @@ class Product(models.Model):
         self.purchase_price = new_purchase_price
         self.save()
 
+    def need_to_order(self):
+        quantity = self.quantity if self.quantity >= 0 else 0
+        return self.max_quantity - quantity
+
     def __str__(self):
         return self.name
 

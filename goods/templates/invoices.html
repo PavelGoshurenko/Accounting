@@ -16,8 +16,6 @@
           <th>Наименование</th>
           <th>Дата</th>
           <th>Стоимость закупки</th>
-          <th>Оплачено</th>
-          <th>Источник</th>
           <th></th>
         </tr>
       </thead>
@@ -27,8 +25,6 @@
     <td><a href="{% url 'invoice_update' invoice.id %}">{{ invoice.name }}</a> </td>
     <td>{{ invoice.created_at|date:"SHORT_DATE_FORMAT" }}</td> 
     <td>{{ invoice.cost }} грн. </td>
-    <td>{{ invoice.paid }} грн.</td> 
-    <td>{{ invoice.asset.name }}</td>
     <td>  <a href="{% url 'invoice_delete' invoice.id %}">Delete</a></td>
        
           </tr>
