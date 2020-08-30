@@ -179,6 +179,12 @@ class Sale(models.Model):
     def cost(self):
         return self.price * self.quantity
 
+    def shop_discount(self):
+        return self.product.shop_price * self.quantity - self.cost()
+
+    def internet_discount(self):
+        return self.product.internet_price * self.quantity - self.cost()
+
     def save(self, *args, **kwargs):
         if self.id:
             previous_sale = Sale.objects.get(id=self.id)

@@ -22,6 +22,7 @@
           <th>Наименование</th>
           <th>Количество</th>
           <th>Цена</th>
+          <th>Скидка :-(</th>
            <th>Стоимость</th>
           <th>Отдел</th>
           <th>Дата</th>
@@ -41,7 +42,8 @@
      
      </td>
     <td>{{ sale.quantity }} шт.</td> 
-    <td>{{ sale.price }} грн.</td>
+    <td>{{ sale.product.shop_price }} грн.</td>
+    <td>{{ sale.shop_discount }}</td>
     <td> {{ sale.cost }} грн.</td>
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>

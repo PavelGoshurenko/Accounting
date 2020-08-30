@@ -19,6 +19,8 @@
           <th>Наименование</th>
           <th>Количество</th>
           <th>Цена</th>
+          <th>Скидка :-(</th>
+           <th>Стоимость</th>
           <th>Отдел</th>
           <th>Дата</th>
           <th>Менеджер</th>
@@ -34,7 +36,9 @@
        {{ sale.product }}
      {% endif %}</td>
     <td>{{ sale.quantity }} шт.</td> 
-    <td>{{ sale.price }} грн.</td>
+    <td>{{ sale.product.internet_price }} грн.</td>
+    <td>{{ sale.internet_discount }}</td>
+    <td> {{ sale.cost }} грн.</td>
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>
     <td>{{ sale.manager }}</td>
