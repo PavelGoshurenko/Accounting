@@ -48,13 +48,13 @@ class TodaySpendingsForm (forms.ModelForm):
         label='Источник',
         widget=forms.HiddenInput,
     )
-    period = forms.ModelChoiceField(
+    """ period = forms.ModelChoiceField(
         initial=get_period(),
         queryset=Period.objects.all(),
         disabled=True,
         label='Учетный период',
         widget=forms.HiddenInput,
-    )
+    ) """
     
     class Meta:
         model = Spending
@@ -66,11 +66,11 @@ class SpendingsForm (forms.ModelForm):
         queryset=Asset.objects.filter(is_active=True),
         label='Источник',
     )
-    period = forms.ModelChoiceField(
+    """ period = forms.ModelChoiceField(
         initial=get_period(),
         queryset=Period.objects.all(),
         label='Учетный период',
-    )
+    ) """
     
     class Meta:
         model = Spending
