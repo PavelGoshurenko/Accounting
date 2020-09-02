@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
-from money.models import Department
+from money.models import Department, Period
 from django.shortcuts import get_object_or_404
 import datetime
 from money.models import Asset
@@ -175,6 +175,13 @@ class Sale(models.Model):
     purchase_price = models.FloatField(blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.ProtectedError)
     quantity = models.FloatField(blank=False)
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.ProtectedError,
+        null=True,
+        blank=True,
+        verbose_name='Учетный период'
+        )
 
     def cost(self):
         return self.price * self.quantity

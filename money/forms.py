@@ -3,10 +3,11 @@ from django.forms import ModelForm
 from django.forms.models import modelform_factory
 from django.forms.models import modelformset_factory
 from goods.models import Product, Incoming
-from money.models import Spending, SpendingCategory, Asset, Transfer
+from money.models import Spending, SpendingCategory, Asset, Transfer, Period
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+from django.utils import timezone
 
 def get_asset(department):
     asset_name = '{} {}'.format(datetime.date.today(), department)
@@ -20,6 +21,16 @@ def get_asset(department):
 
 def get_name():
     return 'terminal {}'.format(datetime.date.today())
+
+
+def get_period():
+    period_name = datetime.datetime.strftime(timezone.now(), '%B %Y')
+    try:
+        period = Period.objects.get(name=period_name)
+    except ObjectDoesNotExist:
+        period = Period(name=period_name)
+        period.save()
+    return period
 
 
 class TodaySpendingsForm (forms.ModelForm):
@@ -37,10 +48,17 @@ class TodaySpendingsForm (forms.ModelForm):
         label='Источник',
         widget=forms.HiddenInput,
     )
+    period = forms.ModelChoiceField(
+        initial=get_period(),
+        queryset=Period.objects.all(),
+        disabled=True,
+        label='Учетный период',
+        widget=forms.HiddenInput,
+    )
     
     class Meta:
         model = Spending
-        fields = ('name', 'amount', 'category', 'asset')
+        fields = ('name', 'amount', 'category', 'asset', 'period')
 
 
 class SpendingsForm (forms.ModelForm):
@@ -48,10 +66,15 @@ class SpendingsForm (forms.ModelForm):
         queryset=Asset.objects.filter(is_active=True),
         label='Источник',
     )
+    period = forms.ModelChoiceField(
+        initial=get_period(),
+        queryset=Period.objects.all(),
+        label='Учетный период',
+    )
     
     class Meta:
         model = Spending
-        fields = ('name', 'department', 'amount', 'category', 'asset', 'created_at')
+        fields = ('name', 'department', 'amount', 'category', 'asset', 'created_at', 'period')
 
 
 class PickupForm (forms.ModelForm):

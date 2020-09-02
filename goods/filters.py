@@ -7,7 +7,7 @@ class SaleFilter(django_filters.FilterSet):
 
     class Meta:
         model = Sale
-        fields = ['date', 'department']
+        fields = ['date', 'department', 'period']
 
 
 class ProductFilter(django_filters.FilterSet):

@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
 from django.http import HttpResponseRedirect, HttpResponse
-from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm, SpendingsForm
+from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm, SpendingsForm, get_period
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.decorators import login_required
@@ -172,12 +172,14 @@ class TerminalCreate(LoginRequiredMixin, CreateView):
             asset = Asset.objects.get(name='Терминал')
             category = SpendingCategory.objects.get(name='Затраты')
             department = Department.objects.get(name='Магазин')
+            period = get_period()
             spending = Spending(
                 name=spending_name,
                 amount=0,
                 asset=asset,
                 department=department,
-                category=category
+                category=category,
+                period=period
             )
         spending.amount += round((amount * 0.02), 2)
         spending.save()

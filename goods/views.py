@@ -4,7 +4,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory
-from money.models import Department, Spending, Asset, Transfer, SpendingCategory
+from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
 from django.views.generic.base import TemplateView
 import openpyxl
 from goods.forms import AddInvoiceForm
@@ -22,6 +22,8 @@ from accounting.settings import BASE_DIR
 import os
 from utilities.download import download
 from django.db.models import F
+from django.views.generic.dates import MonthArchiveView
+from django.utils import timezone
 
 # Products views
 
@@ -60,6 +62,7 @@ class ProductsView(LoginRequiredMixin, generic.ListView):
                     filters[key] = value
             return Product.objects.filter(**filters)
         return Product.objects.all()
+
 
 class ProductsOrder(LoginRequiredMixin, generic.ListView):
     template_name = 'products_order.html'
@@ -547,6 +550,12 @@ def add_sales_shop(request):
         date = datetime.date.today()
         department = Department.objects.get(name='Магазин')
         manager = request.user
+        period_name = datetime.datetime.strftime(timezone.now(), '%B %Y')
+        try:
+            period = Period.objects.get(name=period_name)
+        except ObjectDoesNotExist:
+            period = Period(name=period_name)
+            period.save()
         new_sales = data['sales']
         for key, value in new_sales.items():
             product = Product.objects.get(id=key)
@@ -559,7 +568,8 @@ def add_sales_shop(request):
                 product=product,
                 department=department,
                 quantity=quantity,
-                purchase_price=product.purchase_price
+                purchase_price=product.purchase_price,
+                period=period
             )
             new_sale.save()
         return redirect(reverse_lazy('sales'))
@@ -591,7 +601,12 @@ def add_sales_internet(request):
         date = datetime.date.today()
         department = Department.objects.get(name='Интернет')
         manager = request.user
-        # new_invoice = Invoice(name=data['name'])
+        period_name = datetime.datetime.strftime(timezone.now(), '%B %Y')
+        try:
+            period = Period.objects.get(name=period_name)
+        except ObjectDoesNotExist:
+            period = Period(name=period_name)
+            period.save()
         new_sales = data['sales']
         for key, value in new_sales.items():
             product = Product.objects.get(id=key)
@@ -605,6 +620,7 @@ def add_sales_internet(request):
                 department=department,
                 quantity=quantity,
                 purchase_price=product.purchase_price,
+                period=period
             )
             new_sale.save()
         return redirect(reverse_lazy('sales'))
@@ -688,6 +704,12 @@ def inventories(request):
 def confirm_inventories(request):
     inventories = Inventory.objects.filter(confirmed=False)
     date = datetime.date.today()
+    period_name = datetime.datetime.strftime(timezone.now(), '%B %Y')
+    try:
+        period = Period.objects.get(name=period_name)
+    except ObjectDoesNotExist:
+        period = Period(name=period_name)
+        period.save()
     for inventory in inventories:
         shortage = inventory.supposed_quantity - inventory.fact_quantity
         if shortage:
@@ -699,7 +721,8 @@ def confirm_inventories(request):
                 purchase_price=product.purchase_price,
                 product=product,
                 quantity=shortage,
-                date=date
+                date=date,
+                period=period
             )
             sale.save()
         inventory.confirmed = True

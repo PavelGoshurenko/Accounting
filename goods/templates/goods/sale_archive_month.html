@@ -5,40 +5,14 @@
 {% block title %} Продажи {% endblock %}
 {% block h %} Продажи {% endblock %}
 {% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'sale_create'%}" role="button">Добавить Продажу</a></p>
-<form method="get">
-  <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-            {{ filter.form.date }}
-            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-              <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-              
-            </div>
-          </div>
-          
-          <script>
-            $(function () {
-              $("#datetimepicker1").datetimepicker({
-                format: 'YYYY-MM-DD',
-              });
-            });
-          </script>
-  
-   
-   {% bootstrap_field filter.form.department %}
-   {% bootstrap_field filter.form.period %}
-  
-  {% buttons %}
-  <button type="submit" class="btn btn-secondary">
-    Фильтр
-  </button>
-  {% endbuttons %}
-</form>
+
 {% endblock %}
 {% block content %}
    
 
 
 
-    {% if sales %}
+    {% if object_list %}
     <table class="table table-striped table-sm">
       <thead>
         <tr>
@@ -52,7 +26,7 @@
         </tr>
       </thead>
       <tbody>
-    {% for sale in sales %}
+    {% for sale in object_list %}
     <tr>
     <td><a href="{% url 'sale_update' sale.id %}">{{ sale.product }}</a> </td>
     <td>{{ sale.quantity }} шт.</td> 
@@ -65,7 +39,6 @@
           </tr>
   {% endfor %}
   <tr><td colspan="7"> {{ sum }}</td></tr>
-  <tr><td colspan="7"> {{ test_delete }}</td></tr>
   </tbody>
 </table>
   {% else %}
@@ -73,7 +46,20 @@
     
   {% endif %}  
 
+  <ul>
+    {% for article in object_list %}
+        <li>{{ article.date|date:"F j, Y" }}: {{ article.product }}</li>
+    {% endfor %}
+</ul>
 
+<p>
+    {% if previous_month %}
+        Previous Month: {{ previous_month|date:"F Y" }}
+    {% endif %}
+    {% if next_month %}
+        Next Month: {{ next_month|date:"F Y" }}
+    {% endif %}
+</p>
 
   
     

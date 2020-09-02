@@ -13,6 +13,16 @@ class Department(models.Model):
         return self.name
 
 
+class Period(models.Model):
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="Учетный период")
+
+    def __str__(self):
+        return self.name
+
+
 class Asset(models.Model):
     name = models.CharField(
         max_length=500,
@@ -64,6 +74,13 @@ class Spending(models.Model):
         null=True,
         blank=True,
         verbose_name='Отдел'
+        )
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.ProtectedError,
+        null=True,
+        blank=True,
+        verbose_name='Учетный период'
         )
     amount = models.FloatField(
         verbose_name="Сумма",
