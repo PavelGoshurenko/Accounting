@@ -228,7 +228,7 @@ class Sale(models.Model):
         super().delete(*args, **kwargs)
 
     def __str__(self):
-        return "{} s{}".format(self.department.name, self.date)
+        return "{} {}".format(self.department.name, self.date)
 
 
 class Inventory(models.Model):
@@ -247,4 +247,7 @@ class Inventory(models.Model):
 
     def cost(self):
         return self.shortage() * self.product.internet_price
+
+    def __str__(self):
+        return "{} {}".format(self.product.name, self.date)
     
