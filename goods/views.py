@@ -140,51 +140,13 @@ class ProductCreate(LoginRequiredMixin, CreateView):
 class ProductUpdate(LoginRequiredMixin, UpdateView):
     model = Product
     fields = '__all__'
-    success_url = reverse_lazy('products')
+    success_url = reverse_lazy('index')
     template_name = 'product_update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductUpdate, self).get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
-        return context
 
 
 class ProductDelete(LoginRequiredMixin, DeleteView):
     model = Product
-    success_url = reverse_lazy('products')
-
-
-class AddProductsView(LoginRequiredMixin, TemplateView):
-
-    template_name = "add_products.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        wb = openpyxl.load_workbook(os.path.join(BASE_DIR, 'goods/static/xlsx/products.xlsx'))
-        sheet = wb.active
-        i = 3
-        while i < 2350:
-            if sheet['A{}'.format(i)].value and sheet['C{}'.format(i)].value:
-                if sheet['F{}'.format(i)].value:
-                    category = ProductCategory.objects.get(name=sheet['F{}'.format(i)].value)
-                else:
-                    category = None
-                if sheet['G{}'.format(i)].value:
-                    brand = ProductBrand.objects.get(name=sheet['G{}'.format(i)].value)
-                else:
-                    brand = None
-                new_product = Product(
-                    name=sheet['A{}'.format(i)].value,
-                    shop_price=sheet['C{}'.format(i)].value,
-                    purchase_price=sheet['E{}'.format(i)].value,
-                    internet_price=sheet['D{}'.format(i)].value,
-                    quantity=sheet['B{}'.format(i)].value,
-                    category=category,
-                    brand=brand
-                    )
-                new_product.save()
-            i += 1
-        return context
+    success_url = reverse_lazy('index')
 
 
 # invoices views
@@ -299,17 +261,6 @@ def download_invoice(request, pk):
 
 
 # Incomings views
-@login_required
-def add_incomings(request):
-    IncomingFormSet = modelformset_factory(Incoming, exclude=('id',), extra=10)
-    if request.method == 'POST':
-        formset = IncomingFormSet(request.POST, request.FILES)
-        if formset.is_valid():
-            formset.save()
-            # do something.
-    else:
-        formset = IncomingFormSet()
-    return render(request, 'add_incomings.html', {'formset': formset})
 
 
 class IncomingsView(LoginRequiredMixin, generic.ListView):
@@ -330,10 +281,6 @@ class IncomingCreate(LoginRequiredMixin, CreateView):
     fields = '__all__'
     success_url = reverse_lazy('incomings')
 
-    def get_context_data(self, **kwargs):
-        context = super(IncomingCreate, self).get_context_data(**kwargs)
-        context['incomings'] = Incoming.objects.all()
-        return context
 
 
 class IncomingUpdate(LoginRequiredMixin, UpdateView):
@@ -341,11 +288,6 @@ class IncomingUpdate(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     success_url = reverse_lazy('incomings')
     template_name = 'incoming_update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(IncomingUpdate, self).get_context_data(**kwargs)
-        context['incomings'] = Incoming.objects.all()
-        return context
 
 
 class IncomingDelete(LoginRequiredMixin, DeleteView):
@@ -450,22 +392,12 @@ class SaleCreate(LoginRequiredMixin, CreateView):
     fields = '__all__'
     success_url = reverse_lazy('sales')
 
-    def get_context_data(self, **kwargs):
-        context = super(SaleCreate, self).get_context_data(**kwargs)
-        context['sales'] = Sale.objects.all()
-        return context
-
 
 class SaleUpdate(LoginRequiredMixin, UpdateView):
     model = Sale
     fields = '__all__'
     success_url = reverse_lazy('sales')
     template_name = 'sale_update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(SaleUpdate, self).get_context_data(**kwargs)
-        context['sales'] = Sale.objects.all()
-        return context
 
 
 class SaleDelete(LoginRequiredMixin, DeleteView):
@@ -476,71 +408,7 @@ class SaleDelete(LoginRequiredMixin, DeleteView):
         user = self.request.user
         if user.is_staff:
             return reverse_lazy('sales')
-        return reverse_lazy('products')
-
-
-def get_sales_from_file():
-    wb = openpyxl.load_workbook('1.xlsx')
-    sheet = wb.active
-    sales = []
-    cost = 0
-    i = 3
-    while i < 2350:
-        if sheet['A{}'.format(i)].value and sheet['B{}'.format(i)].value:
-            sale = {}
-            sale['product_name'] = sheet['A{}'.format(i)].value
-            sale['quantity'] = sheet['B{}'.format(i)].value
-            sale['price'] = sheet['C{}'.format(i)].value
-            discount = sheet['E{}'.format(i)].value
-            if discount is None:
-                discount = 0
-            sale['discount'] = discount
-            sale['cost'] = sale['quantity'] * sale['price'] - sale['discount']
-            cost += sale['cost']
-            sales.append(sale)
-        i += 1
-    return (sales, cost)
-
-
-@login_required
-def sales_from_file(request):
-    # Если данный запрос типа POST, тогда
-    if request.method == 'POST':
-        # Создаем экземпляр формы и заполняем данными из запроса (связывание, binding):
-        form = SalesFromFileForm(request.POST)
-        # Проверка валидности данных формы:
-        if form.is_valid():
-            sales, cost = get_sales_from_file()
-            date = form.cleaned_data['date']
-            manager = form.cleaned_data['manager']
-            department = form.cleaned_data['department']
-            for sale in sales:
-                product = Product.objects.get(name=sale['product_name'])
-                if department.name == 'Магазин':
-                    price = product.shop_price
-                elif department.name == 'Интернет':
-                    price = product.internet_price
-                new_sale = Sale(
-                    date=date,
-                    manager=manager,
-                    department=department,
-                    price=price - sale['discount'] / sale['quantity'],
-                    product=product,
-                    quantity=sale['quantity']
-                )
-                new_sale.save()
-            return HttpResponseRedirect(reverse('sales'))
-
-    # Если это GET (или какой-либо еще), создать форму по умолчанию.
-    else:
-        form = SalesFromFileForm()
-        sales, cost = get_sales_from_file()
-        
-    return render(
-        request,
-        'sales_from_file.html',
-        context={'sales': sales, 'cost': cost, 'form': form}
-        )
+        return reverse_lazy('index')
 
 
 @login_required
@@ -682,22 +550,28 @@ def add_inventories(request):
 
 @login_required
 def inventories(request):
-    InventoryFormSet = modelformset_factory(
-        Inventory,
-        form=InventoryForm,
-        extra=0,
-    )
     if request.method == 'POST':
-        formset = InventoryFormSet(request.POST)
-        if formset.is_valid():
-            formset.save()
-            return redirect('inventories_result')
+        data = json.loads(request.POST['request'])
+        new_inventories = data['inventories']
+        for key, new_inventory in new_inventories.items():
+            old_inventory = Inventory.objects.get(id=key)
+            new_fact_quantity = new_inventory['fact_quantity']
+            if new_fact_quantity != old_inventory.fact_quantity:
+                old_inventory.fact_quantity = new_fact_quantity
+                old_inventory.save()
+        return redirect(reverse_lazy('inventories_result'))
+        
     else:
-        formset = InventoryFormSet(
-            queryset=Inventory.objects.filter(confirmed=False)
-        )
-    context = {'formset': formset}
-    return render(request, 'inventories.html', context)
+        inventories = {}
+        for inventory in Inventory.objects.filter(confirmed=False):
+            inventories[str(inventory.id)] = {
+                'name': inventory.product.name,
+                'supposed_quantity': inventory.supposed_quantity,
+                'fact_quantity': inventory.fact_quantity,
+                }
+        js_data = json.dumps(inventories)
+        context = {'js_data': js_data}
+        return render(request, 'inventories.html', context)
 
 
 @login_required

@@ -9,69 +9,19 @@
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'confirm_inventories'%}" role="button">Подтвердить переучет</a></p>
 {% endif %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'inventories_result'%}" role="button">Посмотреть результат</a></p>
+
 {% endblock %}
 {% block content %}
-   
+{% load static %}
+<script type="text/javascript" src="{% static 'js/change_inventories.js' %}"></script>
 
-
-<form method="post">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    {% if formset.non_form_errors %}
-        <ul>
-        {% for error in formset.non_form_errors %}
-            <li><em>{{ error|escape }} </em></li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+<script type="text/javascript">
+  const state = {{ js_data|safe }};
+</script> 
 
 
 
 
-
-    <table class="table table-striped table-sm">
-        <thead>
-          <tr>
-            <th>Товар</th>
-            <th>Ожидаемое количество</th>
-            <th>Факт</th>
-          
-            
-          </tr>
-        </thead>
-        <tbody>
-
-    {% for form in formset %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        {% if form.non_field_errors %}
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li><em>{{ error|escape }} </em></li>
-            {% endfor %}
-    </ul>
-        {% endif %}
-
-       <tr>
-        {% for field in form.visible_fields %}
-            {% if field.errors %}
-    <ul>
-                {% for error in field.errors %}
-                    <li><em>{{ error|escape }}</em></li>
-                {% endfor %}
-    </ul>
-            {% endif %}
-            <td>{{ field }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-    </tbody></table>
-
-
-    <input type="submit" vаluе="Сохранить" class="btn btn-secondary">
-    </form>
-
-    <div>* Данные не сохранятся если вы не нажмете кнопку "Отправить"</div>
-    <div>** Отправка данных не окончательна. Переучет можно будет отредактировать (доделать) и после отправки.</div>
+    <div>* Данные не сохранятся если вы не нажмете кнопку "Сохранить"</div>
+    <div>** Сохранение данных не окончательно. Переучет можно будет отредактировать (доделать) и после сохранения.</div><div id='submit_button'></div>
 {% endblock %}
