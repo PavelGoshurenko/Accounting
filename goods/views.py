@@ -129,7 +129,7 @@ class ProductView(LoginRequiredMixin, generic.DetailView):
 class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
     fields = '__all__'
-    success_url = reverse_lazy('products')
+    success_url = reverse_lazy('index')
 
     def get_context_data(self, **kwargs):
         context = super(ProductCreate, self).get_context_data(**kwargs)
