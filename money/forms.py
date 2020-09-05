@@ -37,6 +37,7 @@ class TodaySpendingsForm (forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TodaySpendingsForm, self).__init__(*args, **kwargs)
         self.fields['asset'].initial = get_asset("Магазин")
+        self.fields['period'].initial = get_period()
 
     category = forms.ModelChoiceField(
         initial=SpendingCategory.objects.get(name='Не отсортированные'),
@@ -52,7 +53,6 @@ class TodaySpendingsForm (forms.ModelForm):
         widget=forms.HiddenInput,
     )
     period = forms.ModelChoiceField(
-        initial=get_period(),
         queryset=Period.objects.all(),
         disabled=True,
         label='Учетный период',
@@ -65,12 +65,15 @@ class TodaySpendingsForm (forms.ModelForm):
 
 
 class SpendingsForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SpendingsForm, self).__init__(*args, **kwargs)
+        self.fields['period'].initial = get_period()
+
     asset = forms.ModelChoiceField(
         queryset=Asset.objects.filter(is_active=True),
         label='Источник',
     )
     period = forms.ModelChoiceField(
-        initial=get_period(),
         queryset=Period.objects.all(),
         label='Учетный период',
     )
@@ -81,15 +84,18 @@ class SpendingsForm (forms.ModelForm):
 
 
 class PickupForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PickupForm, self).__init__(*args, **kwargs)
+        self.fields['asset_from'].initial = get_asset('Интернет')
+        self.fields['asset_to'].initial = get_asset('Магазин')
+
     asset_from = forms.ModelChoiceField(
-        initial=get_asset('Интернет'),
         disabled=True,
         queryset=Asset.objects.all(),
         label='Из кассы:',
         widget=forms.HiddenInput,
     )
     asset_to = forms.ModelChoiceField(
-        initial=get_asset('Магазин'),
         disabled=True,
         queryset=Asset.objects.filter(is_active=True),
         label='В кассу:',

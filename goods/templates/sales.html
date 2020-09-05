@@ -48,6 +48,7 @@
           <th>Отдел</th>
           <th>Дата</th>
           <th>Менеджер</th>
+          <th>Уч. период</th>
           <th></th>
         </tr>
       </thead>
@@ -60,6 +61,7 @@
     <td>{{ sale.department }}</td>
     <td>{{ sale.date }}</td>
     <td>{{ sale.manager }}</td>
+    <td>{{ sale.period }}</td>
     <td>  <a href="{% url 'sale_delete' sale.id %}">Delete</a></td>
        
           </tr>
