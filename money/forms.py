@@ -34,6 +34,10 @@ def get_period():
 
 
 class TodaySpendingsForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TodaySpendingsForm, self).__init__(*args, **kwargs)
+        self.fields['asset'].initial = get_asset("Магазин")
+
     category = forms.ModelChoiceField(
         initial=SpendingCategory.objects.get(name='Не отсортированные'),
         queryset=SpendingCategory.objects.all(),
@@ -42,7 +46,6 @@ class TodaySpendingsForm (forms.ModelForm):
         widget=forms.HiddenInput,
         )
     asset = forms.ModelChoiceField(
-        initial=get_asset("Магазин"),
         queryset=Asset.objects.all(),
         disabled=True,
         label='Источник',
@@ -102,6 +105,10 @@ class PickupForm (forms.ModelForm):
 
 
 class TerminalForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TerminalForm, self).__init__(*args, **kwargs)
+        self.fields['name'].initial = get_name()
+
     asset_from = forms.ModelChoiceField(
         queryset=Asset.objects.filter(is_active=True),
         label='Откуда:'
@@ -113,8 +120,7 @@ class TerminalForm (forms.ModelForm):
         label='Куда:'
     )
     name = forms.CharField(
-        label='Примечание:',
-        initial=get_name()
+        label='Примечание:'
     )
     
     class Meta:
