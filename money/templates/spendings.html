@@ -19,6 +19,7 @@
           <th>Источник</th>
           <th>Категория</th>
           <th>Отдел</th>
+          <th>Уч. период</th>
           <th></th>
         </tr>
       </thead>
@@ -31,6 +32,7 @@
     <td>{{ spending.asset.name }}</td>
     <td>{{ spending.category }}</td>
     <td>{{ spending.department }}</td>
+    <td>{{ spending.period }}</td>
     <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
        
           </tr>
