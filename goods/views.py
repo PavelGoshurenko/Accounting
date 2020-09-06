@@ -396,7 +396,7 @@ class SaleCreate(LoginRequiredMixin, CreateView):
 class SaleUpdate(LoginRequiredMixin, UpdateView):
     model = Sale
     fields = '__all__'
-    success_url = reverse_lazy('sales')
+    success_url = '/products/sales/?date=&department=&period=1'
     template_name = 'sale_update.html'
 
 
