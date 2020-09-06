@@ -37,6 +37,9 @@ def profit(request):
     assets_profit = company_cost - start_company_cost
     periods = Period.objects.all()
     profits_by_periods = []
+    check_margin = 0
+    check_spendings = 0
+    check_profit = 0
     for period in periods:
         sales_by_period = Sale.objects.filter(period=period)
         margin_by_period = 0
@@ -53,6 +56,9 @@ def profit(request):
             'sales_profit': margin_by_period - spendings_amount_by_period,
         }
         profits_by_periods.append(profit_by_period)
+        check_margin += margin_by_period
+        check_spendings += spendings_amount_by_period
+        check_profit += margin_by_period - spendings_amount_by_period
     context = {
         'margin': margin,
         'spendings_amount': spendings_amount,
@@ -66,6 +72,9 @@ def profit(request):
         'start_company_cost': start_company_cost,
         'assets_profit': assets_profit,
         'profits_by_periods': profits_by_periods,
+        'check_margin': check_margin,
+        'check_spendings': check_spendings,
+        'check_profit': check_profit,
     }
     return render(request, 'profit.html', context)
 

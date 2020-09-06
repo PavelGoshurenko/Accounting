@@ -4,6 +4,14 @@
 {% block h %} Прибыль {% endblock %}
 {% block content %}
 
+<h1>Проверки</h1>
+
+<div>(сумарная прибыль по продажам){{ sales_profit }} = {{ assets_profit }}(прибыль по активам)</div>
+<div>Маржа: {{ margin }} = {{ check_margin }}</div>
+<div>Затраты: {{ spendings_amount }} = {{ check_spendings }}</div>
+<div>Прибыль: {{ sales_profit }} = {{ check_profit }}</div>
+
+
     <h1>Прибыль по продажам</h1>
     
     <div>Маржа: {{ margin }} грн.</div>
