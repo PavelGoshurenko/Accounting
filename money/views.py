@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from money.filters import SpendingFilter
 
 
 # Spending views
@@ -18,10 +19,25 @@ class SpendingsView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assets'] = Asset.objects.all()
+        spendings = self.get_queryset()
+        context['filter'] = SpendingFilter(
+            self.request.GET,
+            queryset=spendings,
+        )
+        sum = 0
+        for spending in spendings:
+            sum += spending.amount
+        context['sum'] = sum
         return context
 
     def get_queryset(self):
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            return Spending.objects.filter(**filters)
         return Spending.objects.all()
 
 

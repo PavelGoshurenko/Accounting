@@ -4,12 +4,22 @@
 {% block title %} Траты {% endblock %}
 {% block h %} Траты {% endblock %}
 
-{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'spending_create'%}" role="button">Новая трата</a></p>{% endblock %}
+{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'spending_create'%}" role="button">Новая трата</a></p>
+<form action="" method="get" class="form">
+  {% bootstrap_form filter.form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Фильтр
+    </button>
+  {% endbuttons %}
+</form>
+{% endblock %}
 
 {% block content %}
 
 
     {% if spendings %}
+    <div>Сумма трат: {{ sum }} грн.</div>
     <table class="table table-striped table-sm">
       <thead>
         <tr>
