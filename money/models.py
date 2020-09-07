@@ -125,6 +125,9 @@ class Spending(models.Model):
     def get_absolute_url(self):
         return reverse('asset', args=[str(self.id)])
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Transfer(models.Model):
     name = models.CharField(
@@ -178,6 +181,9 @@ class Transfer(models.Model):
 
     def get_absolute_url(self):
         return reverse('transfer', args=[str(self.id)])
+
+    class Meta:
+        ordering = ['-id']
   
 
 
