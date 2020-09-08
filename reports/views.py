@@ -18,7 +18,6 @@ def profit(request):
     spendings_amount = 0
     for spending in spendings:
         spendings_amount += spending.amount
-    sales_profit = margin - spendings_amount
     assets = Asset.objects.all()
     assets_amount = 0
     for asset in assets:
@@ -35,7 +34,6 @@ def profit(request):
     electrinics = 146054
     company_cost = assets_amount + product_cost + ingredients_cost + funds + electrinics
     start_company_cost = 987981.69
-    assets_profit = company_cost - start_company_cost
     periods = Period.objects.all()
     profits_by_periods = []
     check_margin = 0
@@ -75,6 +73,8 @@ def profit(request):
     if oleg_take['sum'] is None:
         pasha_take['sum'] = 0
     dividents = pasha_take['sum'] + oleg_take['sum']
+    sales_profit = margin - spendings_amount + dividents
+    assets_profit = company_cost - start_company_cost + dividents
     context = {
         'margin': margin,
         'spendings_amount': spendings_amount,
