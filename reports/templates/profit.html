@@ -26,12 +26,14 @@
     <div>Наушники: {{ electronics }} грн.</div>
     <div>Стоимость фирмы: {{ company_cost }} грн.</div>
     <div>Начальная стоимость фирмы: {{ start_company_cost }} грн.</div>
+    <div>Дивиденды: {{ dividents }} грн.</div>
     <div><b>Прибыль: {{ assets_profit }} грн.</b></div>
     <h1>Прибыль по месяцам</h1>
     {% for profit in profits_by_periods %}
     <h2>{{profit.period}}</h2>
     <div>Маржа: {{ profit.margin }} грн.</div>
     <div>Затраты: {{ profit.spendings_amount }} грн.</div>
+    <div> Дивиденды: {{ profit.dividents }} грн.</div>
     <div><b>Прибыль: {{ profit.sales_profit }} грн.</b></div>
     {% endfor %}
     

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from goods.models import Sale, Product
 from money.models import Spending, Asset, Period
 from production.models import Ingredient
+from django.db.models import Sum, Q
 
 # Create your views here.
 
@@ -49,16 +50,31 @@ def profit(request):
         spendings_amount_by_period = 0
         for spending in spendings_by_period:
             spendings_amount_by_period += spending.amount
+        pasha_take_by_period = spendings_by_period.aggregate(sum=Sum('amount', filter=Q(name='Pasha take')))
+        oleg_take_by_period = spendings_by_period.aggregate(sum=Sum('amount', filter=Q(name='Oleg take')))
+        if pasha_take_by_period['sum'] is None:
+            pasha_take_by_period['sum'] = 0
+        if oleg_take_by_period['sum'] is None:
+            oleg_take_by_period['sum'] = 0
+        dividents_by_period = pasha_take_by_period['sum'] + oleg_take_by_period['sum']
         profit_by_period = {
             'period': period.name,
             'margin': margin_by_period,
             'spendings_amount': spendings_amount_by_period,
-            'sales_profit': margin_by_period - spendings_amount_by_period,
+            'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
+            'dividents': dividents_by_period,
         }
         profits_by_periods.append(profit_by_period)
         check_margin += margin_by_period
         check_spendings += spendings_amount_by_period
         check_profit += margin_by_period - spendings_amount_by_period
+    pasha_take = Spending.objects.aggregate(sum=Sum('amount', filter=Q(name='Pasha take')))
+    oleg_take = Spending.objects.aggregate(sum=Sum('amount', filter=Q(name='Oleg take')))
+    if pasha_take['sum'] is None:
+        pasha_take['sum'] = 0
+    if oleg_take['sum'] is None:
+        pasha_take['sum'] = 0
+    dividents = pasha_take['sum'] + oleg_take['sum']
     context = {
         'margin': margin,
         'spendings_amount': spendings_amount,
@@ -75,6 +91,7 @@ def profit(request):
         'check_margin': check_margin,
         'check_spendings': check_spendings,
         'check_profit': check_profit,
+        'dividents': dividents,
     }
     return render(request, 'profit.html', context)
 
