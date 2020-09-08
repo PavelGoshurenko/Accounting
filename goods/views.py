@@ -96,6 +96,28 @@ class ProductsOrder(LoginRequiredMixin, generic.ListView):
             return products.filter(**filters)
         return products
 
+    def download_products(request):
+        data = [[
+            'Товар',
+            'Заказать',
+            'Остаток',
+            'Минимальное количество',
+            'Цена покупки',
+        ]]
+        products = Product.objects.all()
+        for product in products:
+            row = [
+                product.name,
+                product.quantity,
+                product.internet_price,
+                product.shop_price,
+                product.purchase_price,
+            ]
+            data.append(row)
+        excel_file_name = 'goods.xlsx'
+        response = download(excel_file_name, data)
+        return response
+
 
 @login_required
 def download_products(request):
@@ -117,6 +139,31 @@ def download_products(request):
         ]
         data.append(row)
     excel_file_name = 'goods.xlsx'
+    response = download(excel_file_name, data)
+    return response
+
+
+@login_required
+def download_products_order(request):
+    data = [[
+        'Товар',
+        'Заказать',
+        'Остаток',
+        'Минимальное количество',
+        'Цена покупки',
+    ]]
+    f = F('min_quantity')
+    products = Product.objects.filter(quantity__lt=f)
+    for product in products:
+        row = [
+            product.name,
+            product.need_to_order(),
+            product.quantity,
+            product.min_quantity,
+            product.purchase_price,
+        ]
+        data.append(row)
+    excel_file_name = 'order.xlsx'
     response = download(excel_file_name, data)
     return response
 

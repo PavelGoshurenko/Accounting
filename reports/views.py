@@ -77,7 +77,7 @@ def profit(request):
     assets_profit = company_cost - start_company_cost + dividents
     context = {
         'margin': margin,
-        'spendings_amount': spendings_amount,
+        'spendings_amount': spendings_amount - dividents,
         'sales_profit': sales_profit,
         'assets_amount': assets_amount,
         'product_cost': product_cost,
@@ -94,5 +94,3 @@ def profit(request):
         'dividents': dividents,
     }
     return render(request, 'profit.html', context)
-
-

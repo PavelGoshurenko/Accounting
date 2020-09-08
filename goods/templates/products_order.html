@@ -16,9 +16,9 @@
       <thead>
         <tr>
           <th>Наименование</th>
+          <th>Заказать</th>
           <th>Минимальное количество</th>
           <th>Остаток</th>
-          <th>Заказать</th>
           <th>Цена покупки</th>
           <th></th>
         </tr>
@@ -34,9 +34,10 @@
 {% endif %}
      
     </td>
+<td>{{ product.need_to_order }} шт.</td>
 <td>{{ product.min_quantity }} шт. </td>
  <td>{{ product.quantity }} шт.</td> 
-<td>{{ product.need_to_order }} шт.</td>
+
 <td>{{ product.purchase_price }} грн.</td> 
 <td><input type="checkbox"></td>
     
@@ -62,7 +63,7 @@
 {% if user.is_staff %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'product_create'%}" role="button">Добавить товар</a></p>
 {% endif %}
-<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_products' %}" role="button">Скачать goods.xlsx</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_products_order' %}" role="button">Скачать order.xlsx</a></p>
 <form action="" method="get" class="form">
   {% bootstrap_form filter.form %}
   {% buttons %}
