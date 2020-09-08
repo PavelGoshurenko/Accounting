@@ -60,14 +60,14 @@ def profit(request):
         profit_by_period = {
             'period': period.name,
             'margin': margin_by_period,
-            'spendings_amount': spendings_amount_by_period,
+            'spendings_amount': spendings_amount_by_period - dividents_by_period,
             'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
             'dividents': dividents_by_period,
         }
         profits_by_periods.append(profit_by_period)
         check_margin += margin_by_period
-        check_spendings += spendings_amount_by_period
-        check_profit += margin_by_period - spendings_amount_by_period
+        check_spendings += spendings_amount_by_period - dividents_by_period
+        check_profit += margin_by_period - spendings_amount_by_period + dividents_by_period
     pasha_take = Spending.objects.aggregate(sum=Sum('amount', filter=Q(name='Pasha take')))
     oleg_take = Spending.objects.aggregate(sum=Sum('amount', filter=Q(name='Oleg take')))
     if pasha_take['sum'] is None:
