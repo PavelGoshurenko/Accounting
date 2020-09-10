@@ -173,7 +173,12 @@ class IngredientInvoiceUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(IngredientInvoiceUpdate, self).get_context_data(**kwargs)
         invoice = self.get_object()
-        context['incomings'] = invoice.ingredientincoming_set.all()
+        incomings = invoice.ingredientincoming_set.all()
+        context['incomings'] = incomings
+        sum = 0
+        for incoming in incomings:
+            sum += incoming.quantity * incoming.purchase_price
+        context['sum'] = sum
         return context
 
 
@@ -201,22 +206,12 @@ class IngredientIncomingCreate(LoginRequiredMixin, CreateView):
     fields = '__all__'
     success_url = reverse_lazy('ingredient_incomings')
 
-    def get_context_data(self, **kwargs):
-        context = super(IngredientIncomingCreate, self).get_context_data(**kwargs)
-        context['incomings'] = IngredientIncoming.objects.all()
-        return context
-
 
 class IngredientIncomingUpdate(LoginRequiredMixin, UpdateView):
     model = IngredientIncoming
     fields = '__all__'
     success_url = reverse_lazy('ingredient_incomings')
     template_name = 'ingredient_incoming_update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(IngredientIncomingUpdate, self).get_context_data(**kwargs)
-        context['incomings'] = IngredientIncoming.objects.all()
-        return context
 
 
 class IngredientIncomingDelete(LoginRequiredMixin, DeleteView):

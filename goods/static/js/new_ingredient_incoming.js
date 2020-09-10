@@ -31,7 +31,7 @@ const submit = (e) => {
         type: "POST",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
-            alert("и тут у нас нет редиреректа ");
+            window.location.href = '/production/ingredient_invoices/';
         }
     });
 };

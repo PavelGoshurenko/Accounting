@@ -18,12 +18,14 @@
 </form>
   
 {% if incomings %}
+<div class="text-right">Стоиммость закупки: {{ sum }} грн.</div>
 <table class="table table-striped table-sm">
   <thead>
     <tr>
       
       <th>Товар</th>
       <th>колличество</th>
+      <th>Цена покупки</th>
       <th>Накладная</th>
       <th></th>
     </tr>
@@ -33,6 +35,7 @@
 <tr>
 <td><a href="{% url 'ingredient_incoming_update' incoming.id %}">{{ incoming.ingredient }}</a> </td>
 <td>{{ incoming.quantity }} шт.</td> 
+<td>{{ incoming.purchase_price }} грн.</td> 
 <td>{{ incoming.invoice.name }}</td>
 <td>  <a href="{% url 'ingredient_incoming_delete' incoming.id %}">Delete</a></td>
    

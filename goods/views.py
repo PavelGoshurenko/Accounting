@@ -6,7 +6,6 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory
 from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
 from django.views.generic.base import TemplateView
-import openpyxl
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.models import modelformset_factory
@@ -95,28 +94,6 @@ class ProductsOrder(LoginRequiredMixin, generic.ListView):
                     filters[key] = value
             return products.filter(**filters)
         return products
-
-    def download_products(request):
-        data = [[
-            'Товар',
-            'Заказать',
-            'Остаток',
-            'Минимальное количество',
-            'Цена покупки',
-        ]]
-        products = Product.objects.all()
-        for product in products:
-            row = [
-                product.name,
-                product.quantity,
-                product.internet_price,
-                product.shop_price,
-                product.purchase_price,
-            ]
-            data.append(row)
-        excel_file_name = 'goods.xlsx'
-        response = download(excel_file_name, data)
-        return response
 
 
 @login_required
@@ -254,11 +231,6 @@ class InvoiceCreate(LoginRequiredMixin, CreateView):
     model = Invoice
     fields = '__all__'
     success_url = reverse_lazy('invoices')
-
-    def get_context_data(self, **kwargs):
-        context = super(InvoiceCreate, self).get_context_data(**kwargs)
-        context['invoices'] = Invoice.objects.all()
-        return context
 
 
 class InvoiceUpdate(LoginRequiredMixin, UpdateView):

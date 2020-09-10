@@ -36,13 +36,6 @@ class Ingredient(models.Model):
         verbose_name='Категория'
         )
 
-    def add_quantity(self, quantity, purchase_price):
-        new_quantity = self.quantity + quantity
-        new_purchase_price = (self.purchase_price * self.quantity + purchase_price * quantity) / new_quantity
-        self.quantity = new_quantity
-        self.purchase_price = new_purchase_price
-        self.save()
-
     def __str__(self):
         return self.name
 
@@ -56,7 +49,7 @@ class Ingredient(models.Model):
 class IngredientInvoice(models.Model):
     name = models.CharField(
         max_length=200,
-        unique=False,
+        unique=True,
         verbose_name='Накладная')
     created_at = models.DateField(
         null=True,
@@ -64,43 +57,19 @@ class IngredientInvoice(models.Model):
         default=timezone.now,
         verbose_name='Создана'
     )
-    paid = models.FloatField(
-        verbose_name='Оплачено',
-        blank=True,
-        null=True,
-        default=0)
-    asset = models.ForeignKey(
-        Asset,
-        on_delete=models.ProtectedError,
-        blank=True,
-        null=True,
-        verbose_name='Источник')
 
-    def save(self, *args, **kwargs):
-        '''Переопределям save() чтобы появление / изменение оплаты
-         автоматически меняло остатки источника'''
-        if self.id:
-            previous_invoice = IngredientInvoice.objects.get(id=self.id)
-            previous_paid = previous_invoice.paid
-            previous_asset = previous_invoice.asset
-            if previous_asset:
-                previous_asset.amount += previous_paid
-                previous_asset.save()
-        if self.asset:
-            related_asset = Asset.objects.get(id=self.asset.id)  # !!!
-            related_asset.amount -= self.paid
-            related_asset.save()
-        super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
-        if self.asset:
-            self.asset.amount += self.paid
-            self.asset.save()
-        super().delete(*args, **kwargs)
+    def cost(self):
+        incomings = self.ingredientincoming_set.all()
+        sum = 0
+        for incoming in incomings:
+            sum += incoming.quantity * incoming.purchase_price
+        return sum
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class IngredientIncoming(models.Model):
@@ -118,8 +87,19 @@ class IngredientIncoming(models.Model):
             previous_ingredient = previous_incoming.ingredient
             previous_ingredient.quantity -= previous_quantity
             previous_ingredient.save()
+            previous_invoice_name = previous_incoming.invoice.name
+            previous_asset = Asset.objects.get(name=previous_invoice_name)
+            previous_asset.amount += previous_quantity * previous_incoming.purchase_price
+            previous_asset.save()
         related_ingredient = Ingredient.objects.get(id=self.ingredient.id)  # !!!
         related_ingredient.quantity += self.quantity
+        related_invoice_name = self.invoice.name
+        try:
+            asset_to_change = Asset.objects.get(name=related_invoice_name)
+        except ObjectDoesNotExist:
+            asset_to_change = Asset(name=related_invoice_name, amount=0)
+        asset_to_change.amount -= self.quantity * self.purchase_price
+        asset_to_change.save()
         related_ingredient.save()
         super().save(*args, **kwargs)
 
@@ -128,6 +108,9 @@ class IngredientIncoming(models.Model):
         related_ingredient = self.ingredient
         related_ingredient.quantity = related_ingredient.quantity - self.quantity
         related_ingredient.save()
+        asset_to_change = Asset.objects.get(name=self.invoice.name)
+        asset_to_change.amount += self.quantity * self.purchase_price
+        asset_to_change.save()
         super().delete(*args, **kwargs)
 
 

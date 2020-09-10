@@ -74,13 +74,6 @@ class Product(models.Model):
         verbose_name='Бренд'
         )
 
-    def add_quantity(self, quantity, purchase_price):
-        new_quantity = self.quantity + quantity
-        new_purchase_price = (self.purchase_price * self.quantity + purchase_price * quantity) / new_quantity
-        self.quantity = new_quantity
-        self.purchase_price = new_purchase_price
-        self.save()
-
     def need_to_order(self):
         quantity = self.quantity if self.quantity >= 0 else 0
         return self.max_quantity - quantity
