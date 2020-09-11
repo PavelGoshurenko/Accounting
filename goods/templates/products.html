@@ -16,10 +16,11 @@
       <thead>
         <tr>
           <th>Наименование</th>
+          <th>Остаток</th>
           <th>Цена магазин</th>
           <th>Цена интернет</th>
+          <th>Цена опт</th>
           <th>Цена покупки</th>
-          <th>Остаток</th>
           <th>Категоря</th>
           <th>Бренд</th>
           <th></th>
@@ -36,10 +37,11 @@
 {% endif %}
      
     </td>
+    <td>{{ product.quantity }} шт.</td> 
     <td>{{ product.shop_price }} грн.</td>
     <td>{{ product.internet_price }} грн.</td>
+    <td>{{ product.wholesale_price }} грн.</td> 
     <td>{{ product.purchase_price }} грн.</td> 
-    <td>{{ product.quantity }} шт.</td> 
     <td>{{ product.category }}</td>
     <td>{{ product.brand }}</td>
       <td>{% if user.is_staff %}

@@ -7,6 +7,7 @@ import datetime
 from money.models import Asset
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+import math
 
 
 class ProductCategory(models.Model):
@@ -83,6 +84,9 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('products', args=[str(self.id)])
+
+    def wholesale_price(self):
+        return math.ceil((self.purchase_price + self.internet_price) / 2)
 
     class Meta:
         ordering = ['category', 'brand', 'created_at']
