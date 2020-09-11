@@ -74,6 +74,11 @@ class Product(models.Model):
         blank=True,
         verbose_name='Бренд'
         )
+    is_active = models.BooleanField(
+        null=True,
+        blank=True,
+        default=True
+    )
 
     def need_to_order(self):
         quantity = self.quantity if self.quantity >= 0 else 0
