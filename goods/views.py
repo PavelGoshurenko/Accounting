@@ -59,8 +59,9 @@ class ProductsView(LoginRequiredMixin, generic.ListView):
             for key, value in parameters.items():
                 if value:
                     filters[key] = value
+            filters['is_active'] = True
             return Product.objects.filter(**filters)
-        return Product.objects.all()
+        return Product.objects.filter(is_active=True)
 
 
 class ProductsOrder(LoginRequiredMixin, generic.ListView):
@@ -85,7 +86,7 @@ class ProductsOrder(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         f = F('min_quantity')
-        products = Product.objects.filter(quantity__lt=f)
+        products = Product.objects.filter(quantity__lt=f, is_active=True)
         if self.request.GET:
             parameters = self.request.GET
             filters = {}
@@ -130,7 +131,7 @@ def download_products_order(request):
         'Цена покупки',
     ]]
     f = F('min_quantity')
-    products = Product.objects.filter(quantity__lt=f)
+    products = Product.objects.filter(quantity__lt=f, is_active=True)
     for product in products:
         row = [
             product.name,
@@ -197,7 +198,7 @@ def new_invoice(request):
         
     else:
         products = {}
-        for product in Product.objects.all():
+        for product in Product.objects.filter(is_active=True):
             products[str(product.id)] = {
                 'name': product.name,
                 'purchase_price': product.purchase_price,
@@ -463,7 +464,7 @@ def add_sales_shop(request):
         
     else:
         products = {}
-        for product in Product.objects.all():
+        for product in Product.objects.filter(is_active=True):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.shop_price,
@@ -514,7 +515,7 @@ def add_sales_internet(request):
         
     else:
         products = {}
-        for product in Product.objects.all():
+        for product in Product.objects.filter(is_active=True):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.internet_price,
@@ -551,7 +552,7 @@ def add_inventories(request):
         
     else:
         products = {}
-        for product in Product.objects.all():
+        for product in Product.objects.filter(is_active=True):
             products[str(product.id)] = {
                 'name': product.name,
                 'added': False,
