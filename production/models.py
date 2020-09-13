@@ -36,6 +36,18 @@ class Ingredient(models.Model):
         verbose_name='Категория'
         )
 
+    def save(self, *args, **kwargs):
+        '''Изменение входной цены сохраняет разницу в актив'''
+        if self.id:
+            previous_ingredient = Ingredient.objects.get(id=self.id)
+            previous_purchase_price = previous_ingredient.purchase_price
+            if previous_purchase_price != self.purchase_price:
+                asset = Asset.objects.get(name='Изменения цен')
+                correction = self.purchase_price * self.quantity - previous_purchase_price * self.quantity
+                asset.amount -= correction
+                asset.save()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 

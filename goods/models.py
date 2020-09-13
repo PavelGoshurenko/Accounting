@@ -93,6 +93,18 @@ class Product(models.Model):
     def wholesale_price(self):
         return math.ceil((self.purchase_price + self.internet_price) / 2)
 
+    def save(self, *args, **kwargs):
+        '''Изменение входной цены сохраняет разницу в актив'''
+        if self.id:
+            previous_product = Product.objects.get(id=self.id)
+            previous_purchase_price = previous_product.purchase_price
+            if previous_purchase_price != self.purchase_price:
+                asset = Asset.objects.get(name='Изменения цен')
+                correction = self.purchase_price * self.quantity - previous_purchase_price * self.quantity
+                asset.amount -= correction
+                asset.save()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['category', 'brand', 'created_at']
 
