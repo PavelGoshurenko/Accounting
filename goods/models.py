@@ -8,6 +8,7 @@ from money.models import Asset
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 import math
+from tasks.models import Task
 
 
 class ProductCategory(models.Model):
@@ -98,11 +99,24 @@ class Product(models.Model):
         if self.id:
             previous_product = Product.objects.get(id=self.id)
             previous_purchase_price = previous_product.purchase_price
+            previous_shop_price = previous_product.shop_price
+            previous_internet_price = previous_product.internet_price
             if previous_purchase_price != self.purchase_price:
                 asset = Asset.objects.get(name='Изменения цен')
                 correction = self.purchase_price * self.quantity - previous_purchase_price * self.quantity
                 asset.amount -= correction
                 asset.save()
+                '''Изменение выходной цены будет создавать уведомления '''
+            if previous_shop_price != self.shop_price:
+                text = 'У товара "{}" изменилась цена магазина. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_shop_price, self.shop_price)
+                task = Task.objects.get(name='temp')
+                task.text += text
+                task.save()
+            if previous_internet_price != self.internet_price:
+                text = 'У товара "{}" изменилась интернет цена. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_internet_price, self.internet_price)
+                task = Task.objects.get(name='temp')
+                task.text += text
+                task.save()
         super().save(*args, **kwargs)
 
     class Meta:
