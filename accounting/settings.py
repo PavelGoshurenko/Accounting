@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'production',
     'django_filters',
     'reports',
+    'tasks',
     'bootstrap4',
 ]
 
