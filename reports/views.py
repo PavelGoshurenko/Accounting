@@ -144,6 +144,59 @@ def salary(request):
         Banan_last_period_sum += 225 + daily_sales * 0.05
         Banan_last_period.append(day)
     
+
+    # Kolya this period
+    kolya_this_period_sales = Sale.objects.filter(manager__username='Kolya', period=this_period)
+    kolya_this_period_sales_by_dates = defaultdict(int)
+    for sale in kolya_this_period_sales:
+        kolya_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Kolya_this_period = []
+    Kolya_this_period_sum = 0
+    for date, daily_sales in kolya_this_period_sales_by_dates.items():
+        day = {
+            'date': date,
+            'daily_sales': daily_sales,
+            'percent': daily_sales * 0.05,
+            'rate': 200
+        }
+        Kolya_this_period_sum += 200 + daily_sales * 0.05
+        Kolya_this_period.append(day)
+    # Kolya last period
+    kolya_last_period_sales = Sale.objects.filter(manager__username='Kolya', period=last_period)
+    kolya_last_period_sales_by_dates = defaultdict(int)
+    for sale in kolya_last_period_sales:
+        kolya_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Kolya_last_period = []
+    Kolya_last_period_sum = 0
+    for date, daily_sales in kolya_last_period_sales_by_dates.items():
+        day = {
+            'date': date,
+            'daily_sales': daily_sales,
+            'percent': daily_sales * 0.05,
+            'rate': 225
+        }
+        Kolya_last_period_sum += 225 + daily_sales * 0.05
+        Kolya_last_period.append(day)
+    # Bogdan last period
+    sales_last_period = Sale.objects.filter(period=last_period)
+    margin_last_period = 0
+    sales_last_period_sum = 0
+    for sale in sales_last_period:
+        margin_last_period += sale.price * sale.quantity - sale.purchase_price * sale.quantity
+        sales_last_period_sum += sale.cost()
+    BOGDAN_RATE = 3000
+    Bogdan_percent_last_period = margin_last_period * 0.08
+    Bogdan_last_period_sum = BOGDAN_RATE + Bogdan_percent_last_period
+    # Bogdan this period
+    sales_this_period = Sale.objects.filter(period=this_period)
+    margin_this_period = 0
+    sales_this_period_sum = 0
+    for sale in sales_this_period:
+        margin_this_period += sale.price * sale.quantity - sale.purchase_price * sale.quantity
+        sales_this_period_sum += sale.cost()
+    BOGDAN_RATE = 3000
+    Bogdan_percent_this_period = margin_this_period * 0.08
+    Bogdan_this_period_sum = BOGDAN_RATE + Bogdan_percent_this_period
     
 
     context = {
@@ -153,6 +206,18 @@ def salary(request):
         'Banan_this_period_sum': Banan_this_period_sum,
         'Banan_last_period': Banan_last_period,
         'Banan_last_period_sum': Banan_last_period_sum,
-
+        'Kolya_this_period': Kolya_this_period,
+        'Kolya_this_period_sum': Kolya_this_period_sum,
+        'Kolya_last_period': Kolya_last_period,
+        'Kolya_last_period_sum': Kolya_last_period_sum,
+        'sales_last_period_sum': sales_last_period_sum,
+        'sales_this_period_sum': sales_this_period_sum,
+        'margin_last_period': margin_last_period,
+        'margin_this_period': margin_this_period,
+        'BOGDAN_RATE': BOGDAN_RATE,
+        'Bogdan_percent_last_period': Bogdan_percent_last_period,
+        'Bogdan_percent_this_period': Bogdan_percent_this_period,
+        'Bogdan_last_period_sum': Bogdan_last_period_sum,
+        'Bogdan_this_period_sum': Bogdan_this_period_sum,
     }
     return render(request, 'salary.html', context)
