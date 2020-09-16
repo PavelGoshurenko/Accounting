@@ -4,4 +4,5 @@ from reports import views
 
 urlpatterns = [
     path('profit', views.profit, name="profit"),
+    path('salary', views.salary, name="salary"),
 ]

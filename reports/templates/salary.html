@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Зарплата {% endblock %}
+{% block h %} Зарплата {% endblock %}
+{% block content %}
+
+{% if  Banan_last_period %}
+<h2>Банан зарплата за {{ last_period }}</h2>
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Касса</th>
+      <th>Процент</th>
+      <th>Ставка</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+{% for day in Banan_last_period %}
+<tr>
+
+<td>{{ day.date }}</td> 
+<td>{{ day.daily_sales }} грн.</td>
+<td>{{ day.percent }}</td>
+<td>{{ day.rate }}</td>
+   
+      </tr>
+{% endfor %}
+
+</tbody>
+</table>
+<div>Итого за прошлый месяц {{ Banan_last_period_sum }} грн.</div>
+{% else %}
+<p>You don't have any this month. </p>
+{% endif %}  
+
+
+{% if Banan_this_period %}
+<h2>Банан зарплата за {{ this_period }}</h2>
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Касса</th>
+      <th>Процент</th>
+      <th>Ставка</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+{% for day in Banan_this_period %}
+<tr>
+
+<td>{{ day.date }}</td> 
+<td>{{ day.daily_sales }} грн.</td>
+<td>{{ day.percent }}</td>
+<td>{{ day.rate }}</td>
+   
+      </tr>
+{% endfor %}
+
+</tbody>
+</table>
+<div>Итого за текущий месяц {{ Banan_this_period_sum }} грн.</div>
+{% else %}
+<p>You don't have any this month. </p>
+{% endif %}  
+    
+    {% endblock %}
+  
