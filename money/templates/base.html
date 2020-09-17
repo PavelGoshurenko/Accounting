@@ -118,7 +118,7 @@
 <li class="nav-item">
   <a class="nav-link" href="{% url 'products_order' %}">
     <span data-feather="users"></span>
-    Заказывалка
+    Авто-заказ
   </a>
 </li>
 
@@ -236,6 +236,12 @@ Manufacturings
       Товары
     </a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'salary' %}">
+      <span data-feather="shopping-cart"></span>
+      Зарплата
+    </a>
+  </li>
   {% else %}
 
   <li class="nav-item">
@@ -268,6 +274,12 @@ Manufacturings
     <span data-feather="layers"></span>
     Переучет
     </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'salary' %}">
+        <span data-feather="shopping-cart"></span>
+        Зарплата
+      </a>
     </li>
 
 {% endif %}

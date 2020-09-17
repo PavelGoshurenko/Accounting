@@ -173,9 +173,9 @@ def salary(request):
             'date': date,
             'daily_sales': daily_sales,
             'percent': daily_sales * 0.05,
-            'rate': 225
+            'rate': 200
         }
-        Kolya_last_period_sum += 225 + daily_sales * 0.05
+        Kolya_last_period_sum += 200 + daily_sales * 0.05
         Kolya_last_period.append(day)
     # Bogdan last period
     sales_last_period = Sale.objects.filter(period=last_period)
