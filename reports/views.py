@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from goods.models import Sale, Product
-from money.models import Spending, Asset, Period
+from money.models import Spending, Asset, Period, Transfer
 from production.models import Ingredient
 from django.db.models import Sum, Q
 from collections import defaultdict
@@ -221,3 +221,54 @@ def salary(request):
         'Bogdan_this_period_sum': Bogdan_this_period_sum,
     }
     return render(request, 'salary.html', context)
+
+
+@login_required
+def oleg(request):
+    periods = Period.objects.all()
+    profits_by_periods = []
+    for period in periods:
+        sales_by_period = Sale.objects.filter(period=period)
+        margin_by_period = 0
+        sales_sum_by_period = 0
+        oleg_transfers_sum = 0
+        oleg_transfers = []
+        for transfer in Transfer.objects.filter(period=period, asset_to__name='Олег'):
+            oleg_transfers.append({
+                'name': transfer.name,
+                'amount': transfer.amount,
+            })
+            oleg_transfers_sum += transfer.amount
+        for transfer in Transfer.objects.filter(period=period, asset_from__name='Олег'):
+            oleg_transfers.append({
+                'name': transfer.name,
+                'amount': -transfer.amount,
+            })
+            oleg_transfers_sum -= transfer.amount
+        for sale in sales_by_period:
+            margin_by_period = margin_by_period + sale.price * sale.quantity - sale.purchase_price * sale.quantity
+            sales_sum_by_period = sales_sum_by_period + sale.price * sale.quantity - sale.purchase_price * sale.quantity
+        spendings_by_period = Spending.objects.filter(period=period)
+        spendings_amount_by_period = 0
+        for spending in spendings_by_period:
+            spendings_amount_by_period += spending.amount
+        pasha_take_by_period = spendings_by_period.aggregate(sum=Sum('amount', filter=Q(name='Pasha take')))
+        oleg_take_by_period = spendings_by_period.aggregate(sum=Sum('amount', filter=Q(name='Oleg take')))
+        if pasha_take_by_period['sum'] is None:
+            pasha_take_by_period['sum'] = 0
+        if oleg_take_by_period['sum'] is None:
+            oleg_take_by_period['sum'] = 0
+        dividents_by_period = pasha_take_by_period['sum'] + oleg_take_by_period['sum']
+        profit_by_period = {
+            'period': period.name,
+            'sales_sum': sales_sum_by_period,
+            'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
+            'oleg_dividents': oleg_take_by_period['sum'],
+            'oleg_transfers': oleg_transfers,
+            'oleg_transfers_sum': oleg_transfers_sum
+        }
+        profits_by_periods.append(profit_by_period)
+    context = {
+        'profits_by_periods': profits_by_periods,
+    }
+    return render(request, 'oleg.html', context)

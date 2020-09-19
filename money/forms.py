@@ -114,6 +114,7 @@ class TerminalForm (forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TerminalForm, self).__init__(*args, **kwargs)
         self.fields['name'].initial = get_name()
+        self.fields['period'].initial = get_period()
 
     asset_from = forms.ModelChoiceField(
         queryset=Asset.objects.filter(is_active=True),
@@ -128,16 +129,24 @@ class TerminalForm (forms.ModelForm):
     name = forms.CharField(
         label='Примечание:'
     )
+    period = forms.ModelChoiceField(
+        queryset=Period.objects.all(),
+        label='Учетный период',
+    )
     
     class Meta:
         model = Transfer
-        fields = ('amount', 'name', 'asset_from', 'asset_to')
+        fields = ('amount', 'name', 'asset_from', 'asset_to', 'period')
         labels = {
             'name': 'Примечание',
         }
 
 
 class TransferForm (forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TransferForm, self).__init__(*args, **kwargs)
+        self.fields['period'].initial = get_period()
+
     asset_from = forms.ModelChoiceField(
         queryset=Asset.objects.filter(is_active=True),
         label='Из актива:'
@@ -146,8 +155,12 @@ class TransferForm (forms.ModelForm):
         queryset=Asset.objects.filter(is_active=True),
         label='В актив:'
     )
+    period = forms.ModelChoiceField(
+        queryset=Period.objects.all(),
+        label='Учетный период',
+    )
     
     class Meta:
         model = Transfer
-        fields = ('amount', 'name', 'asset_from', 'asset_to')
+        fields = ('amount', 'name', 'asset_from', 'asset_to', 'period')
 

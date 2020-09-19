@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Олег отчет {% endblock %}
+{% block h %} Олег отчет {% endblock %}
+{% block content %}
+
+
+
+
+ 
+    
+    {% for profit in profits_by_periods %}
+    <h2>{{profit.period}}</h2>
+    <div>Касса: {{ profit.sales_sum }} грн.</div>
+    <div> Дивиденды: {{ profit.oleg_dividents }} грн.</div>
+    <div><b>Прибыль: {{ profit.sales_profit }} грн.</b></div>
+
+
+    <h3> Расходы:</h3>
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+       <th>Сумма</th>
+       <th>Примечание</th>
+     
+    
+    </tr>
+  </thead>
+  <tbody>
+{% for transfer in profit.oleg_transfers %}
+<tr>
+
+<td>{{ transfer.amount }} грн.</td> 
+<td>{{ transfer.name }}</td>
+   
+      </tr>
+{% endfor %}
+
+</tbody>
+</table>
+<div>Итого: {{ profit.oleg_transfers_sum }} </div>
+
+    {% endfor %}
+    
+    {% endblock %}
+  

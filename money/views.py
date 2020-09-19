@@ -51,11 +51,6 @@ class SpendingCreate(LoginRequiredMixin, CreateView):
     form_class = SpendingsForm
     success_url = reverse_lazy('spendings')
 
-    def get_context_data(self, **kwargs):
-        context = super(SpendingCreate, self).get_context_data(**kwargs)
-        context['spendings'] = Spending.objects.all()
-        return context
-
 
 class TodaySpendingCreate(LoginRequiredMixin, CreateView):  
     model = Spending
@@ -160,11 +155,6 @@ class TransferCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     form_class = TransferForm
     success_url = reverse_lazy('transfers')
-
-    def get_context_data(self, **kwargs):
-        context = super(TransferCreate, self).get_context_data(**kwargs)
-        context['transfers'] = Transfer.objects.all()
-        return context
 
 
 class PickupCreate(LoginRequiredMixin, CreateView):  

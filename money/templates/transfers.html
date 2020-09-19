@@ -17,6 +17,7 @@
         <tr>
           <th>Наименование</th>
           <th>Действие</th>
+          <th>Учетный период</th>
           <th></th>
         </tr>
       </thead>
@@ -24,7 +25,8 @@
     {% for transfer in transfers %}
     <tr>
     <td><a href="{% url 'transfer_update' transfer.id %}">{{ transfer.name }}</a> </td>
-    <td>С {{ transfer.asset_from.name }} в {{ transfer.asset_to.name }} перешло {{ transfer.amount }}  грн.</td> 
+    <td>С {{ transfer.asset_from.name }} в {{ transfer.asset_to.name }} перешло {{ transfer.amount }}  грн.</td>
+    <td>{{ transfer.period }}</td> 
     <td>  <a href="{% url 'transfer_delete' transfer.id %}">Delete</a></td>
        
           </tr>

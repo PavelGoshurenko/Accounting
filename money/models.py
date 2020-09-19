@@ -192,5 +192,3 @@ class Transfer(models.Model):
     class Meta:
         ordering = ['-id']
   
-
-
