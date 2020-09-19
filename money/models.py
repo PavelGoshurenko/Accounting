@@ -147,6 +147,13 @@ class Transfer(models.Model):
         on_delete=models.ProtectedError,
         related_name='asset_to',
         verbose_name="Куда")
+    period = models.ForeignKey(
+        Period,
+        on_delete=models.ProtectedError,
+        null=True,
+        blank=True,
+        verbose_name='Учетный период'
+        )
 
     def save(self, *args, **kwargs):
         if self.id:
