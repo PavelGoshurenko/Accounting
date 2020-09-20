@@ -38,7 +38,13 @@
 
 </tbody>
 </table>
-<div>Итого: {{ profit.oleg_transfers_sum }} </div>
+<div>Итого расходов: {{ profit.oleg_transfers_sum }} грн. </div>
+<div>Дивиденды: {{ profit.oleg_dividents }} грн.</div>
+<div>{{ profit.diff.name }}: {{ profit.diff.amount }} грн.</div>
+<div>С прошлого месяца: {{ profit.oleg_start_dept }} грн.</div>
+<div>На следующий: {{ profit.oleg_finish_dept }} грн.</div>
+
+
 
     {% endfor %}
     

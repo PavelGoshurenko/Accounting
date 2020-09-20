@@ -227,6 +227,7 @@ def salary(request):
 def oleg(request):
     periods = Period.objects.all()
     profits_by_periods = []
+    oleg_debt = 220165
     for period in periods:
         sales_by_period = Sale.objects.filter(period=period)
         margin_by_period = 0
@@ -247,7 +248,7 @@ def oleg(request):
             oleg_transfers_sum -= transfer.amount
         for sale in sales_by_period:
             margin_by_period = margin_by_period + sale.price * sale.quantity - sale.purchase_price * sale.quantity
-            sales_sum_by_period = sales_sum_by_period + sale.price * sale.quantity - sale.purchase_price * sale.quantity
+            sales_sum_by_period = sales_sum_by_period + sale.price * sale.quantity
         spendings_by_period = Spending.objects.filter(period=period)
         spendings_amount_by_period = 0
         for spending in spendings_by_period:
@@ -259,13 +260,23 @@ def oleg(request):
         if oleg_take_by_period['sum'] is None:
             oleg_take_by_period['sum'] = 0
         dividents_by_period = pasha_take_by_period['sum'] + oleg_take_by_period['sum']
+        oleg_start_dept = oleg_debt
+        diff = {
+            'amount': oleg_transfers_sum - oleg_take_by_period['sum'],
+            'name': 'Недобор' if (oleg_transfers_sum - oleg_take_by_period['sum']) < 0 else 'Перебор'
+        }
+        oleg_debt += oleg_transfers_sum - oleg_take_by_period['sum']
+        oleg_finish_dept = oleg_debt
         profit_by_period = {
             'period': period.name,
             'sales_sum': sales_sum_by_period,
             'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
             'oleg_dividents': oleg_take_by_period['sum'],
             'oleg_transfers': oleg_transfers,
-            'oleg_transfers_sum': oleg_transfers_sum
+            'oleg_transfers_sum': oleg_transfers_sum,
+            'oleg_start_dept': oleg_start_dept,
+            'oleg_finish_dept': oleg_finish_dept,
+            'diff': diff,
         }
         profits_by_periods.append(profit_by_period)
     context = {
