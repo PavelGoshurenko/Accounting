@@ -584,8 +584,10 @@ def inventories(request):
     else:
         inventories = {}
         for inventory in Inventory.objects.filter(confirmed=False):
+            brand = '' if inventory.product.brand is None else inventory.product.brand.name
             inventories[str(inventory.id)] = {
                 'name': inventory.product.name,
+                'brand': brand,
                 'supposed_quantity': inventory.supposed_quantity,
                 'fact_quantity': inventory.fact_quantity,
                 }

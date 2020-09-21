@@ -33,9 +33,7 @@ const inputHandler = (e) => {
 };
 
 
-
 // render
-
 
 const $tabDiv = $('<div>', {class: 'table-responsive'}).appendTo('#main-data')
 const $mainTable = $('<table>', {
@@ -50,13 +48,13 @@ $('<input>', {
 
 const render = (state) => {
     $mainTable.empty();
-    $('<thead><tr><th>Товар</th><th>Ожидаемое количество</th><th>Факт</th><th>Незадача</th></thead>').appendTo($mainTable);
+    $('<thead><tr><th>Товар</th><th>Бренд</th><th>Ожидаемое количество</th><th>Факт</th><th>Незадача</th></thead>').appendTo($mainTable);
     const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
     const keysToShow = Object.keys(state)
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
         const $tdName = $(`<td>${state[key].name}</td>`).appendTo($tr);
-
+        const $tdBrand = $(`<td>${state[key].brand}</td>`).appendTo($tr);
         const $tdSupposed = $('<td>').appendTo($tr);
         const $supposed = $('<div>', {
             text: state[String(key)].supposed_quantity,
