@@ -157,7 +157,7 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': daily_sales * 0.05,
+            'percent': round(daily_sales * 0.05, 2),
             'rate': 200
         }
         Kolya_this_period_sum += 200 + daily_sales * 0.05
@@ -173,7 +173,7 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': daily_sales * 0.05,
+            'percent': round(daily_sales * 0.05, 2),
             'rate': 200
         }
         Kolya_last_period_sum += 200 + daily_sales * 0.05
@@ -213,13 +213,13 @@ def salary(request):
         'Kolya_last_period_sum': Kolya_last_period_sum,
         'sales_last_period_sum': sales_last_period_sum,
         'sales_this_period_sum': sales_this_period_sum,
-        'margin_last_period': margin_last_period,
-        'margin_this_period': margin_this_period,
+        'margin_last_period': round(margin_last_period, 2),
+        'margin_this_period': round(margin_this_period, 2),
         'BOGDAN_RATE': BOGDAN_RATE,
-        'Bogdan_percent_last_period': Bogdan_percent_last_period,
-        'Bogdan_percent_this_period': Bogdan_percent_this_period,
-        'Bogdan_last_period_sum': Bogdan_last_period_sum,
-        'Bogdan_this_period_sum': Bogdan_this_period_sum,
+        'Bogdan_percent_last_period': round(Bogdan_percent_last_period, 2),
+        'Bogdan_percent_this_period': round(Bogdan_percent_this_period, 2),
+        'Bogdan_last_period_sum': round(Bogdan_last_period_sum, 2),
+        'Bogdan_this_period_sum': round(Bogdan_this_period_sum, 2),
     }
     return render(request, 'salary.html', context)
 
