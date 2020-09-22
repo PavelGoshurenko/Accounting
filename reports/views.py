@@ -49,8 +49,10 @@ def profit(request):
     for period in periods:
         sales_by_period = Sale.objects.filter(period=period)
         margin_by_period = 0
+        sales_sum_by_period = 0
         for sale in sales_by_period:
             margin_by_period = margin_by_period + sale.price * sale.quantity - sale.purchase_price * sale.quantity
+            sales_sum_by_period += sale.price * sale.quantity
         spendings_by_period = Spending.objects.filter(period=period)
         spendings_amount_by_period = 0
         for spending in spendings_by_period:
@@ -64,9 +66,10 @@ def profit(request):
         dividents_by_period = pasha_take_by_period['sum'] + oleg_take_by_period['sum']
         profit_by_period = {
             'period': period.name,
-            'margin': margin_by_period,
-            'spendings_amount': spendings_amount_by_period - dividents_by_period,
-            'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
+            'sales_sum': sales_sum_by_period,
+            'margin': round(margin_by_period, 2),
+            'spendings_amount': round(spendings_amount_by_period - dividents_by_period, 2),
+            'sales_profit': round(margin_by_period - spendings_amount_by_period + dividents_by_period, 2),
             'dividents': dividents_by_period,
         }
         profits_by_periods.append(profit_by_period)

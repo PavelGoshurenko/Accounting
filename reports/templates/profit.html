@@ -31,6 +31,7 @@
     <h1>Прибыль по месяцам</h1>
     {% for profit in profits_by_periods %}
     <h2>{{profit.period}}</h2>
+    <div>Касса: {{ profit.sales_sum }}</div>
     <div>Маржа: {{ profit.margin }} грн.</div>
     <div>Затраты: {{ profit.spendings_amount }} грн.</div>
     <div> Дивиденды: {{ profit.dividents }} грн.</div>
