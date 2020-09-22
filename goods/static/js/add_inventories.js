@@ -53,6 +53,14 @@ const brandChangeHandler = (e) => {
     filterState.brand = e.target.value
     render(state);
 }
+
+const addAllHandler = (e) => {
+    e.preventDefault();
+    e.data.keys.map((key) => {
+        state[String(key)].added = !(state[String(key)].added);
+    })
+    render(state);
+};
 // render
 
 $('<input>', {
@@ -77,7 +85,7 @@ const render = (state) => {
     $categorySelector.val(filterState.category);
     $brandSelector.val(filterState.brand);
     $mainTable.empty();
-    $('<thead><tr><th>Товар</th><th>Добавить</th></tr></thead>').appendTo($mainTable);
+    $('<thead><tr><th>Товар</th><th><a href="#" id="add_all"> Добавить </a></th></tr></thead>').appendTo($mainTable);
     const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
     let keysToShow = Object.keys(state)
     if (filterState.category) {
@@ -86,6 +94,7 @@ const render = (state) => {
     if (filterState.brand) {
         keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand))
     }
+    $('#add_all').on('click', {keys: keysToShow}, addAllHandler);
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
         const $tdName = $(`<td>${state[key].name}</td>`).appendTo($tr);

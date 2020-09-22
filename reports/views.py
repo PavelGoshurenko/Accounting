@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+import math
 
 # Create your views here.
 
@@ -122,7 +123,7 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': daily_sales * 0.05,
+            'percent': round(daily_sales * 0.05, 2),
             'rate': 225
         }
         Banan_this_period_sum += 225 + daily_sales * 0.05
@@ -138,7 +139,7 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': daily_sales * 0.05,
+            'percent': round(daily_sales * 0.05, 2),
             'rate': 225
         }
         Banan_last_period_sum += 225 + daily_sales * 0.05
