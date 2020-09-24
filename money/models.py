@@ -115,8 +115,9 @@ class Spending(models.Model):
 
     def delete(self, *args, **kwargs):
         '''Переопределяем delete для того чтобы вернуть остатки актива к исходным значениям'''
-        self.asset.amount += self.amount
-        self.asset.save()
+        related_asset = Asset.objects.get(id=self.asset.id)
+        related_asset.amount += self.amount
+        related_asset.save()
         super().delete(*args, **kwargs)
 
     def __str__(self):

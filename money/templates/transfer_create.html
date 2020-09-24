@@ -15,7 +15,24 @@
 </button>
 {% endbuttons %}
   
-</form>   
+</form>
+
+
+<script type="text/javascript">
+const sumChange = (e) => {
+  const $amount = $('#id_amount');
+  const assetName = $('#id_asset_from option:selected').html();
+  const re = /\(.*\)$/gm;
+  const amount = assetName.match(re)[0].slice(1, -1);
+  $amount.val(amount);
+}
+$assetFrom = $('#id_asset_from');
+$assetFrom.on('change', sumChange);
+</script>
+
+
+
+   
   
 {% endblock %}
   

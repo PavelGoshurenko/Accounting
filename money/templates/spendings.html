@@ -43,7 +43,9 @@
     <td>{{ spending.category }}</td>
     <td>{{ spending.department }}</td>
     <td>{{ spending.period }}</td>
-    <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a></td>
+    <td>  <a href="{% url 'spending_delete' spending.id %}">Delete</a> | 
+          <a href="{% url 'terminal_from_spending' spending.id %}">--> to terminal</a>
+    </td>
        
           </tr>
   {% endfor %}

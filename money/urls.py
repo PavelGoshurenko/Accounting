@@ -47,4 +47,9 @@ urlpatterns = [
         views.TransferDelete.as_view(),
         name='transfer_delete'
         ),
+    path(
+        'transfer/terminal_from_spending/<int:pk>/',
+        views.terminal_from_spending,
+        name='terminal_from_spending'
+        ),
 ]

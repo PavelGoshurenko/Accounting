@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from money.models import Spending, Asset, Transfer, SpendingCategory, Department
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
@@ -155,6 +155,7 @@ class TransferCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     form_class = TransferForm
     success_url = reverse_lazy('transfers')
+    template_name = 'transfer_create.html'
 
 
 class PickupCreate(LoginRequiredMixin, CreateView):  
@@ -191,16 +192,47 @@ class TerminalCreate(LoginRequiredMixin, CreateView):
         spending.save()
         return super().form_valid(form)
 
+
+@login_required
+def terminal_from_spending(request, pk):
+    spending = Spending.objects.get(id=pk)
+    transfer_name = 'terminal {}'.format(spending.asset.name)
+    terminal_asset_to = Asset.objects.get(name='Терминал')
+    transfer = Transfer(
+        name=transfer_name,
+        asset_from=spending.asset,
+        asset_to=terminal_asset_to,
+        period=spending.period,
+        amount=spending.amount,
+    )
+    transfer.save()
+    commission_spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B'))
+    try:
+        commission_spending = Spending.objects.get(name=commission_spending_name)
+    except ObjectDoesNotExist:
+        asset = Asset.objects.get(name='Терминал')
+        category = SpendingCategory.objects.get(name='Затраты')
+        department = Department.objects.get(name='Магазин')
+        period = get_period()
+        commission_spending = Spending(
+            name=commission_spending_name,
+            amount=0,
+            asset=asset,
+            department=department,
+            category=category,
+            period=period
+        )
+    commission_spending.amount += round((spending.amount * 0.02), 2)
+    commission_spending.save()
+    spending.delete()
+    return redirect(reverse_lazy('assets'))
+
+
 class TransferUpdate(LoginRequiredMixin, UpdateView):
     model = Transfer
     fields = '__all__'
     success_url = reverse_lazy('transfers')
     template_name = 'transfer_update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(TransferUpdate, self).get_context_data(**kwargs)
-        context['transfers'] = Transfer.objects.all()
-        return context
 
 
 class TransferDelete(LoginRequiredMixin, DeleteView):
