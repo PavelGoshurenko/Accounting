@@ -246,9 +246,12 @@ class InvoiceUpdate(LoginRequiredMixin, UpdateView):
         incomings = invoice.incoming_set.all()
         context['incomings'] = incomings
         sum = 0
+        items = 0
         for incoming in incomings:
             sum += incoming.quantity * incoming.purchase_price
+            items += incoming.quantity
         context['sum'] = sum
+        context['items'] = items
         return context
 
  
@@ -425,10 +428,13 @@ class SaleDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('sales')
 
     def get_success_url(self):
-        user = self.request.user
-        if user.is_staff:
-            return reverse_lazy('sales')
-        return reverse_lazy('index')
+        sale = self.get_object()
+        if sale.department.name == "Магазин":
+            return reverse_lazy('today_sales_shop')
+        elif sale.department.name == "Интернет":
+            return reverse_lazy('today_sales_internet')
+        else:
+            return reverse_lazy('index')
 
 
 @login_required
