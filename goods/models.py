@@ -281,4 +281,33 @@ class Inventory(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.product.name, self.date)
+
+
+class Task(models.Model):
+    name = models.CharField(
+        max_length=250,
+        unique=False, verbose_name='Название задачи',
+    )
+    user_to = models.ForeignKey(
+        User,
+        on_delete=models.ProtectedError,
+        null=False,
+        blank=False,
+        verbose_name='Исполнитель',
+    )
+    text = models.TextField(max_length=2000)
+    done = models.BooleanField(blank=False, default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Invoice_Task(Task):
+    invoice = models.ForeignKey(
+        Invoice,
+        on_delete=models.ProtectedError,
+        null=False,
+        blank=False,
+        verbose_name='Накладная',
+    )
     
