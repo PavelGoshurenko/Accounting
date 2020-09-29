@@ -3,13 +3,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory
+from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory, Invoice_Task
 from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
 from django.views.generic.base import TemplateView
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.models import modelformset_factory
-from goods.forms import SalesFromFileForm, InventoryForm
+from goods.forms import SalesFromFileForm, InventoryForm, InvoiceTaskForm
 from goods.filters import SaleFilter, ProductFilter
 import json
 from django.forms import modelform_factory
@@ -155,11 +155,6 @@ class ProductCreate(LoginRequiredMixin, CreateView):
     model = Product
     fields = '__all__'
     success_url = reverse_lazy('index')
-
-    def get_context_data(self, **kwargs):
-        context = super(ProductCreate, self).get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
-        return context
 
 
 class ProductUpdate(LoginRequiredMixin, UpdateView):
@@ -647,4 +642,62 @@ class InventoriesResult(LoginRequiredMixin, generic.ListView):
         for inventory in inventories:
             sum += inventory.cost()
         context['sum'] = sum
+        return context 
+
+
+# tasks
+class TasksView(LoginRequiredMixin, generic.ListView):
+    template_name = 'tasks.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.username == "fisher":
+            return Invoice_Task.objects.filter(done=False)
+        return Invoice_Task.objects.filter(user_to=user, done=False)
+
+
+class TaskView(LoginRequiredMixin, generic.DetailView):
+    model = Invoice_Task
+    template_name = "task.html"
+    context_object_name = 'task'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        invoice = task.invoice
+        context['invoice'] = invoice
+        incomings = invoice.incoming_set.all()
+        context['incomings'] = incomings
+        sum = 0
+        items = 0
+        for incoming in incomings:
+            sum += incoming.quantity * incoming.purchase_price
+            items += incoming.quantity
+        context['sum'] = sum
+        context['items'] = items
         return context
+
+@login_required
+def confirm_task(request, pk):
+    task = Invoice_Task.objects.get(id=pk)
+    task.done = True
+    task.save()
+    return redirect(reverse_lazy('tasks'))
+
+
+# invoice task
+    
+@login_required
+def task_from_invoice(request, pk):
+    invoice = Invoice.objects.get(id=pk)
+    managers = User.objects.exclude(username='Fisher')
+    for manager in managers:
+        task = Invoice_Task(
+            name=invoice.name,
+            invoice=invoice,
+            user_to=manager,
+        )
+        task.save()
+    return redirect(reverse_lazy('tasks'))
+    

@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Уведомления {% endblock %}
+{% block h %} Уведомления {% endblock %}
+
+
+
+{% block content %}
+
+   
+    {% if tasks %}
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Сотрудник</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for task in tasks %}
+    <tr>
+    <td><a href="{% url 'task' task.id %}">{{ task.name }}</a>  
+    </td>
+    <td>{{ task.user_to }}</td> 
+       
+          </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+  {% else %}
+    <p>Уведомлений нет. Зайдите позже. </p>
+    
+  {% endif %}  
+  
+
+
+  
+    
+{% endblock %}
+
+{% block context %}
+{% if user.is_staff %}
+---
+{% endif %}
+{% endblock %}
