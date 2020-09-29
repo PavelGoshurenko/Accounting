@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.models import modelform_factory
 from django.forms.models import modelformset_factory
-from goods.models import Product, Incoming, Inventory, Invoice, Invoice_Task
+from goods.models import Product, Incoming, Inventory, Invoice, Task
 from money.models import Department
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -39,13 +39,3 @@ class InventoryForm (forms.ModelForm):
         labels = {
             'fact_quantity': '',
         }
-
-
-class InvoiceTaskForm(forms.ModelForm):
-    invoice = forms.ModelChoiceField(
-        queryset=Invoice.objects.all(),
-    )
-
-    class Meta:
-        model = Invoice_Task
-        fields = ('name', 'user_to', 'text', 'invoice')

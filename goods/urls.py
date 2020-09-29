@@ -75,7 +75,7 @@ urlpatterns = [
     path('inventories_result/', views.InventoriesResult.as_view(), name='inventories_result'),
     # tasks
     path('tasks', views.TasksView.as_view(), name='tasks'),
-    path('task/<int:pk>/', views.TaskView.as_view(), name='task'),
+    path('tasks/<int:pk>/', views.TaskView.as_view(), name='task'),
     path('tasks/create_from_invoice/<int:pk>/', views.task_from_invoice, name='task_from_invoice'),
     path('tasks/confirm/<int:pk>/', views.confirm_task, name='confirm_task'),
 ]

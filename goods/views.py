@@ -3,13 +3,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory, Invoice_Task
+from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory, Task
 from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
 from django.views.generic.base import TemplateView
 from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.forms.models import modelformset_factory
-from goods.forms import SalesFromFileForm, InventoryForm, InvoiceTaskForm
+from goods.forms import SalesFromFileForm, InventoryForm
 from goods.filters import SaleFilter, ProductFilter
 import json
 from django.forms import modelform_factory
@@ -653,12 +653,12 @@ class TasksView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user = self.request.user
         if user.username == "fisher":
-            return Invoice_Task.objects.filter(done=False)
-        return Invoice_Task.objects.filter(user_to=user, done=False)
+            return Task.objects.filter(done=False)
+        return Task.objects.filter(user_to=user, done=False)
 
 
 class TaskView(LoginRequiredMixin, generic.DetailView):
-    model = Invoice_Task
+    model = Task
     template_name = "task.html"
     context_object_name = 'task'
 
@@ -666,34 +666,33 @@ class TaskView(LoginRequiredMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         task = self.get_object()
         invoice = task.invoice
-        context['invoice'] = invoice
-        incomings = invoice.incoming_set.all()
-        context['incomings'] = incomings
-        sum = 0
-        items = 0
-        for incoming in incomings:
-            sum += incoming.quantity * incoming.purchase_price
-            items += incoming.quantity
-        context['sum'] = sum
-        context['items'] = items
+        if invoice:
+            context['invoice'] = invoice
+            incomings = invoice.incoming_set.all()
+            context['incomings'] = incomings
+            sum = 0
+            items = 0
+            for incoming in incomings:
+                sum += incoming.quantity * incoming.purchase_price
+                items += incoming.quantity
+            context['sum'] = sum
+            context['items'] = items
         return context
 
 @login_required
 def confirm_task(request, pk):
-    task = Invoice_Task.objects.get(id=pk)
+    task = Task.objects.get(id=pk)
     task.done = True
     task.save()
     return redirect(reverse_lazy('tasks'))
 
-
-# invoice task
     
 @login_required
 def task_from_invoice(request, pk):
     invoice = Invoice.objects.get(id=pk)
     managers = User.objects.exclude(username='fisher')
     for manager in managers:
-        task = Invoice_Task(
+        task = Task(
             name=invoice.name,
             invoice=invoice,
             user_to=manager,

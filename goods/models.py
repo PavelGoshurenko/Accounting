@@ -8,8 +8,22 @@ from money.models import Asset
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 import math
-from tasks.models import Task
 
+
+def new_task(name, text):
+    managers = User.objects.exclude(username='fisher')
+    for manager in managers:
+        try:
+            task = Task.objects.get(name=name, user_to=manager)
+        except ObjectDoesNotExist:
+            task = Task(
+                name=name,
+                user_to=manager,
+                text=""
+            )
+            task.save()
+        task.text += '<div>{}</div>'.format(text)
+        task.save()
 
 class ProductCategory(models.Model):
     name = models.CharField(
@@ -109,14 +123,10 @@ class Product(models.Model):
                 '''Изменение выходной цены будет создавать уведомления '''
             if previous_shop_price != self.shop_price:
                 text = 'У товара "{}" изменилась цена магазина. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_shop_price, self.shop_price)
-                task = Task.objects.get(name='temp')
-                task.text += text
-                task.save()
+                new_task('изменения цен', text)
             if previous_internet_price != self.internet_price:
                 text = 'У товара "{}" изменилась интернет цена. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_internet_price, self.internet_price)
-                task = Task.objects.get(name='temp')
-                task.text += text
-                task.save()
+                new_task('изменения цен', text)
         super().save(*args, **kwargs)
 
     class Meta:
@@ -297,17 +307,13 @@ class Task(models.Model):
     )
     text = models.TextField(max_length=2000)
     done = models.BooleanField(blank=False, default=False)
-
-    def __str__(self):
-        return self.name
-
-
-class Invoice_Task(Task):
     invoice = models.ForeignKey(
         Invoice,
         on_delete=models.ProtectedError,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         verbose_name='Накладная',
     )
-    
+
+    def __str__(self):
+        return self.name

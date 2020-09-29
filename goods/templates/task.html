@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div>{{ task.text }}</div>
+<div>{{ task.text |safe }}</div>
 
 {% if incomings %}
 <div class="text-right">Всего единиц: {{ items }} грн.</div>
@@ -35,11 +35,11 @@
 {% endfor %}
 </table>
 
-<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_invoice' invoice.id %}" role="button">Скачать {{ invoice.name }}.xlsx</a
-  ><a class="btn btn-secondary btn-lg btn-block" href="{% url 'confirm_task' task.id %}" role="button">Ознакомлен</a></p>
-{% else %}
-<p>You don't have any incomings. </p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_invoice' invoice.id %}" role="button">Скачать {{ invoice.name }}.xlsx</a></p>
+  {% endif %}  
+ <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'confirm_task' task.id %}" role="button">Ознакомлен</a></p>
 
-{% endif %}  
+
+
 
 {% endblock %}
