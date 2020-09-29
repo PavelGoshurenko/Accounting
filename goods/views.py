@@ -691,12 +691,13 @@ def confirm_task(request, pk):
 @login_required
 def task_from_invoice(request, pk):
     invoice = Invoice.objects.get(id=pk)
-    managers = User.objects.exclude(username='Fisher')
+    managers = User.objects.exclude(username='fisher')
     for manager in managers:
         task = Invoice_Task(
             name=invoice.name,
             invoice=invoice,
             user_to=manager,
+            text='Новый приход:'
         )
         task.save()
     return redirect(reverse_lazy('tasks'))
