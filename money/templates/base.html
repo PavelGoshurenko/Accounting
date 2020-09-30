@@ -256,6 +256,16 @@ Manufacturings
     </a>
   </li>
   <li class="nav-item">
+    <a class="nav-link" href="{% url 'tasks' %}">
+      <span data-feather="layers"></span>
+      {% if tasks_count %}
+      <b>Уведомления ({{ tasks_count }}) </b>
+      {% else %}
+      Уведомления
+      {% endif %}
+    </a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" href="{% url 'salary' %}">
       <span data-feather="shopping-cart"></span>
       Зарплата
