@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Добавить задачу {% endblock %}
+{% block h %} Добавить задачу {% endblock %}
+{% block content %}
+<form action="" method="post" class="form">
+  {% csrf_token %}
+  
+  {% bootstrap_form form %}
+
+  
+{% buttons %}
+<button type="submit" class="btn btn-secondary">
+  Добавить задачу
+</button>
+{% endbuttons %}
+  
+</form>
+
+
+
+   
+  
+{% endblock %}

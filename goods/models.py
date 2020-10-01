@@ -10,11 +10,10 @@ from django.utils import timezone
 import math
 
 
-def new_task(name, text):
-    managers = User.objects.exclude(username='fisher')
+def new_task(name, text, managers):
     for manager in managers:
         try:
-            task = Task.objects.get(name=name, user_to=manager)
+            task = Task.objects.get(name=name, user_to=manager, done=False)
         except ObjectDoesNotExist:
             task = Task(
                 name=name,
@@ -123,10 +122,22 @@ class Product(models.Model):
                 '''Изменение выходной цены будет создавать уведомления '''
             if previous_shop_price != self.shop_price:
                 text = 'У товара "{}" изменилась цена магазина. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_shop_price, self.shop_price)
-                new_task('изменения цен', text)
+                managers = User.objects.exclude(username='fisher')
+                new_task('изменения цен', text, managers)
             if previous_internet_price != self.internet_price:
                 text = 'У товара "{}" изменилась интернет цена. Было: {} грн. Стало: {} грн\n'.format(self.name, previous_internet_price, self.internet_price)
-                new_task('изменения цен', text)
+                managers = User.objects.exclude(username='fisher')
+                new_task('изменения цен', text, managers)
+            if previous_product.is_active != self.is_active:
+                previous_status = 'активен' if previous_product.is_active else 'неактивен'
+                now_status = 'активен' if self.is_active else 'неактивен'
+                text = 'Товар "{}" был "{}", а теперь "{}"'.format(self.name, previous_status, now_status)
+                managers = [User.objects.get(username='Bogdan')]
+                new_task('изменение активности товара', text, managers)
+        else:
+            text = ('Появился новый товар: "{}". Цена магазин {} грн. Цена интернет {} грн.'.format(self.name, self.shop_price, self.internet_price))
+            managers = User.objects.exclude(username='fisher')
+            new_task('новый товар', text, managers)
         super().save(*args, **kwargs)
 
     class Meta:

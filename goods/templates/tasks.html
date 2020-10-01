@@ -42,6 +42,6 @@
 
 {% block context %}
 {% if user.is_staff %}
----
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'task_create' %}" role="button">Добавить задачу</a></p>
 {% endif %}
 {% endblock %}

@@ -646,6 +646,12 @@ class InventoriesResult(LoginRequiredMixin, generic.ListView):
 
 
 # tasks
+class TaskCreate(LoginRequiredMixin, CreateView):
+    model = Task
+    fields = '__all__'
+    success_url = reverse_lazy('tasks')
+
+
 class TasksView(LoginRequiredMixin, generic.ListView):
     template_name = 'tasks.html'
     context_object_name = 'tasks'
