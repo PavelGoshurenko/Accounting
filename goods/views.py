@@ -461,7 +461,7 @@ def add_sales_shop(request):
                 period=period
             )
             new_sale.save()
-        return redirect(reverse_lazy('sales'))
+        return redirect(reverse_lazy('index'))
         
     else:
         products = {}
@@ -510,7 +510,7 @@ def add_sales_internet(request):
                 period=period
             )
             new_sale.save()
-        return redirect(reverse_lazy('sales'))
+        return redirect(reverse_lazy('index'))
         
     else:
         products = {}
