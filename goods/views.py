@@ -435,7 +435,7 @@ class SaleDelete(LoginRequiredMixin, DeleteView):
 @login_required
 def add_sales_shop(request):
     if request.method == 'POST':
-        data = json.loads(request.POST['request'])
+        data = json.loads(request.body.decode())
         date = datetime.date.today()
         department = Department.objects.get(name='Магазин')
         manager = request.user
@@ -469,8 +469,6 @@ def add_sales_shop(request):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.shop_price,
-                'quantity': 0,
-                'discount': 0,
                 'brand': product.brand.id if product.brand else None,
                 'category': product.category.id if product.category else None,
                 }
@@ -486,7 +484,7 @@ def add_sales_shop(request):
 @login_required
 def add_sales_internet(request):
     if request.method == 'POST':
-        data = json.loads(request.POST['request'])
+        data = json.loads(request.body.decode())
         date = datetime.date.today()
         department = Department.objects.get(name='Интернет')
         manager = request.user
@@ -520,8 +518,6 @@ def add_sales_internet(request):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.internet_price,
-                'quantity': 0,
-                'discount': 0,
                 'brand': product.brand.id if product.brand else None,
                 'category': product.category.id if product.category else None,
                 }
