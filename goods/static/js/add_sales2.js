@@ -144,7 +144,17 @@ const render = (state) => {
     });
 };
 
+let state = {};
 
 jQuery(document).ready(function() {
-    render(state);
+    
+    $.get("/products/get_internet_products", function(data) {
+        state = data;
+        Object.keys(state).forEach((key) => {
+            state[key]['quantity'] = 0;
+            state[key]['discount'] = 0;
+        });
+        render(state);
+    });
+    
 });

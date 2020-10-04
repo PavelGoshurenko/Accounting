@@ -9,16 +9,6 @@
 {% load static %}
 <script type="text/javascript" src="{% static 'js/add_sales2.js' %}"></script>
 
-<script type="text/javascript">
-let state = {};
-  $.get("{% url 'get_internet_products' %}", function(data) {
-      state = data;
-      Object.keys(state).forEach((key) => {
-        state[key]['quantity'] = 0;
-        state[key]['discount'] = 0;
-        });
-    });
-</script> 
 
 {% endblock %}
 
