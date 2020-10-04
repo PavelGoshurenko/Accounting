@@ -21,6 +21,7 @@ urlpatterns = [
         views.ProductDelete.as_view(),
         name='product_delete'
         ),
+    path('get_internet_products', views.get_internet_products, name='get_internet_products'),
     # invoices
     path('invoices/', views.InvoicesView.as_view(), name='invoices'),
     path('<int:pk>/', views.InvoiceView.as_view(), name='invoice'),
@@ -69,6 +70,7 @@ urlpatterns = [
         ),
     path('add_sales/shop', views.add_sales_shop, name="add_sales_shop"),
     path('add_sales/internet', views.add_sales_internet, name="add_sales_internet"),
+    path('add_sales/internet2', views.add_sales_internet2, name="add_sales_internet2"),
     # inventory
     path('add_inventories', views.add_inventories, name="add_inventories"),
     path('inventories', views.inventories, name='inventories'),

@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from utilities.download import download
 from django.db.models import F
 from django.utils import timezone
+from django.http import JsonResponse
 
 # Products views
 
@@ -554,6 +555,56 @@ def add_sales_internet(request):
         context = {'js_data': js_data, 'form': filter_form}
         return render(request, 'add_sales.html', context)
 
+@login_required
+def add_sales_internet2(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode())
+        date = datetime.date.today()
+        department = Department.objects.get(name='Интернет')
+        manager = request.user
+        period_name = datetime.datetime.strftime(timezone.now(), '%B %Y')
+        try:
+            period = Period.objects.get(name=period_name)
+        except ObjectDoesNotExist:
+            period = Period(name=period_name)
+            period.save()
+        new_sales = data['sales']
+        for key, value in new_sales.items():
+            product = Product.objects.get(id=key)
+            price = value['shop_price'] - value['discount'] / value['quantity']
+            quantity = value['quantity']
+            new_sale = Sale(
+                date=date,
+                manager=manager,
+                price=price,
+                product=product,
+                department=department,
+                quantity=quantity,
+                purchase_price=product.purchase_price,
+                period=period
+            )
+            new_sale.save()
+        return HttpResponse()
+        
+    else:
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'form': filter_form}
+        return render(request, 'add_sales2.html', context)
+
+@login_required
+def get_internet_products(request):
+    products = {}
+    for product in Product.objects.filter(is_active=True):
+        products[str(product.id)] = {
+            'name': product.name,
+            'shop_price': product.internet_price,
+            'brand': product.brand.id if product.brand else None,
+            'category': product.category.id if product.category else None,
+        }
+    return JsonResponse(products)
 
 # inventories views
 @login_required
