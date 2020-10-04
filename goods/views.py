@@ -599,7 +599,7 @@ def get_internet_products(request):
     products = {}
     for product in Product.objects.filter(is_active=True):
         products[str(product.id)] = {
-            'name': 5,
+            'name': product.name,
             'shop_price': product.internet_price,
             'brand': product.brand.id if product.brand else None,
             'category': product.category.id if product.category else None,
