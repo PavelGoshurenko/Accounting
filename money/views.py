@@ -1,9 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import redirect
 from money.models import Spending, Asset, Transfer, SpendingCategory, Department
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
-from django.http import HttpResponseRedirect, HttpResponse
 from money.forms import TodaySpendingsForm, PickupForm, TerminalForm, TransferForm, SpendingsForm, get_period
 from django.core.exceptions import ObjectDoesNotExist
 import datetime

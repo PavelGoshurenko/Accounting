@@ -233,14 +233,19 @@ Manufacturings
 </li>
 
 
-
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'not_active_products' %}">
+    <span data-feather="shopping-cart"></span>
+    Неактивные товары
+  </a>
+</li>
  
-  <li class="nav-item">
-    <a class="nav-link" href="/admin/">
-      <span data-feather="shopping-cart"></span>
-      Админка
-    </a>
-  </li>
+<li class="nav-item">
+  <a class="nav-link" href="/admin/">
+    <span data-feather="shopping-cart"></span>
+    Админка
+  </a>
+</li>
   {% elif user.username == 'Bogdan' %}
   <li class="nav-item">
     <a class="nav-link active" href="/">

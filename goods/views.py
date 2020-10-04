@@ -1,15 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from goods.models import Product, Incoming, Invoice, Sale, ProductBrand, ProductCategory, Inventory, Task
+from goods.models import Product, Incoming, Invoice, Sale, Inventory, Task
 from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
-from django.views.generic.base import TemplateView
-from goods.forms import AddInvoiceForm
 from django.http import HttpResponseRedirect, HttpResponse
-from django.forms.models import modelformset_factory
-from goods.forms import SalesFromFileForm, InventoryForm
 from goods.filters import SaleFilter, ProductFilter
 import json
 from django.forms import modelform_factory
@@ -17,11 +13,8 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-from accounting.settings import BASE_DIR
-import os
 from utilities.download import download
 from django.db.models import F
-from django.views.generic.dates import MonthArchiveView
 from django.utils import timezone
 
 # Products views
@@ -62,6 +55,38 @@ class ProductsView(LoginRequiredMixin, generic.ListView):
             filters['is_active'] = True
             return Product.objects.filter(**filters)
         return Product.objects.filter(is_active=True)
+
+
+class NotActiveProductsView(LoginRequiredMixin, generic.ListView):
+    template_name = 'products.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = self.get_queryset()
+        context['filter'] = ProductFilter(
+            self.request.GET,
+            queryset=products,
+        )
+        sale_sum = 0
+        purchase_sum = 0
+        for product in products:
+            sale_sum += product.quantity * product.shop_price
+            purchase_sum += product.quantity * product.purchase_price
+        context['sale_sum'] = sale_sum
+        context['purchase_sum'] = purchase_sum
+        return context
+
+    def get_queryset(self):
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            filters['is_active'] = False
+            return Product.objects.filter(**filters)
+        return Product.objects.filter(is_active=False)
 
 
 class ProductsOrder(LoginRequiredMixin, generic.ListView):
@@ -189,7 +214,7 @@ def new_invoice(request):
                 quantity=quantity,
             )
             new_incoming.save()
-        return redirect(reverse_lazy('invoices'))
+        return HttpResponse()
         
     else:
         products = {}
@@ -545,7 +570,7 @@ def add_inventories(request):
                 supposed_quantity=product.quantity,
             )
             new_inventory.save()
-        return redirect(reverse_lazy('sales'))
+        return HttpResponse()
         
     else:
         products = {}
@@ -576,7 +601,7 @@ def inventories(request):
             if new_fact_quantity != old_inventory.fact_quantity:
                 old_inventory.fact_quantity = new_fact_quantity
                 old_inventory.save()
-        return redirect(reverse_lazy('inventories_result'))
+        return HttpResponse()
         
     else:
         inventories = {}

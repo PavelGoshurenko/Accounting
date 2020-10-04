@@ -145,7 +145,6 @@ const render = (state) => {
 };
 
 
-
 jQuery(document).ready(function() {
     Object.keys(state).forEach((key) => {
         state[key]['quantity'] = 0;

@@ -5,6 +5,7 @@ from goods import views
 urlpatterns = [
     path('', views.main, name='index'),
     path('all/', views.ProductsView.as_view(), name='products'),
+    path('not_active/', views.NotActiveProductsView.as_view(), name='not_active_products'),
     path('order/', views.ProductsOrder.as_view(), name='products_order'),
     path('products/download/', views.download_products, name='download_products'),
     path('products/download_order/', views.download_products_order, name='download_products_order'),
