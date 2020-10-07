@@ -316,7 +316,7 @@ class Task(models.Model):
         blank=False,
         verbose_name='Исполнитель',
     )
-    text = models.TextField(max_length=2000)
+    text = models.TextField(max_length=5000)
     done = models.BooleanField(blank=False, default=False)
     invoice = models.ForeignKey(
         Invoice,
