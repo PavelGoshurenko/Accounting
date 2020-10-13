@@ -19,6 +19,7 @@ urlpatterns = [
     path('spending/today/create', views.TodaySpendingCreate.as_view(), name='today_spending_create'),
     # assets
     path('assets/', views.AssetsView.as_view(), name='assets'),
+    path('assets/not_active', views.NotActiveAssetsView.as_view(), name='not_active_assets'),
     path('<int:pk>/', views.AssetView.as_view(), name='asset'),
     path('asset/create/', views.AssetCreate.as_view(), name='asset_create'),
     path(

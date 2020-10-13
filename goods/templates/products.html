@@ -71,6 +71,8 @@
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'product_create'%}" role="button">Добавить товар</a></p>
 {% endif %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'download_products' %}" role="button">Скачать goods.xlsx</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'products' %}" role="button">Активные товары</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'not_active_products' %}" role="button">Неактивные товары</a></p>
 <form action="" method="get" class="form">
   {% bootstrap_form filter.form %}
   {% buttons %}

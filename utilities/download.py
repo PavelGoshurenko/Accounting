@@ -13,8 +13,7 @@ def download(excel_file_name, data):
     sheet = wb['main']
     sheet.column_dimensions['A'].width = 60
     for row_index, row in enumerate(data):
-        for col_index, col in enumerate(row):
-            value = str(col)
+        for col_index, value in enumerate(row):
             cell = sheet.cell(row=(row_index + 1), column=(col_index+1))
             cell.value = value
     wb.save(excel_file_name)

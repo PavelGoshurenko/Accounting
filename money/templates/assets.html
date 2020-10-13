@@ -3,7 +3,10 @@
 {% load bootstrap4 %}
 {% block title %} Активы {% endblock %}
 {% block h %} Активы {% endblock %}
-{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'asset_create'%}" role="button">Добавить актив</a></p>{% endblock %}
+{% block context %}<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'asset_create'%}" role="button">Добавить актив</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'assets'%}" role="button">Активные активы</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'not_active_assets'%}" role="button">Неактивные активы</a></p>
+{% endblock %}
 
 
 

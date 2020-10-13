@@ -97,6 +97,22 @@ class AssetsView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Asset.objects.filter(is_active=True)
 
+class NotActiveAssetsView(LoginRequiredMixin, generic.ListView):
+    template_name = 'assets.html'
+    context_object_name = 'assets'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        assets = self.get_queryset()
+        sum = 0
+        for asset in assets:
+            sum += asset.amount
+        context['sum'] = sum
+        return context
+
+    def get_queryset(self):
+        return Asset.objects.filter(is_active=False)
+
 
 class AssetView(LoginRequiredMixin, generic.DetailView):
     model = Asset
