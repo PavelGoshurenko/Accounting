@@ -251,11 +251,6 @@ class ManufacturingCreate(LoginRequiredMixin, CreateView):
     # fields = '__all__'
     success_url = reverse_lazy('manufacturings')
 
-    def get_context_data(self, **kwargs):
-        context = super(ManufacturingCreate, self).get_context_data(**kwargs)
-        context['manufacturings'] = Manufacturing.objects.all()
-        return context
-
 
 class ManufacturingUpdate(LoginRequiredMixin, UpdateView):
     model = Manufacturing
