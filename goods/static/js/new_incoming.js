@@ -46,12 +46,6 @@ const inputHandler = (e) => {
     //render(state);
 };
 
-const priceHandler = (e) => {
-    const id = $(e.target).attr('data-id');
-    $input = $(e.target);
-    state[String(id)].purchase_price = Number($input.val());
-    //render(state);
-};
 
 const categoryChangeHandler = (e) => {
     filterState.category = e.target.value
@@ -100,7 +94,7 @@ const render = (state) => {
     }
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
-        const $tdName = $(`<td>${state[key].name}</td>`).appendTo($tr);
+        $(`<td>${state[key].name}</td>`).appendTo($tr);
         const $tdControler = $('<td>').appendTo($tr);
         const $input = $('<input>', {
            value: state[String(key)].quantity,
@@ -110,14 +104,7 @@ const render = (state) => {
            size: 1,
            on: {change: inputHandler}
         }).appendTo($tdControler);
-        const $tdPrice = $('<td>').appendTo($tr);
-        const $price = $('<input>', {
-            value: state[String(key)].purchase_price,
-            'data-id': key,
-            type: "number",
-            size: 1,
-            on: {change: priceHandler}
-         }).appendTo($tdPrice);
+        $(`<td>${state[key].purchase_price}</td>`).appendTo($tr);
     });
 };
 

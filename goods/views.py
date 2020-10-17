@@ -206,7 +206,7 @@ def new_invoice(request):
         new_incomings = data['incomings']
         for key, value in new_incomings.items():
             product = Product.objects.get(id=key)
-            purchase_price = value['purchase_price']
+            purchase_price = product.purchase_price
             quantity = value['quantity']
             new_incoming = Incoming(
                 product=product,
