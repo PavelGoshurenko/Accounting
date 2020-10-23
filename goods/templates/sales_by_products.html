@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Продажи по товарам {% endblock %}
+{% block h %} Продажи по товарам {% endblock %}
+
+
+
+{% block content %}
+
+   
+    {% if sales_by_products %}
+    <div>Стоимость товаров: {{ sale_sum }} грн.</div>
+    <div>Закупочная cтоимость товаров: {{ purchase_sum }} грн.</div>
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Продажи</th>
+          <th>Цена магазин</th>
+          <th>Цена интернет</th>
+          <th>Цена опт</th>
+          <th>Цена покупки</th>
+  
+          
+        </tr>
+      </thead>
+      <tbody>
+    {% for product, data in sales_by_products.items %}
+    <tr>
+    <td>  {{ product }} </td>
+    <td>{{ data.sales }} шт.</td> 
+    <td>{{ product.shop_price }} грн.</td>
+    <td>{{ product.internet_price }} грн.</td>
+    <td>{{ product.wholesale_price }} грн.</td> 
+    <td>{{ product.purchase_price }} грн.</td> 
+  
+     
+       
+          </tr>
+  {% endfor %}
+</tbody>
+</table>
+
+  {% else %}
+    <p>Товаров нет. Зайдите позже. </p>
+    
+  {% endif %}  
+  
+
+
+  
+    
+{% endblock %}
+
+{% block context %}
+куку
+{% endblock %}

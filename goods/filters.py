@@ -1,6 +1,5 @@
 import django_filters
 from goods.models import Sale, Product
-from django import forms
 
 
 class SaleFilter(django_filters.FilterSet):
@@ -14,3 +13,10 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['category', 'brand']
+
+
+class SaleShortFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = Sale
+        fields = ['department', 'period']

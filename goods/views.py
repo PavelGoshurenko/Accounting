@@ -195,6 +195,23 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('index')
 
 
+@login_required
+def sales_by_products(request):
+    products = Product.objects.all()
+    sales_by_products = {}
+    for product in products:
+        sales_by_products[product.name] = {
+            'sales': 0
+        }
+        sales = Sale.objects.filter(product=product)
+        for sale in sales:
+            sales_by_products[product.name]['sales'] += sale.quantity
+    context = {
+        'sales_by_products': sales_by_products,
+    }
+    return render(request, 'sales_by_products.html', context)
+
+
 # invoices views
 
 @login_required
