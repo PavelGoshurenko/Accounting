@@ -240,7 +240,7 @@ def terminal_from_spending(request, pk):
     commission_spending.amount += round((spending.amount * 0.02), 2)
     commission_spending.save()
     spending.delete()
-    return redirect(reverse_lazy('assets'))
+    return redirect(reverse_lazy('spendings'))
 
 
 class TransferUpdate(LoginRequiredMixin, UpdateView):

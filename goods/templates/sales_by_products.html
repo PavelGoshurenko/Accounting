@@ -10,18 +10,19 @@
 
    
     {% if sales_by_products %}
-    <div>Стоимость товаров: {{ sale_sum }} грн.</div>
+    <div>Сумма продаж: {{ sum }} грн.</div>
     <div>Закупочная cтоимость товаров: {{ purchase_sum }} грн.</div>
+    <div>Прибыль: {{ profit }} грн.</div>
     <table class="table table-striped table-sm">
       <thead>
         <tr>
           <th>Наименование</th>
           <th>Продажи</th>
-          <th>Цена магазин</th>
-          <th>Цена интернет</th>
-          <th>Цена опт</th>
+          <th>Цена продажи</th>
+          <th>Стоимость</th>
           <th>Цена покупки</th>
-  
+          <th>Закупочная стоимость</th>
+          <th>Прибыль</th>
           
         </tr>
       </thead>
@@ -30,10 +31,11 @@
     <tr>
     <td>  {{ product }} </td>
     <td>{{ data.sales }} шт.</td> 
-    <td>{{ product.shop_price }} грн.</td>
-    <td>{{ product.internet_price }} грн.</td>
-    <td>{{ product.wholesale_price }} грн.</td> 
-    <td>{{ product.purchase_price }} грн.</td> 
+    <td>{{data.price}} грн.</td>
+    <td>{{data.sales_sum}} грн.</td>
+    <td>{{data.purchase_price}} грн.</td> 
+    <td>{{data.purchase_sum}} грн.</td>
+    <td>{{data.profit}} грн.</td> 
   
      
        
@@ -54,5 +56,13 @@
 {% endblock %}
 
 {% block context %}
-куку
+<form action="" method="get" class="form">
+  {% bootstrap_form sales_filter.form %}
+  {% bootstrap_form products_filter.form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Фильтр
+    </button>
+  {% endbuttons %}
+</form>
 {% endblock %}

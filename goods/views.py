@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from goods.models import Product, Incoming, Invoice, Sale, Inventory, Task
 from money.models import Department, Spending, Asset, Transfer, SpendingCategory, Period
 from django.http import HttpResponseRedirect, HttpResponse
-from goods.filters import SaleFilter, ProductFilter
+from goods.filters import SaleFilter, ProductFilter, SaleShortFilter
 import json
 from django.forms import modelform_factory
 import datetime
@@ -197,18 +197,67 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
 
 @login_required
 def sales_by_products(request):
-    products = Product.objects.all()
     sales_by_products = {}
+    sum = 0
+    purchase_sum = 0
+    profit = 0
+    sale_filters = {}
+    sale_keys = [
+        'department',
+        'period',
+    ]
+    product_filters = {}
+    product_keys = [
+        'category',
+        'brand',
+    ]
+    if request.GET:
+        for key, value in request.GET.items():
+            if value and key in sale_keys:
+                sale_filters[key] = value
+            if value and key in product_keys:
+                product_filters[key] = value
+    products = Product.objects.all()
+    if product_filters:
+        products = products.filter(**product_filters)
     for product in products:
         sales_by_products[product.name] = {
-            'sales': 0
+            'sales': 0,
+            'sales_sum': 0,
+            'price': 0,
+            'purchase_sum': 0,
+            'purchase_price': 0,
+            'profit': 0,
         }
         sales = Sale.objects.filter(product=product)
+        if sale_filters:
+            sales = sales.filter(**sale_filters)
         for sale in sales:
             sales_by_products[product.name]['sales'] += sale.quantity
+            sales_by_products[product.name]['sales_sum'] += sale.quantity * sale.price
+            sales_by_products[product.name]['purchase_sum'] += sale.quantity * sale.purchase_price
+        if sales_by_products[product.name]['sales']:
+            sales_by_products[product.name]['price'] = sales_by_products[product.name]['sales_sum'] / sales_by_products[product.name]['sales']
+            sales_by_products[product.name]['purchase_price'] = sales_by_products[product.name]['purchase_sum'] / sales_by_products[product.name]['sales']
+            sales_by_products[product.name]['profit'] = sales_by_products[product.name]['sales_sum'] - sales_by_products[product.name]['purchase_sum']
+            sum += sales_by_products[product.name]['sales_sum']
+            purchase_sum += sales_by_products[product.name]['purchase_sum']
+            profit += sales_by_products[product.name]['profit']
     context = {
         'sales_by_products': sales_by_products,
+        'sales_filter': SaleShortFilter(
+            request.GET,
+            queryset=Sale.objects.all(),
+        ),
+        'products_filter': ProductFilter(
+            request.GET,
+            queryset=products,
+        ),
+        'sum': sum,
+        'purchase_sum': purchase_sum,
+        'profit': profit,
     }
+    
     return render(request, 'sales_by_products.html', context)
 
 
