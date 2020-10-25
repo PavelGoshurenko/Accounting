@@ -239,10 +239,10 @@ def sales_by_products(request):
         if sales_by_products[product.name]['sales']:
             sales_by_products[product.name]['price'] = sales_by_products[product.name]['sales_sum'] / sales_by_products[product.name]['sales']
             sales_by_products[product.name]['purchase_price'] = sales_by_products[product.name]['purchase_sum'] / sales_by_products[product.name]['sales']
-            sales_by_products[product.name]['profit'] = sales_by_products[product.name]['sales_sum'] - sales_by_products[product.name]['purchase_sum']
-            sum += sales_by_products[product.name]['sales_sum']
-            purchase_sum += sales_by_products[product.name]['purchase_sum']
-            profit += sales_by_products[product.name]['profit']
+        sales_by_products[product.name]['profit'] = sales_by_products[product.name]['sales_sum'] - sales_by_products[product.name]['purchase_sum']
+        sum += sales_by_products[product.name]['sales_sum']
+        purchase_sum += sales_by_products[product.name]['purchase_sum']
+        profit += sales_by_products[product.name]['profit']
     context = {
         'sales_by_products': sales_by_products,
         'sales_filter': SaleShortFilter(
