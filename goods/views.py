@@ -261,7 +261,7 @@ def sales_by_products(request):
     return render(request, 'sales_by_products.html', context)
 
 
-# invoices views
+# invoices views ss
 
 @login_required
 def new_invoice(request):
