@@ -11,9 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,12 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'ovx#=b+a5z(coz^h*_6o0l__*wj2j!xdax6#85w5vjrmh9s!g$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv('DEBUG', False))
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['acc.gari.net.ua']
 
 
 # Application definition
@@ -86,11 +84,16 @@ WSGI_APPLICATION = 'accounting.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ATOMIC_REQUEST': True,
+        'HOST': '',
+        'ENGINE': '',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
-}
+}  
 
 
 # Password validation
@@ -130,9 +133,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/home/httpd/vhosts/gari.net.ua/subdomains/acc/httpdocs/static/'
 
 # Configure Django App for Heroku.
 
-if '/app' in os.environ['HOME']:
-    import django_heroku
-    django_heroku.settings(locals())
+# if '/app' in os.environ['HOME']:
+#     import django_heroku
+#     django_heroku.settings(locals())
