@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from accounting.settings import BASE_DIR
 import os
 
-# Ingredient views
+# Ingredient views 
 
 
 class IngredientsView(LoginRequiredMixin, generic.ListView):
