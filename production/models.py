@@ -143,6 +143,9 @@ class Manufacturing (models.Model):
         blank=True,
         default=timezone.now,
         verbose_name='Создана')
+    
+    class Meta:
+        ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
         '''Переопределям save() чтобы появление / изменение прихода

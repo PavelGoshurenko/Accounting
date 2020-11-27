@@ -141,7 +141,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ['category', 'brand', 'created_at']
+        ordering = ['category', 'brand', 'name']
 
         
 class Invoice(models.Model):
