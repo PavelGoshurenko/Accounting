@@ -557,7 +557,7 @@ def add_sales_shop(request):
         
     else:
         products = {}
-        for product in Product.objects.filter(is_active=True):
+        for product in Product.objects.filter(is_active=True).order_by('category', 'brand', 'name'):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.shop_price,
@@ -606,7 +606,7 @@ def add_sales_internet(request):
         
     else:
         products = {}
-        for product in Product.objects.filter(is_active=True):
+        for product in Product.objects.filter(is_active=True).order_by('category', 'brand', 'name'):
             products[str(product.id)] = {
                 'name': product.name,
                 'shop_price': product.internet_price,
