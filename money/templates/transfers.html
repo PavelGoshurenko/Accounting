@@ -6,6 +6,14 @@
 {% block context %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'transfer_create'%}" role="button">Добавить Трансфер</a></p>
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'terminal_create'%}" role="button">Добавить Терминал</a></p>
+<form action="" method="get" class="form">
+  {% bootstrap_form filter.form %}
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Фильтр
+    </button>
+  {% endbuttons %}
+</form>
 {% endblock %}
 
 {% block content %}

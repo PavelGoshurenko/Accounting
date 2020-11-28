@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from money.filters import SpendingFilter
+from money.filters import SpendingFilter, TransfersFilter
 
 
 # Spending views
@@ -154,10 +154,21 @@ class TransfersView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['assets'] = Asset.objects.filter(is_active=True)
+        transfers = self.get_queryset()
+        context['filter'] = TransfersFilter(
+            self.request.GET,
+            queryset=transfers,
+        )
         return context
 
     def get_queryset(self):
+        if self.request.GET:
+            parameters = self.request.GET
+            filters = {}
+            for key, value in parameters.items():
+                if value:
+                    filters[key] = value
+            return Transfer.objects.filter(**filters)
         return Transfer.objects.all()
 
 
@@ -169,7 +180,7 @@ class TransferView(LoginRequiredMixin, generic.DetailView):
 class TransferCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     form_class = TransferForm
-    success_url = reverse_lazy('transfers')
+    success_url = '/money/transfers/?period={}'.format(get_period().id)
     template_name = 'transfer_create.html'
 
 
@@ -182,12 +193,13 @@ class PickupCreate(LoginRequiredMixin, CreateView):
 class TerminalCreate(LoginRequiredMixin, CreateView):
     model = Transfer
     form_class = TerminalForm
-    success_url = reverse_lazy('transfers')
+    success_url = '/money/transfers/?period={}'.format(get_period().id)
 
     def form_valid(self, form):
         parameters = self.request.POST
         amount = float(parameters['amount'])
-        spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B'))
+        spending_name = "Коммисия банка {}".format(
+            datetime.date.today().strftime('%B'))
         try:
             spending = Spending.objects.get(name=spending_name)
         except ObjectDoesNotExist:
@@ -246,7 +258,7 @@ def terminal_from_spending(request, pk):
 class TransferUpdate(LoginRequiredMixin, UpdateView):
     model = Transfer
     fields = '__all__'
-    success_url = reverse_lazy('transfers')
+    success_url = '/money/transfers/?period={}'.format(get_period().id)
     template_name = 'transfer_update.html'
 
 
