@@ -235,7 +235,8 @@ def terminal_from_spending(request, pk):
     transfer.save()
     commission_spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B'))
     try:
-        commission_spending = Spending.objects.get(name=commission_spending_name)
+        commission_spending = Spending.objects.get(
+            name=commission_spending_name)
     except ObjectDoesNotExist:
         asset = Asset.objects.get(name='Терминал')
         category = SpendingCategory.objects.get(name='Затраты')
