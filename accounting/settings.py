@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'reports',
     'tasks',
     'bootstrap4',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

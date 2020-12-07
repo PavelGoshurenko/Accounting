@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
 from goods import views
+from goods import api
 
 urlpatterns = [
     path('', views.main, name='index'),
     path('all/', views.ProductsView.as_view(), name='products'),
+    path('api/', api.ProductApi.as_view(), name='products_api'),
     path('not_active/', views.NotActiveProductsView.as_view(), name='not_active_products'),
     path('order/', views.ProductsOrder.as_view(), name='products_order'),
     path('products/download/', views.download_products, name='download_products'),
