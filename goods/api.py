@@ -1,9 +1,10 @@
 from rest_framework import generics
 from goods.serializer import ProductSerializer
 from goods.models import Product
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class ProductApi(generics.ListAPIView):
+class ProductApi(LoginRequiredMixin, generics.ListAPIView):
     serializer_class = ProductSerializer
 
     def get_queryset(self):
