@@ -148,8 +148,11 @@ let state = {};
 
 jQuery(document).ready(function() {
     
-    $.get("/products/get_internet_products", function(data) {
-        state = data;
+    $.get("/products/api/", function(data) {
+        state = {};
+        data.forEach((product) => {
+            state[product['id']] = product;
+        });
         Object.keys(state).forEach((key) => {
             state[key]['quantity'] = 0;
             state[key]['discount'] = 0;
