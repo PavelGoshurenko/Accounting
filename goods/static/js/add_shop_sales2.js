@@ -5,7 +5,6 @@ function getCookie(name) {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -31,12 +30,7 @@ const submit = (e) => {
     xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            if (window.location.pathname.substr(-4) === 'shop') {
-                window.location.href = '/products/sales/today/shop';
-            }
-            else {
-                window.location.href = '/products/sales/today/internet';
-            }
+            window.location.href = '/products/sales/today/shop';
         }
     };
     xhr.send($.toJSON(sendData));
@@ -50,7 +44,7 @@ const inputHandler = (e) => {
         alert('Нельзя делать скидку на непроданный товар');
         state[id].discount = 0;
     }
-    render(state);
+    render();
 };
 
 const discountHandler = (e) => {
@@ -61,17 +55,17 @@ const discountHandler = (e) => {
     } else {
         state[id].discount = Number($input.val());
     }
-    render(state);
+    render();
 };
 
 const categoryChangeHandler = (e) => {
     filterState.category = e.target.value
-    render(state);
+    render();
 }
 
 const brandChangeHandler = (e) => {
     filterState.brand = e.target.value
-    render(state);
+    render();
 }
 // render
 
@@ -97,7 +91,7 @@ $brandSelector.change(brandChangeHandler);
 $('<thead><tr><th>Товар</th><th> Количество</th><th>Цена</th><th>Скидка</th><th>Стоимость</th></tr></thead>').appendTo($mainTable);
 const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
 
-const render = (state) => {
+const render = () => {
     $categorySelector.val(filterState.category);
     $brandSelector.val(filterState.brand);
     $tbody.empty();
@@ -110,10 +104,10 @@ const render = (state) => {
     }
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
-        $(`<td>${state[key].name}</td>`).appendTo($tr);
+        $(`<td>${key}</td>`).appendTo($tr);
         const $tdControler = $('<td>').appendTo($tr);
         $('<input>', {
-           value: state[String(key)].quantity,
+           value: state[key].quantity,
            id: `quantity${key}`,
            'data-id': key,
            type: "number",
@@ -122,13 +116,13 @@ const render = (state) => {
         }).appendTo($tdControler);
         const $tdPrice = $('<td>').appendTo($tr);
         $('<div>', {
-            text: state[String(key)].shop_price,
+            text: state[key].shop_price,
             'data-id': key,
          }).appendTo($tdPrice);
 
         const $tdDiscount = $('<td>').appendTo($tr);
         $('<input>', {
-            value: state[String(key)].discount,
+            value: state[key].discount,
             'data-id': key,
             type: "number",
             size: 1,
@@ -137,7 +131,7 @@ const render = (state) => {
 
         const $tdSum = $('<td>').appendTo($tr);
         $('<div>', {
-            text: state[String(key)].shop_price * state[String(key)].quantity - state[String(key)].discount,
+            text: state[key].shop_price * state[key].quantity - state[key].discount,
             'data-id': key,
          }).appendTo($tdSum);
          
@@ -149,15 +143,14 @@ let state = {};
 jQuery(document).ready(function() {
     
     $.get("/products/api/", function(data) {
-        state = {};
         data.forEach((product) => {
-            state[product['id']] = product;
+            state[product['name']] = product;
         });
         Object.keys(state).forEach((key) => {
             state[key]['quantity'] = 0;
             state[key]['discount'] = 0;
         });
-        render(state);
+        render();
     });
     
 });
