@@ -1,4 +1,6 @@
-// обработчики
+let state = {};
+START_CATEGORY = '1';
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -58,41 +60,35 @@ const discountHandler = (e) => {
     render();
 };
 
+const brandFilter = (category) => {
+    const brands = {};
+    $('select[name=brand]').children().each(function (index, value){
+        brands[$(this).val()] = 0;
+      });
+    let keysToShow = Object.keys(state);
+    if (category !== '') {
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(category));
+    }
+    keysToShow.forEach((key) => {
+        if (state[key].brand !== null) {
+            brands[state[key].brand.toString()] += 1;
+        }
+    });
+    Object.keys(brands).forEach((brand) => {
+        if (brands[brand] > 0) {
+            $('select[name=brand] option[value="'+ brand +'"]').show();
+        } else {
+            $('select[name=brand] option[value="'+ brand +'"]').hide();
+        }
+    });
+};
+
+
 const categoryChangeHandler = (e) => {
     const category = e.target.value;
     filterState.category = category;
-
-    let keysToShow = Object.keys(state);
-    const brands = {};
-    /* keysToShow.forEach((key) => {
-        if (state[key].brand !== null) {
-            brands[state[key].brand] = 0;
-        }
-    }); */
-    $('select[name=brand]').children().each(function(val){
-        brands[val] = 0;
-     })
-    if (category) {
-        keysToShow = keysToShow.filter((key) => state[key].category === Number(category));
-    }
-    //console.log(keysToShow);
-    keysToShow.forEach((key) => {
-        if (state[key].brand !== null) {
-            console.log(state[key].brand);
-            brands[state[key].brand] += 1;
-        }
-    });
-    console.log(brands);
-    Object.keys(brands).forEach((brand) => {
-        if (brands[brand]) {
-            $('select[name=brand] option[value="'+ brand.toString() +'"]').show();
-        } else {
-            $('select[name=brand] option[value="'+ brand.toString() +'"]').hide();
-        }
-    });
-    
-
-
+    filterState.brand = '';
+    brandFilter(category);
     render();
 }
 
@@ -103,9 +99,10 @@ const brandChangeHandler = (e) => {
 // render
 
 filterState = {
-    'category': 1,
+    'category': START_CATEGORY,
     'brand': '',
 }
+brandFilter(START_CATEGORY);
 $('<input>', {
     value: 'Сохранить',
     type: 'submit',
@@ -171,7 +168,7 @@ const render = () => {
     });
 };
 
-let state = {};
+
 
 jQuery(document).ready(function() {
     
