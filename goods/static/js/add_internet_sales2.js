@@ -59,7 +59,40 @@ const discountHandler = (e) => {
 };
 
 const categoryChangeHandler = (e) => {
-    filterState.category = e.target.value
+    const category = e.target.value;
+    filterState.category = category;
+
+    let keysToShow = Object.keys(state);
+    const brands = {};
+    /* keysToShow.forEach((key) => {
+        if (state[key].brand !== null) {
+            brands[state[key].brand] = 0;
+        }
+    }); */
+    $('select[name=brand]').children().each(function(val){
+        brands[val] = 0;
+     })
+    if (category) {
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(category));
+    }
+    //console.log(keysToShow);
+    keysToShow.forEach((key) => {
+        if (state[key].brand !== null) {
+            console.log(state[key].brand);
+            brands[state[key].brand] += 1;
+        }
+    });
+    console.log(brands);
+    Object.keys(brands).forEach((brand) => {
+        if (brands[brand]) {
+            $('select[name=brand] option[value="'+ brand.toString() +'"]').show();
+        } else {
+            $('select[name=brand] option[value="'+ brand.toString() +'"]').hide();
+        }
+    });
+    
+
+
     render();
 }
 
@@ -95,12 +128,12 @@ const render = () => {
     $categorySelector.val(filterState.category);
     $brandSelector.val(filterState.brand);
     $tbody.empty();
-    let keysToShow = Object.keys(state)
+    let keysToShow = Object.keys(state);
     if (filterState.category) {
-        keysToShow = keysToShow.filter((key) => state[key].category === Number(filterState.category))
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(filterState.category));
     }
     if (filterState.brand) {
-        keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand))
+        keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand));
     }
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
