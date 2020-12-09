@@ -75,7 +75,7 @@ const brandFilter = (category) => {
         }
     });
     Object.keys(brands).forEach((brand) => {
-        if (brands[brand] > 0) {
+        if (brands[brand] > 0 || brand === '') {
             $('select[name=brand] option[value="'+ brand +'"]').show();
         } else {
             $('select[name=brand] option[value="'+ brand +'"]').hide();
