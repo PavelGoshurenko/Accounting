@@ -102,7 +102,6 @@ filterState = {
     'category': START_CATEGORY,
     'brand': '',
 }
-brandFilter(START_CATEGORY);
 $('<input>', {
     value: 'Сохранить',
     type: 'submit',
@@ -180,6 +179,7 @@ jQuery(document).ready(function() {
             state[key]['quantity'] = 0;
             state[key]['discount'] = 0;
         });
+        brandFilter(START_CATEGORY);
         render();
     });
     

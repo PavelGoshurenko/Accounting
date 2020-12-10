@@ -178,6 +178,7 @@ jQuery(document).ready(function() {
             state[key]['quantity'] = 0;
             state[key]['discount'] = 0;
         });
+        brandFilter(START_CATEGORY);
         render();
     });
     

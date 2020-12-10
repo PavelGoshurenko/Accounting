@@ -44,6 +44,8 @@ const inputHandler = (e) => {
 };
 
 const brandFilter = (category) => {
+    console.log('___________________');
+    console.log(category);
     const brands = {};
     $('select[name=brand]').children().each(function (index, value){
         brands[$(this).val()] = 0;
@@ -84,7 +86,7 @@ filterState = {
     'category': START_CATEGORY,
     'brand': '',
 }
-brandFilter(START_CATEGORY);
+
 const $div = $('<div>').appendTo('#main-data');
 $('<input>', {
     id: 'invoiceName',
@@ -147,6 +149,7 @@ jQuery(document).ready(function() {
         Object.keys(state).forEach((key) => {
             state[key]['quantity'] = 0;
         });
+        brandFilter(START_CATEGORY);
         render();
     });
     
