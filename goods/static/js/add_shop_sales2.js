@@ -1,4 +1,7 @@
-// обработчики
+let state = {};
+START_CATEGORY = '5';
+
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -58,8 +61,34 @@ const discountHandler = (e) => {
     render();
 };
 
+const brandFilter = (category) => {
+    const brands = {};
+    $('select[name=brand]').children().each(function (index, value){
+        brands[$(this).val()] = 0;
+      });
+    let keysToShow = Object.keys(state);
+    if (category !== '') {
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(category));
+    }
+    keysToShow.forEach((key) => {
+        if (state[key].brand !== null) {
+            brands[state[key].brand.toString()] += 1;
+        }
+    });
+    Object.keys(brands).forEach((brand) => {
+        if (brands[brand] > 0 || brand === '') {
+            $('select[name=brand] option[value="'+ brand +'"]').show();
+        } else {
+            $('select[name=brand] option[value="'+ brand +'"]').hide();
+        }
+    });
+};
+
 const categoryChangeHandler = (e) => {
-    filterState.category = e.target.value
+    const category = e.target.value;
+    filterState.category = category;
+    filterState.brand = '';
+    brandFilter(category);
     render();
 }
 
@@ -70,7 +99,7 @@ const brandChangeHandler = (e) => {
 // render
 
 filterState = {
-    'category': 1,
+    'category': START_CATEGORY,
     'brand': '',
 }
 $('<input>', {
@@ -138,7 +167,6 @@ const render = () => {
     });
 };
 
-let state = {};
 
 jQuery(document).ready(function() {
     

@@ -271,7 +271,7 @@ def new_invoice(request):
         new_invoice.save()
         new_incomings = data['incomings']
         for key, value in new_incomings.items():
-            product = Product.objects.get(id=key)
+            product = Product.objects.get(name=key)
             purchase_price = product.purchase_price
             quantity = value['quantity']
             new_incoming = Incoming(
@@ -284,21 +284,11 @@ def new_invoice(request):
         return HttpResponse()
         
     else:
-        products = {}
-        for product in Product.objects.filter(is_active=True):
-            products[str(product.id)] = {
-                'name': product.name,
-                'purchase_price': product.purchase_price,
-                'quantity': 0,
-                'brand': product.brand.id if product.brand else None,
-                'category': product.category.id if product.category else None,
-                }
-        js_data = json.dumps(products)
         filter_form = modelform_factory(
             Product,
             fields=('category', 'brand')
         )
-        context = {'js_data': js_data, 'form': filter_form}
+        context = {'form': filter_form}
         return render(request, 'new_incoming.html', context)
 
 

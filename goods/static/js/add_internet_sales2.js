@@ -1,5 +1,5 @@
 let state = {};
-START_CATEGORY = '1';
+START_CATEGORY = '5';
 
 function getCookie(name) {
     let cookieValue = null;
@@ -161,7 +161,7 @@ const render = () => {
 
         const $tdSum = $('<td>').appendTo($tr);
         $('<div>', {
-            text: state[String(key)].internet_price * state[key].quantity - state[key].discount,
+            text: state[key].internet_price * state[key].quantity - state[key].discount,
             'data-id': key,
          }).appendTo($tdSum);
          

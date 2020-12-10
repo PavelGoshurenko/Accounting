@@ -1,20 +1,20 @@
-
-
-
-// дополнительный state - так получилось - больше так не делать
-filterState = {
-    'category': '',
-    'brand': '',
-}
-
-// обработчики
+let state = {};
+START_CATEGORY = '5';
 
 function getCookie(name) {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  };
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 const submit = (e) => {
     e.preventDefault();
@@ -30,7 +30,6 @@ const submit = (e) => {
     //отправим JSON
     $.ajax({
         type: "POST",
-        //url: "products/invoice/new/",
         data: {request: $.toJSON(sendData), csrfmiddlewaretoken: getCookie('csrftoken')},
         success: function(res) {
             window.location.href = '/products/invoices/';
@@ -41,22 +40,51 @@ const submit = (e) => {
 const inputHandler = (e) => {
     const id = $(e.target).attr('data-id');
     $input = $(e.target);
-    state[String(id)].quantity = Number($input.val());
-    //$input.val(state[String(id)].quantity);
-    //render(state);
+    state[id].quantity = Number($input.val());
 };
 
+const brandFilter = (category) => {
+    const brands = {};
+    $('select[name=brand]').children().each(function (index, value){
+        brands[$(this).val()] = 0;
+      });
+    let keysToShow = Object.keys(state);
+    if (category !== '') {
+        keysToShow = keysToShow.filter((key) => state[key].category === Number(category));
+    }
+    keysToShow.forEach((key) => {
+        if (state[key].brand !== null) {
+            brands[state[key].brand.toString()] += 1;
+        }
+    });
+    Object.keys(brands).forEach((brand) => {
+        if (brands[brand] > 0 || brand === '') {
+            $('select[name=brand] option[value="'+ brand +'"]').show();
+        } else {
+            $('select[name=brand] option[value="'+ brand +'"]').hide();
+        }
+    });
+};
 
 const categoryChangeHandler = (e) => {
-    filterState.category = e.target.value
-    render(state);
+    const category = e.target.value;
+    filterState.category = category;
+    filterState.brand = '';
+    brandFilter(category);
+    render();
 }
 
 const brandChangeHandler = (e) => {
     filterState.brand = e.target.value
-    render(state);
+    render();
 }
 // render
+
+filterState = {
+    'category': START_CATEGORY,
+    'brand': '',
+}
+brandFilter(START_CATEGORY);
 const $div = $('<div>').appendTo('#main-data');
 $('<input>', {
     id: 'invoiceName',
@@ -79,7 +107,7 @@ $categorySelector.change(categoryChangeHandler);
 $brandSelector = $('select[name=brand]');
 $brandSelector.change(brandChangeHandler);
 
-const render = (state) => {
+const render = () => {
     $categorySelector.val(filterState.category);
     $brandSelector.val(filterState.brand);
     $mainTable.empty();
@@ -94,10 +122,10 @@ const render = (state) => {
     }
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
-        $(`<td>${state[key].name}</td>`).appendTo($tr);
+        $(`<td>${key}</td>`).appendTo($tr);
         const $tdControler = $('<td>').appendTo($tr);
         const $input = $('<input>', {
-           value: state[String(key)].quantity,
+           value: state[key].quantity,
            id: `quantity${key}`,
            'data-id': key,
            type: "number",
@@ -111,5 +139,15 @@ const render = (state) => {
 
 
 jQuery(document).ready(function() {
-    render(state);
+    
+    $.get("/products/api/", function(data) {
+        data.forEach((product) => {
+            state[product['name']] = product;
+        });
+        Object.keys(state).forEach((key) => {
+            state[key]['quantity'] = 0;
+        });
+        render();
+    });
+    
 });

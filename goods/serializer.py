@@ -9,6 +9,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'name',
             'shop_price',
             'internet_price',
+            'purchase_price',
             'category',
             'brand',
         )
