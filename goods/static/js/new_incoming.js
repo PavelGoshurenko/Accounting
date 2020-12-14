@@ -88,9 +88,12 @@ filterState = {
 }
 
 const $div = $('<div>').appendTo('#main-data');
+const date = new Date()
+const today =  ('0' + date.getDate()).slice(-2) + '_' + ('0' + (date.getMonth() + 1)).slice(-2) + '_' + date.getFullYear();
 $('<input>', {
     id: 'invoiceName',
     type: "text",
+    value: today,
 }).appendTo($div);
 $('<input>', {
            value: 'Сохранить',

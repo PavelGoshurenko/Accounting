@@ -23,7 +23,7 @@ from django.http import JsonResponse
 
 @login_required
 def main(request):
-    return HttpResponseRedirect('/products/all/?category=1&brand=')
+    return HttpResponseRedirect('/products/all/?category=5&brand=')
 
 
 class ProductsView(LoginRequiredMixin, generic.ListView):
