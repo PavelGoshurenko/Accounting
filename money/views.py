@@ -48,7 +48,8 @@ class SpendingView(LoginRequiredMixin, generic.DetailView):
 class SpendingCreate(LoginRequiredMixin, CreateView):
     model = Spending
     form_class = SpendingsForm
-    success_url = reverse_lazy('spendings')
+    #success_url = reverse_lazy('spendings')
+    success_url = '/money/?period={}'.format(get_period().id)
 
 
 class TodaySpendingCreate(LoginRequiredMixin, CreateView):  

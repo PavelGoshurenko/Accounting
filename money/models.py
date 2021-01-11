@@ -133,16 +133,19 @@ class Spending(models.Model):
 class Transfer(models.Model):
     name = models.CharField(
         max_length=200,
-        verbose_name='Перевод')
+        verbose_name='Примечание',
+        null=True,
+        blank=True
+    )
     amount = models.FloatField(
         verbose_name="Сумма",
         null=False, blank=False
-        )
+    )
     asset_from = models.ForeignKey(
         Asset, on_delete=models.ProtectedError,
         related_name='asset_from',
         verbose_name='Откуда'
-        )
+    )
     asset_to = models.ForeignKey(
         Asset,
         on_delete=models.ProtectedError,
