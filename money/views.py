@@ -58,11 +58,11 @@ class TodaySpendingCreate(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('today_sales_shop')
 
 
-
 class SpendingUpdate(LoginRequiredMixin, UpdateView):
     model = Spending
     fields = '__all__'
-    success_url = reverse_lazy('spendings')
+    #success_url = reverse_lazy('spendings')
+    success_url = '/money/?period={}'.format(get_period().id)
     template_name = 'spending_update.html'
 
     def get_context_data(self, **kwargs):
@@ -77,7 +77,7 @@ class SpendingDelete(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         user = self.request.user
         if user.is_staff:
-            return reverse_lazy('spendings')
+            return '/money/?period={}'.format(get_period().id)
         return reverse_lazy('today_sales_shop')
 
 
