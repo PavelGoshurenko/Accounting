@@ -366,6 +366,7 @@ def download_invoice(request, pk):
 class IncomingsView(LoginRequiredMixin, generic.ListView):
     template_name = 'incomings.html'
     context_object_name = 'incomings'
+    paginate_by = 100
 
     def get_queryset(self):
         return Incoming.objects.all()

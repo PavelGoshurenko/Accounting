@@ -9,6 +9,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from money.filters import SpendingFilter, TransfersFilter
+from django.http import HttpResponseRedirect, HttpResponse
 
 
 # Spending views
@@ -254,7 +255,7 @@ def terminal_from_spending(request, pk):
     commission_spending.amount += round((spending.amount * 0.02), 2)
     commission_spending.save()
     spending.delete()
-    return redirect(reverse_lazy('spendings'))
+    return HttpResponseRedirect('/money/?period={}'.format(get_period().id))
 
 
 class TransferUpdate(LoginRequiredMixin, UpdateView):
