@@ -211,6 +211,9 @@ class Incoming(models.Model):
         asset_to_change.save()
         super().delete(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-pk']
+
 
 class Sale(models.Model):
     date = models.DateField(
