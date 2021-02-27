@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.forms.models import modelform_factory
 from django.forms.models import modelformset_factory
 from goods.models import Product, Incoming
-from money.models import Spending, SpendingCategory, Asset, Transfer, Period
+from money.models import Spending, SpendingCategory, Asset, Transfer, Period, Department
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
@@ -68,6 +68,8 @@ class SpendingsForm (forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SpendingsForm, self).__init__(*args, **kwargs)
         self.fields['period'].initial = get_period()
+        self.fields['department'].initial = Department.objects.get(name='Офис')
+        self.fields['category'].initial = SpendingCategory.objects.get(name='Затраты')
 
     asset = forms.ModelChoiceField(
         queryset=Asset.objects.filter(is_active=True),
