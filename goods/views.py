@@ -295,7 +295,7 @@ def new_invoice(request):
 class InvoicesView(LoginRequiredMixin, generic.ListView):
     template_name = 'invoices.html'
     context_object_name = 'invoices'
-    paginate_by = 3
+    paginate_by = 100
 
     def get_queryset(self):
         return Invoice.objects.all()
