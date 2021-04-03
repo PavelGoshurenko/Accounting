@@ -274,7 +274,7 @@ def oleg(request):
         profit_by_period = {
             'period': period.name,
             'sales_sum': sales_sum_by_period,
-            'sales_profit': margin_by_period - spendings_amount_by_period + dividents_by_period,
+            'sales_profit': round(margin_by_period - spendings_amount_by_period + dividents_by_period, 2),
             'oleg_dividents': oleg_take_by_period['sum'],
             'oleg_transfers': oleg_transfers,
             'oleg_transfers_sum': oleg_transfers_sum,
