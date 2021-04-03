@@ -188,7 +188,7 @@ def salary(request):
     for sale in sales_last_period:
         margin_last_period += sale.price * sale.quantity - sale.purchase_price * sale.quantity
         sales_last_period_sum += sale.cost()
-    BOGDAN_RATE = 3000
+    BOGDAN_RATE = 4000
     Bogdan_percent_last_period = margin_last_period * 0.08
     Bogdan_last_period_sum = BOGDAN_RATE + Bogdan_percent_last_period
     # Bogdan this period
@@ -198,7 +198,7 @@ def salary(request):
     for sale in sales_this_period:
         margin_this_period += sale.price * sale.quantity - sale.purchase_price * sale.quantity
         sales_this_period_sum += sale.cost()
-    BOGDAN_RATE = 3000
+    BOGDAN_RATE = 4000
     Bogdan_percent_this_period = margin_this_period * 0.08
     Bogdan_this_period_sum = BOGDAN_RATE + Bogdan_percent_this_period
     
