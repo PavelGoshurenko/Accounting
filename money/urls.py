@@ -17,6 +17,7 @@ urlpatterns = [
         name='spending_delete'
         ),
     path('spending/today/create', views.TodaySpendingCreate.as_view(), name='today_spending_create'),
+    path('spending/approve/<int:pk>', views.approve_spending, name='approve_spending'),
     # assets
     path('assets/', views.AssetsView.as_view(), name='assets'),
     path('assets/not_active', views.NotActiveAssetsView.as_view(), name='not_active_assets'),

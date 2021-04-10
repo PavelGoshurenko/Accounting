@@ -82,6 +82,16 @@ class SpendingDelete(LoginRequiredMixin, DeleteView):
         return reverse_lazy('today_sales_shop')
 
 
+@login_required
+def approve_spending(request, pk):
+    spending = Spending.objects.get(id=pk)
+    spending.category = SpendingCategory.objects.get(name='Затраты')
+    spending.department = Department.objects.get(name='Офис')
+    spending.save()
+    return HttpResponseRedirect('/money/?period={}'.format(get_period().id))
+
+
+
 # Assets views
 class AssetsView(LoginRequiredMixin, generic.ListView):
     template_name = 'assets.html'
