@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% block title %} Добавить переучет {% endblock %}
+{% block h %} Добавить переучет {% endblock %}
+{% block content %}
+    
+
+{% load static %}
+<script type="text/javascript" src="{% static 'js/add_inventories2.js' %}"></script>
+
+
+{% endblock %}
+
+{% block context %}
+
+<div id='submit_button'></div>
+<form action="" method="get" class="form">
+  {% bootstrap_form form %}
+ 
+</form>
+{% endblock %}
+

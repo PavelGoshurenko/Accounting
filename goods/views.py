@@ -735,7 +735,30 @@ def add_inventories(request):
         )
         context = {'js_data': js_data, 'form': filter_form}
         return render(request, 'add_inventories.html', context)
-
+        
+@login_required
+def add_inventories2(request):
+    if request.method == 'POST':
+        data = json.loads(request.POST['request'])
+        date = datetime.date.today()
+        new_inventories = data['inventories']
+        for key, value in new_inventories.items():
+            product = Product.objects.get(name=key)
+            new_inventory = Inventory(
+                date=date,
+                product=product,
+                supposed_quantity=product.quantity,
+            )
+            new_inventory.save()
+        return HttpResponse()
+        
+    else:
+        filter_form = modelform_factory(
+            Product,
+            fields=('category', 'brand')
+        )
+        context = {'form': filter_form}
+        return render(request, 'add_inventories2.html', context)
 
 @login_required
 def inventories(request):

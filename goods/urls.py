@@ -6,6 +6,7 @@ from goods import api
 urlpatterns = [
     path('', views.main, name='index'),
     path('all/', views.ProductsView.as_view(), name='products'),
+    path('api/add_inv/', api.ProductInvApi.as_view()),
     path('api/', api.ProductApi.as_view(), name='products_api'),
     path('not_active/', views.NotActiveProductsView.as_view(), name='not_active_products'),
     path('order/', views.ProductsOrder.as_view(), name='products_order'),
@@ -77,6 +78,7 @@ urlpatterns = [
     path('add_sales/shop2', views.add_sales_shop2, name="add_sales_shop2"),
     # inventory
     path('add_inventories', views.add_inventories, name="add_inventories"),
+    path('add_inventories2', views.add_inventories2, name="add_inventories2"),
     path('inventories', views.inventories, name='inventories'),
     path('confirm_inventories', views.confirm_inventories, name='confirm_inventories'),
     path('inventories_result/', views.InventoriesResult.as_view(), name='inventories_result'),

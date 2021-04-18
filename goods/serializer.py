@@ -13,3 +13,13 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',
             'brand',
         )
+
+
+class InventoryAddSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            'name',
+            'category',
+            'brand',
+        )
