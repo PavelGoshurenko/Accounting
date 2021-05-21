@@ -75,14 +75,10 @@
 
 
               <ul class="nav flex-column">
-                
+
+
+
 {% if user.is_staff %}
-
-
-
-
-
-
 <li class="nav-item">
   <a class="nav-link active" href="/">
     <span data-feather="home"></span>
@@ -107,21 +103,18 @@
     Трансферы
   </a>
 </li>
-
 <li class="nav-item">
   <a class="nav-link" href="{% url 'products' %}">
     <span data-feather="users"></span>
     Товары
   </a>
 </li>
-
 <li class="nav-item">
   <a class="nav-link" href="{% url 'products_order' %}">
     <span data-feather="users"></span>
     Авто-заказ
   </a>
 </li>
-
 <li class="nav-item">
   <a class="nav-link" href="{% url 'invoices' %}">
     <span data-feather="layers"></span>
@@ -146,7 +139,6 @@
       Продажи по товарам
     </a>
   </li>
-
   <li class="nav-item">
     <a class="nav-link" href="{% url 'today_sales_shop' %}">
       <span data-feather="layers"></span>
@@ -159,9 +151,6 @@
       Продажи за сегодня (Интернет)
     </a>
   </li>
-
-
-
   <li class="nav-item">
     <a class="nav-link" href="{% url 'tasks' %}">
       <span data-feather="layers"></span>
@@ -172,19 +161,12 @@
       {% endif %}
     </a>
   </li>
-
-
-  
-
-
-
 <li class="nav-item">
 <a class="nav-link" href="{% url 'ingredients' %}">
 <span data-feather="users"></span>
 Ингредиенты
 </a>
 </li>
-
 <li class="nav-item">
 <a class="nav-link" href="{% url 'ingredient_invoices' %}">
 <span data-feather="layers"></span>
@@ -197,17 +179,12 @@
 Приходы (Ингредиенты)
 </a>
 </li>
-
-
-
-
 <li class="nav-item">
 <a class="nav-link" href="{% url 'manufacturings' %}">
 <span data-feather="layers"></span>
 Manufacturings
 </a>
 </li>
-
 <li class="nav-item">
 <a class="nav-link" href="{% url 'inventories' %}">
 <span data-feather="layers"></span>
@@ -232,16 +209,14 @@ Manufacturings
     Олег отчет
   </a>
 </li>
-
-
-
- 
 <li class="nav-item">
   <a class="nav-link" href="/admin/">
     <span data-feather="shopping-cart"></span>
     Админка
   </a>
 </li>
+
+
   {% elif user.username == 'Bogdan' %}
   <li class="nav-item">
     <a class="nav-link active" href="/">
@@ -249,7 +224,6 @@ Manufacturings
       Главная <span class="sr-only">(current)</span>
     </a>
   </li>
-
   <li class="nav-item">
     <a class="nav-link" href="{% url 'products' %}">
       <span data-feather="users"></span>
@@ -272,8 +246,10 @@ Manufacturings
       Зарплата
     </a>
   </li>
-  {% else %}
 
+
+
+  {% else %}
   <li class="nav-item">
     <a class="nav-link active" href="/">
       <span data-feather="home"></span>

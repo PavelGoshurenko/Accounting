@@ -6,8 +6,7 @@
 {% block h %} Переучет {% endblock %}
 {% block context %}
 {% if user.is_staff %}
-<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'add_inventories'%}" role="button">Добавить переучет</a></p>
-<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'add_inventories2'%}" role="button">Добавить переучет (тест)</a></p>
+<p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'add_inventories2'%}" role="button">Добавить переучет</a></p>
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'confirm_inventories'%}" role="button">Подтвердить переучет</a></p>
 {% endif %}
 <p><a class="btn btn-secondary btn-lg btn-block" href="{% url 'inventories_result'%}" role="button">Посмотреть результат</a></p>
