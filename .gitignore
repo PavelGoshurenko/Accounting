@@ -9,6 +9,7 @@ db.sqlite3
 __pycache__
 task_manager/.env
 .env
+venv/
 
 
 
