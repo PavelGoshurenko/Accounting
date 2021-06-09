@@ -116,40 +116,40 @@ def salary(request):
     last_period_name = datetime.datetime.strftime(timezone.now() + relativedelta(months=-1), '%B %Y')
     last_period = Period.objects.get(name=last_period_name)
 
-    # New99 this period
-    New99_this_period_sales = Sale.objects.filter(manager__username='New99', period=this_period)
-    New99_this_period_sales_by_dates = defaultdict(int)
-    for sale in New99_this_period_sales:
-        New99_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    New99_this_period = []
-    New99_this_period_sum = 0
-    for date, daily_sales in New99_this_period_sales_by_dates.items():
+    # Anatoliy this period
+    Anatoliy_this_period_sales = Sale.objects.filter(manager__username='Anatoliy', period=this_period)
+    Anatoliy_this_period_sales_by_dates = defaultdict(int)
+    for sale in Anatoliy_this_period_sales:
+        Anatoliy_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Anatoliy_this_period = []
+    Anatoliy_this_period_sum = 0
+    for date, daily_sales in Anatoliy_this_period_sales_by_dates.items():
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.03, 2),
+            'percent': round(daily_sales * 0.04, 2),
             'rate': 200
         }
-        New99_this_period_sum += 200 + daily_sales * 0.03
-        New99_this_period.append(day)
+        Anatoliy_this_period_sum += 200 + daily_sales * 0.04
+        Anatoliy_this_period.append(day)
 
 
-    # New99 last period
-    New99_last_period_sales = Sale.objects.filter(manager__username='New99', period=last_period)
-    New99_last_period_sales_by_dates = defaultdict(int)
-    for sale in New99_last_period_sales:
-        New99_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    New99_last_period = []
-    New99_last_period_sum = 0
-    for date, daily_sales in New99_last_period_sales_by_dates.items():
+    # Anatoliy last period
+    Anatoliy_last_period_sales = Sale.objects.filter(manager__username='Anatoliy', period=last_period)
+    Anatoliy_last_period_sales_by_dates = defaultdict(int)
+    for sale in Anatoliy_last_period_sales:
+        Anatoliy_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Anatoliy_last_period = []
+    Anatoliy_last_period_sum = 0
+    for date, daily_sales in Anatoliy_last_period_sales_by_dates.items():
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.03, 2),
+            'percent': round(daily_sales * 0.04, 2),
             'rate': 200
         }
-        New99_last_period_sum += 200 + daily_sales * 0.03
-        New99_last_period.append(day)
+        Anatoliy_last_period_sum += 200 + daily_sales * 0.04
+        Anatoliy_last_period.append(day)
 
     # Banan this period
     banan_this_period_sales = Sale.objects.filter(manager__username='Banan', period=this_period)
@@ -167,6 +167,7 @@ def salary(request):
         }
         Banan_this_period_sum += 225 + daily_sales * 0.05
         Banan_this_period.append(day)
+
     # Banan last period
     banan_last_period_sales = Sale.objects.filter(manager__username='Banan', period=last_period)
     banan_last_period_sales_by_dates = defaultdict(int)
@@ -246,10 +247,10 @@ def salary(request):
         'Banan_this_period_sum': round(Banan_this_period_sum, 2),
         'Banan_last_period': Banan_last_period,
         'Banan_last_period_sum': round(Banan_last_period_sum, 2),
-        'New99_this_period': New99_this_period,
-        'New99_this_period_sum': round(New99_this_period_sum, 2),
-        'New99_last_period': New99_last_period,
-        'New99_last_period_sum': round(New99_last_period_sum, 2),
+        'Anatoliy_this_period': Anatoliy_this_period,
+        'Anatoliy_this_period_sum': round(Anatoliy_this_period_sum, 2),
+        'Anatoliy_last_period': Anatoliy_last_period,
+        'Anatoliy_last_period_sum': round(Anatoliy_last_period_sum, 2),
         'Kolya_this_period': Kolya_this_period,
         'Kolya_this_period_sum': round(Kolya_this_period_sum, 2),
         'Kolya_last_period': Kolya_last_period,
