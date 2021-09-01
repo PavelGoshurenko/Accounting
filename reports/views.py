@@ -152,6 +152,8 @@ def salary(request):
         Anatoliy_last_period.append(day)
 
     # Banan this period
+    banan_this_period_percent = 0.04
+    banan_this_period_rate = 225
     banan_this_period_sales = Sale.objects.filter(manager__username='Banan', period=this_period)
     banan_this_period_sales_by_dates = defaultdict(int)
     for sale in banan_this_period_sales:
@@ -162,10 +164,10 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.05, 2),
-            'rate': 225
+            'percent': round(daily_sales * banan_this_period_percent, 2),
+            'rate': banan_this_period_rate
         }
-        Banan_this_period_sum += 225 + daily_sales * 0.05
+        Banan_this_period_sum += banan_this_period_rate + daily_sales * banan_this_period_percent
         Banan_this_period.append(day)
 
     # Banan last period

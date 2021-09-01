@@ -245,7 +245,7 @@ def terminal_from_spending(request, pk):
         amount=spending.amount,
     )
     transfer.save()
-    commission_spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B'))
+    commission_spending_name = "Коммисия банка {}".format(datetime.date.today().strftime('%B %Y'))
     try:
         commission_spending = Spending.objects.get(
             name=commission_spending_name)
