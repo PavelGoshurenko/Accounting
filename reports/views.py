@@ -171,6 +171,8 @@ def salary(request):
         Banan_this_period.append(day)
 
     # Banan last period
+    banan_last_period_percent = 0.04
+    banan_last_period_rate = 225
     banan_last_period_sales = Sale.objects.filter(manager__username='Banan', period=last_period)
     banan_last_period_sales_by_dates = defaultdict(int)
     for sale in banan_last_period_sales:
@@ -181,45 +183,13 @@ def salary(request):
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.05, 2),
-            'rate': 225
+            'percent': round(daily_sales * banan_last_period_percent, 2),
+            'rate': banan_last_period_rate,
         }
-        Banan_last_period_sum += 225 + daily_sales * 0.05
+        Banan_last_period_sum += banan_last_period_rate + daily_sales * banan_last_period_percent
         Banan_last_period.append(day)
     
 
-    # Kolya this period
-    kolya_this_period_sales = Sale.objects.filter(manager__username='Kolya', period=this_period)
-    kolya_this_period_sales_by_dates = defaultdict(int)
-    for sale in kolya_this_period_sales:
-        kolya_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    Kolya_this_period = []
-    Kolya_this_period_sum = 0
-    for date, daily_sales in kolya_this_period_sales_by_dates.items():
-        day = {
-            'date': date,
-            'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.05, 2),
-            'rate': 200
-        }
-        Kolya_this_period_sum += 200 + daily_sales * 0.05
-        Kolya_this_period.append(day)
-    # Kolya last period
-    kolya_last_period_sales = Sale.objects.filter(manager__username='Kolya', period=last_period)
-    kolya_last_period_sales_by_dates = defaultdict(int)
-    for sale in kolya_last_period_sales:
-        kolya_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    Kolya_last_period = []
-    Kolya_last_period_sum = 0
-    for date, daily_sales in kolya_last_period_sales_by_dates.items():
-        day = {
-            'date': date,
-            'daily_sales': daily_sales,
-            'percent': round(daily_sales * 0.05, 2),
-            'rate': 200
-        }
-        Kolya_last_period_sum += 200 + daily_sales * 0.05
-        Kolya_last_period.append(day)
     # Bogdan last period
     sales_last_period = Sale.objects.filter(period=last_period)
     margin_last_period = 0
@@ -230,6 +200,7 @@ def salary(request):
     BOGDAN_RATE = 4000
     Bogdan_percent_last_period = margin_last_period * 0.08
     Bogdan_last_period_sum = BOGDAN_RATE + Bogdan_percent_last_period
+
     # Bogdan this period
     sales_this_period = Sale.objects.filter(period=this_period)
     margin_this_period = 0
@@ -253,10 +224,6 @@ def salary(request):
         'Anatoliy_this_period_sum': round(Anatoliy_this_period_sum, 2),
         'Anatoliy_last_period': Anatoliy_last_period,
         'Anatoliy_last_period_sum': round(Anatoliy_last_period_sum, 2),
-        'Kolya_this_period': Kolya_this_period,
-        'Kolya_this_period_sum': round(Kolya_this_period_sum, 2),
-        'Kolya_last_period': Kolya_last_period,
-        'Kolya_last_period_sum': round(Kolya_last_period_sum, 2),
         'sales_last_period_sum': sales_last_period_sum,
         'sales_this_period_sum': sales_this_period_sum,
         'margin_last_period': round(margin_last_period, 2),
