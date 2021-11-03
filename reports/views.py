@@ -151,43 +151,43 @@ def salary(request):
         Anatoliy_last_period_sum += 200 + daily_sales * 0.04
         Anatoliy_last_period.append(day)
 
-    # Banan this period
-    banan_this_period_percent = 0.04
-    banan_this_period_rate = 225
-    banan_this_period_sales = Sale.objects.filter(manager__username='Banan', period=this_period)
-    banan_this_period_sales_by_dates = defaultdict(int)
-    for sale in banan_this_period_sales:
-        banan_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    Banan_this_period = []
-    Banan_this_period_sum = 0
-    for date, daily_sales in banan_this_period_sales_by_dates.items():
+    # Rodion this period
+    rodion_this_period_percent = 0.04
+    rodion_this_period_rate = 200
+    rodion_this_period_sales = Sale.objects.filter(manager__username='Rodion', period=this_period)
+    rodion_this_period_sales_by_dates = defaultdict(int)
+    for sale in rodion_this_period_sales:
+        rodion_this_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Rodion_this_period = []
+    Rodion_this_period_sum = 0
+    for date, daily_sales in rodion_this_period_sales_by_dates.items():
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * banan_this_period_percent, 2),
-            'rate': banan_this_period_rate
+            'percent': round(daily_sales * rodion_this_period_percent, 2),
+            'rate': rodion_this_period_rate
         }
-        Banan_this_period_sum += banan_this_period_rate + daily_sales * banan_this_period_percent
-        Banan_this_period.append(day)
+        Rodion_this_period_sum += rodion_this_period_rate + daily_sales * rodion_this_period_percent
+        Rodion_this_period.append(day)
 
-    # Banan last period
-    banan_last_period_percent = 0.04
-    banan_last_period_rate = 225
-    banan_last_period_sales = Sale.objects.filter(manager__username='Banan', period=last_period)
-    banan_last_period_sales_by_dates = defaultdict(int)
-    for sale in banan_last_period_sales:
-        banan_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
-    Banan_last_period = []
-    Banan_last_period_sum = 0
-    for date, daily_sales in banan_last_period_sales_by_dates.items():
+    # Rodion last period
+    rodion_last_period_percent = 0.04
+    rodion_last_period_rate = 200
+    rodion_last_period_sales = Sale.objects.filter(manager__username='Rodion', period=last_period)
+    rodion_last_period_sales_by_dates = defaultdict(int)
+    for sale in rodion_last_period_sales:
+        rodion_last_period_sales_by_dates[sale.date.strftime("%d.%m.%Y")] += sale.cost()
+    Rodion_last_period = []
+    Rodion_last_period_sum = 0
+    for date, daily_sales in rodion_last_period_sales_by_dates.items():
         day = {
             'date': date,
             'daily_sales': daily_sales,
-            'percent': round(daily_sales * banan_last_period_percent, 2),
-            'rate': banan_last_period_rate,
+            'percent': round(daily_sales * rodion_last_period_percent, 2),
+            'rate': rodion_last_period_rate,
         }
-        Banan_last_period_sum += banan_last_period_rate + daily_sales * banan_last_period_percent
-        Banan_last_period.append(day)
+        Rodion_last_period_sum += rodion_last_period_rate + daily_sales * rodion_last_period_percent
+        Rodion_last_period.append(day)
     
 
     # Bogdan last period
@@ -216,10 +216,10 @@ def salary(request):
     context = {
         'this_period': this_period_name,
         'last_period': last_period_name,
-        'Banan_this_period': Banan_this_period,
-        'Banan_this_period_sum': round(Banan_this_period_sum, 2),
-        'Banan_last_period': Banan_last_period,
-        'Banan_last_period_sum': round(Banan_last_period_sum, 2),
+        'Rodion_this_period': Rodion_this_period,
+        'Rodion_this_period_sum': round(Rodion_this_period_sum, 2),
+        'Rodion_last_period': Rodion_last_period,
+        'Rodion_last_period_sum': round(Rodion_last_period_sum, 2),
         'Anatoliy_this_period': Anatoliy_this_period,
         'Anatoliy_this_period_sum': round(Anatoliy_this_period_sum, 2),
         'Anatoliy_last_period': Anatoliy_last_period,
