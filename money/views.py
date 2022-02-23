@@ -227,7 +227,7 @@ class TerminalCreate(LoginRequiredMixin, CreateView):
                 category=category,
                 period=period
             )
-        spending.amount += round((amount * 0.02), 2)
+        spending.amount += round((amount * 0.018), 2)
         spending.save()
         return super().form_valid(form)
 
@@ -262,7 +262,7 @@ def terminal_from_spending(request, pk):
             category=category,
             period=period
         )
-    commission_spending.amount += round((spending.amount * 0.02), 2)
+    commission_spending.amount += round((spending.amount * 0.018), 2)
     commission_spending.save()
     spending.delete()
     return HttpResponseRedirect('/money/?period={}'.format(get_period().id))
