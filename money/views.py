@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from money.models import Spending, Asset, Transfer, SpendingCategory, Department
+from money.models import Spending, Asset, Transfer, SpendingCategory, Department, Constants
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.views import generic
@@ -227,7 +227,8 @@ class TerminalCreate(LoginRequiredMixin, CreateView):
                 category=category,
                 period=period
             )
-        spending.amount += round((amount * 0.018), 2)
+        bank_percent = Constants.objects.get(name='bank_percent')
+        spending.amount += round((amount * bank_percent.value), 2)
         spending.save()
         return super().form_valid(form)
 
@@ -262,7 +263,8 @@ def terminal_from_spending(request, pk):
             category=category,
             period=period
         )
-    commission_spending.amount += round((spending.amount * 0.018), 2)
+    bank_percent = Constants.objects.get(name='bank_percent')
+    commission_spending.amount += round((spending.amount * bank_percent.value), 2)
     commission_spending.save()
     spending.delete()
     return HttpResponseRedirect('/money/?period={}'.format(get_period().id))
