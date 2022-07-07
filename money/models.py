@@ -46,6 +46,20 @@ class Asset(models.Model):
         ordering = ['-created_at']
 
 
+class Constants(models.Model):
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="Константа")
+    value = models.FloatField(
+        verbose_name='Значение',
+        null=True, blank=True
+    )
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.value)
+
+
 class SpendingCategory(models.Model):
     name = models.CharField(
         max_length=200,
