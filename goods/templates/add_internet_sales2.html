@@ -2,9 +2,11 @@
 {% extends "base.html" %}
 {% load bootstrap4 %}
 {% block title %} Добавить продажи {% endblock %}
-{% block h %} Добавить продажи {% endblock %}
+{% block h %} Добавить продажи
+
+{% endblock %}
 {% block content %}
-    
+    <div class="text-right">Стоимость заказа: <span id="cost">0</span> грн.</div>
 
 {% load static %}
 <script type="text/javascript" src="{% static 'js/add_internet_sales2.js' %}"></script>
@@ -14,9 +16,12 @@
 
 {% block context %}
 
-<div id='submit_button'></div>
+<div id='submit_button'></div></br><div id='preview_button'></div>
 <form action="" method="get" class="form">
   {% bootstrap_form form %}
  
 </form>
+
+
+
 {% endblock %}
