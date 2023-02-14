@@ -38,7 +38,13 @@ const submit = (e) => {
     };
     xhr.send($.toJSON(sendData));
 };
-
+const countCost = () => {
+    let cost = 0;
+    Object.keys(state).filter((key) => (state[key].quantity !== 0)).forEach((key) => {
+        cost = cost + (state[key].shop_price * state[key].quantity - state[key].discount);
+    });
+    $('#cost').html(cost)
+}
 const inputHandler = (e) => {
     const id = String($(e.target).attr('data-id'));
     $input = $(e.target);
@@ -91,7 +97,16 @@ const categoryChangeHandler = (e) => {
     brandFilter(category);
     render();
 }
-
+const previewHandler = (e) => {
+    if (filterState.preview === 'off'){
+        filterState.preview = 'on'
+        e.target.value = 'Вернуть нули'
+    } else {
+        filterState.preview = 'off'
+        e.target.value = 'Убрать нули'
+    }
+    render();
+}
 const brandChangeHandler = (e) => {
     filterState.brand = e.target.value
     render();
@@ -101,6 +116,7 @@ const brandChangeHandler = (e) => {
 filterState = {
     'category': START_CATEGORY,
     'brand': '',
+    'preview': 'off',
 }
 $('<input>', {
     value: 'Сохранить',
@@ -108,6 +124,12 @@ $('<input>', {
     class: 'btn btn-secondary',
     on: {click: submit}
  }).appendTo($('#submit_button'));
+$('<input>', {
+    value: 'Убрать нули',
+    type: 'submit',
+    class: 'btn btn-secondary',
+    on: {click: previewHandler}
+ }).appendTo($('#preview_button'));
 const $tabDiv = $('<div>', {class: 'table-responsive'}).appendTo('#main-data');
 const $mainTable = $('<table>', {
     class: "table table-striped table-sm",
@@ -121,15 +143,20 @@ $('<thead><tr><th>Товар</th><th> Количество</th><th>Цена</th>
 const $tbody = $('<tbody>', {class: 'table-striped'}).appendTo($mainTable);
 
 const render = () => {
+    countCost()
     $categorySelector.val(filterState.category);
     $brandSelector.val(filterState.brand);
     $tbody.empty();
     let keysToShow = Object.keys(state)
-    if (filterState.category) {
-        keysToShow = keysToShow.filter((key) => state[key].category === Number(filterState.category))
-    }
-    if (filterState.brand) {
-        keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand))
+    if (filterState.preview === 'on'){
+        keysToShow = keysToShow.filter((key) => state[key].quantity !== 0);
+    } else {
+            if (filterState.category) {
+                keysToShow = keysToShow.filter((key) => state[key].category === Number(filterState.category));
+            }
+            if (filterState.brand) {
+                keysToShow = keysToShow.filter((key) => state[key].brand === Number(filterState.brand));
+            }
     }
     keysToShow.forEach((key) => {
         const $tr = $('<tr>').appendTo($tbody);
